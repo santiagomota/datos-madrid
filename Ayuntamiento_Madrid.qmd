@@ -6,7 +6,7 @@ linkedin: "santiagomota"
 twitter:  "mota_santiago"
 github:   "santiagomota"
 date:     "`r Sys.Date()`"
-image:     styles/logo_web.png 
+image:    figs/logo-madrid.png 
 license:
   type: "MIT"
   text: "Este proyecto está licenciado bajo la Licencia MIT. Puedes ver los detalles en el siguiente enlace https://opensource.org/licenses/MIT"
@@ -56,7 +56,7 @@ format:
     slide-number: c/t
     show-slide-number: all
     # logo: styles/logo_web.png
-    footer: "Test para el Banco de España"
+    footer: "Premios a la reutilización Ayuntamiento de Madrid"
     preview-links: auto
     chalkboard: true
   pptx:
@@ -74,7 +74,7 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
 
 <right> 
-![](styles/logo_web.png)
+![](figs/logo-madrid.png)
 
 **[Aunque el código está licenciado como MIT se ruega no publicar el contenido del mismo. Se evaluará esta opción tras la finalización del proceso de selección.]{style="color:green;"}**
 

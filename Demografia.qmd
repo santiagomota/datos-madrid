@@ -8,7 +8,7 @@ github:   "santiagomota"
 keywords: "R, Quarto"
 # categories: [r, spatial, quarto, duckDB]
 date:     today
-logo:     "./figs/logo2_color.png"
+logo:     "./figs/logo-madrid.png"
 title-block-banner: "#27445C"
 license:
   type: "MIT"
@@ -129,6 +129,29 @@ secciones_municipio$MESAN      <- as.factor(secciones_municipio$MESAN)
 ```{r}
 # Ver estructura
 summary(secciones_municipio)
+#     Name              COD_DIS                      NOM_DIS        COD_BAR    
+# Length:2462        10     : 196   Latina               : 196   104    :  57  
+# Class :character   08     : 187   Fuencarral - El Pardo: 187   152    :  46  
+# Mode  :character   11     : 182   Carabanchel          : 182   084    :  44  
+#                    13     : 176   Puente de Vallecas   : 176   086    :  43  
+#                    15     : 168   Ciudad Lineal        : 168   107    :  42  
+#                    16     : 126   Hortaleza            : 126   151    :  41  
+#                    (Other):1427   (Other)              :1427   (Other):2189  
+#         NOM_BAR       COD_SECCIO   MESAN        ELECTO         LOCAL_ELEC  
+# Aluche      :  57   17099  :   2   0:   6   Min.   :   0.0   Min.   : 105  
+# Pueblo Nuevo:  46   01001  :   1   1:1496   1st Qu.: 737.0   1st Qu.: 616  
+# Pilar       :  44   01002  :   1   2: 950   Median : 917.0   Median :1035  
+# Valverde    :  43   01003  :   1   3:  10   Mean   : 975.5   Mean   :1060  
+# Águilas     :  42   01004  :   1            3rd Qu.:1142.5   3rd Qu.:1512  
+# Ventas      :  41   01006  :   1            Max.   :2233.0   Max.   :2108  
+# (Other)     :2189   (Other):2455                                           
+#   Shape_Leng        Shape_Area                geometry   
+# Min.   :  404.2   Min.   :    8420   LINESTRING Z :2462  
+# 1st Qu.:  726.8   1st Qu.:   25968   epsg:4326    :   0  
+# Median :  930.6   Median :   40478   +proj=long...:   0  
+# Mean   : 1348.8   Mean   :  245523                       
+# 3rd Qu.: 1316.2   3rd Qu.:   75654                       
+# Max.   :69049.2   Max.   :94649028    
 ```
 
 ```{r}
@@ -159,8 +182,6 @@ eurodem_terra_crop <- crop(eurodem_terra, vect(madrid_lines))
 # Aplicar máscara para dejar solo los píxeles dentro del municipio
 eurodem_madrid <- mask(eurodem_terra_crop, vect(madrid_lines))
 ```
-
-
 
 
 ```{r}
@@ -280,7 +301,6 @@ ggplot(nuts3_sf) +
 ```
 
 
-
 ## Poblacion
 
 ```{r}
@@ -294,7 +314,6 @@ eurodem_terra <- terra::rast("/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/
 
 eurodem_raster <- raster::raster(("/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/eurogeographics/EuroDEM/euro-dem-tif/data/eurodem/eurodem.tif"))
 ```
-
 
 ```{r}
 #| eval: false
