@@ -1171,68 +1171,60 @@ names(intensidad_espacial) <- gsub('longitud', 'longitude', names(intensidad_esp
 # Y vemos el resultado
 summary(intensidad_espacial)
 #       id         tipo_elem            distrito       cod_cent        
-# Min.   : 3395   Length:5924        Min.   : 1.00   Length:5924       
-# 1st Qu.: 4843   Class :character   1st Qu.: 8.00   Class :character  
-# Median : 5976   Mode  :character   Median :10.00   Mode  :character  
-# Mean   : 6963                      Mean   :10.49                     
-# 3rd Qu.:10232                      3rd Qu.:15.00                     
+# Min.   : 3395   Length:6044        Min.   : 1.00   Length:6044       
+# 1st Qu.: 4853   Class :character   1st Qu.: 8.00   Class :character  
+# Median : 5964   Mode  :character   Median :10.00   Mode  :character  
+# Mean   : 6965                      Mean   :10.49                     
+# 3rd Qu.:10238                      3rd Qu.:15.00                     
 # Max.   :11435                      Max.   :21.00                     
 #                                    NA's   :7                         
-#    nombre              utm_x            utm_y           longitudee    
-# Length:5924        Min.   :429061   Min.   :4464902   Min.   :-3.837  
-# Class :character   1st Qu.:439043   1st Qu.:4471572   1st Qu.:-3.719  
-# Mode  :character   Median :441092   Median :4475598   Median :-3.694  
-#                    Mean   :441376   Mean   :4475507   Mean   :-3.691  
-#                    3rd Qu.:443866   3rd Qu.:4479149   3rd Qu.:-3.662  
+#    nombre              utm_x            utm_y           longitude     
+# Length:6044        Min.   :429061   Min.   :4464902   Min.   :-3.837  
+# Class :character   1st Qu.:438872   1st Qu.:4471404   1st Qu.:-3.721  
+# Mode  :character   Median :441041   Median :4475411   Median :-3.695  
+#                    Mean   :441286   Mean   :4475410   Mean   :-3.692  
+#                    3rd Qu.:443777   3rd Qu.:4479097   3rd Qu.:-3.663  
 #                    Max.   :453195   Max.   :4485213   Max.   :-3.552  
 #                                                                       
-#   latitudee       fichero           activo         fichero_date       
-# Min.   :40.33   Length:5924        Mode:logical   Min.   :2025-05-01  
-# 1st Qu.:40.39   Class :character   TRUE:5924      1st Qu.:2025-05-01  
+#    latitude       fichero           activo         fichero_date       
+# Min.   :40.33   Length:6044        Mode:logical   Min.   :2025-05-01  
+# 1st Qu.:40.39   Class :character   TRUE:6044      1st Qu.:2025-05-01  
 # Median :40.43   Mode  :character                  Median :2025-05-01  
 # Mean   :40.43                                     Mean   :2025-05-01  
 # 3rd Qu.:40.46                                     3rd Qu.:2025-05-01  
 # Max.   :40.52                                     Max.   :2025-05-01  
 #                                                                       
 #     minimo               maximo           descripcion        accesoAsociado    
-# Min.   :2018-12-01   Min.   :2025-05-01   Length:5924        Length:5924       
+# Min.   :2018-12-01   Min.   :2025-05-01   Length:6044        Length:6044       
 # 1st Qu.:2018-12-01   1st Qu.:2025-05-01   Class :character   Class :character  
 # Median :2018-12-01   Median :2025-05-01   Mode  :character   Mode  :character  
-# Mean   :2019-07-26   Mean   :2025-05-01                                        
+# Mean   :2019-07-27   Mean   :2025-05-01                                        
 # 3rd Qu.:2018-12-01   3rd Qu.:2025-05-01                                        
 # Max.   :2025-05-01   Max.   :2025-05-01                                        
 #                                                                                
-#   intensidad        ocupacion           carga        nivelServicio
-# Min.   :    0.0   Min.   :  0.000   Min.   :  0.00   0   :3861    
-# 1st Qu.:  100.0   1st Qu.:  1.000   1st Qu.: 10.00   1   :1673    
-# Median :  240.0   Median :  3.000   Median : 20.00   2   : 300    
-# Mean   :  434.8   Mean   :  7.817   Mean   : 24.02   3   :  71    
-# 3rd Qu.:  540.0   3rd Qu.:  7.000   3rd Qu.: 33.00   NA's:  19    
-# Max.   :11420.0   Max.   :100.000   Max.   :234.00                
-#                                                                   
-# intensidadSat    error        subarea               st_x       
-# Min.   :    0   N   :5328   Length:5924        Min.   :429061  
-# 1st Qu.: 1200   S   : 582   Class :character   1st Qu.:439043  
-# Median : 1500   NA's:  14   Mode  :character   Median :441092  
-# Mean   : 1992                                  Mean   :441376  
-# 3rd Qu.: 3000                                  3rd Qu.:443866  
-# Max.   :18830                                  Max.   :453195  
-# NA's   :293                                                    
-#      st_y                  geometry       error_x              error_y          
-# Min.   :4464902   POLYGON      :5924   Min.   :-15.301798   Min.   :-12.295397  
-# 1st Qu.:4471572   epsg:4326    :   0   1st Qu.:  0.000000   1st Qu.:  0.000000  
-# Median :4475598   +proj=long...:   0   Median :  0.000000   Median :  0.000000  
-# Mean   :4475507                        Mean   : -0.001644   Mean   : -0.003829  
-# 3rd Qu.:4479149                        3rd Qu.:  0.000000   3rd Qu.:  0.000000  
-# Max.   :4485213                        Max.   :  8.199879   Max.   :  6.563747  
-#                                                                                 
-# error_espacial    
-# Min.   : 0.00000  
-# 1st Qu.: 0.00000  
-# Median : 0.00000  
-# Mean   : 0.01471  
-# 3rd Qu.: 0.00000  
-# Max.   :19.62962     
+#   intensidad        ocupacion           carga        nivelServicio intensidadSat  
+# Min.   :    0.0   Min.   :  0.000   Min.   :  0.00   0   :4205     Min.   :    0  
+# 1st Qu.:   80.0   1st Qu.:  1.000   1st Qu.:  8.00   1   :1496     1st Qu.: 1200  
+# Median :  222.0   Median :  3.000   Median : 18.00   2   : 247     Median : 1500  
+# Mean   :  395.6   Mean   :  7.543   Mean   : 21.96   3   :  67     Mean   : 1998  
+# 3rd Qu.:  480.0   3rd Qu.:  7.000   3rd Qu.: 30.00   NA's:  29     3rd Qu.: 3000  
+# Max.   :13380.0   Max.   :100.000   Max.   :237.00                 Max.   :18830  
+#                                                                    NA's   :292    
+#  error        subarea               st_x             st_y        
+# N   :5230   Length:6044        Min.   :429061   Min.   :4464902  
+# S   : 794   Class :character   1st Qu.:438872   1st Qu.:4471404  
+# NA's:  20   Mode  :character   Median :441041   Median :4475411  
+#                                Mean   :441286   Mean   :4475410  
+#                                3rd Qu.:443777   3rd Qu.:4479097  
+#                                Max.   :453195   Max.   :4485213  
+#                                                                  
+#          geometry       error_x              error_y           error_espacial    
+# POLYGON      :6044   Min.   :-15.301798   Min.   :-12.295397   Min.   : 0.00000  
+# epsg:4326    :   0   1st Qu.:  0.000000   1st Qu.:  0.000000   1st Qu.: 0.00000  
+# +proj=long...:   0   Median :  0.000000   Median :  0.000000   Median : 0.00000  
+#                      Mean   : -0.001732   Mean   : -0.003967   Mean   : 0.02229  
+#                      3rd Qu.:  0.000000   3rd Qu.:  0.000000   3rd Qu.: 0.00000  
+#                      Max.   :  8.199879   Max.   : 11.591304   Max.   :19.62962  
 ```
 
 Y representamos.
@@ -1423,6 +1415,34 @@ secciones_censales <- secciones_censales_shp[secciones_censales_shp$CUMUN == '28
 
 ```{r}
 summary(secciones_censales)
+#        CUSEC          CUMUN           CSEC           CDIS           CMUN     
+# 2807901001:   1   28079  :2462   002    :  21   10     : 196   079    :2462  
+# 2807901002:   1   01001  :   0   018    :  21   08     : 187   001    :   0  
+# 2807901003:   1   01002  :   0   028    :  21   11     : 182   002    :   0  
+# 2807901004:   1   01003  :   0   003    :  20   13     : 176   003    :   0  
+# 2807901006:   1   01004  :   0   006    :  20   15     : 168   004    :   0  
+# 2807901007:   1   01006  :   0   011    :  20   16     : 126   005    :   0  
+# (Other)   :2456   (Other):   0   (Other):2339   (Other):1427   (Other):   0  
+#      CPRO           CCA           CUDIS          CLAU2               NPRO     
+# 28     :2462   13     :2462   2807910: 196   28079  :2462   Madrid     :2462  
+# 01     :   0   01     :   0   2807908: 187   01001  :   0   Albacete   :   0  
+# 02     :   0   02     :   0   2807911: 182   01002  :   0   Alicante   :   0  
+# 03     :   0   03     :   0   2807913: 176   01003  :   0   Almería    :   0  
+# 04     :   0   04     :   0   2807915: 168   01004  :   0   Araba/Álava:   0  
+# 05     :   0   05     :   0   2807916: 126   01006  :   0   Asturias   :   0  
+# (Other):   0   (Other):   0   (Other):1427   (Other):   0   (Other)    :   0  
+#                  NCA       CNUT0     CNUT1    CNUT2        CNUT3           NMUN     
+# Comunidad de Madrid:2462   ES:2462   1:   0   0:2462   0      :2462   Madrid :2462  
+# Andalucía          :   0             2:   0   1:   0   1      :   0   Ababuj :   0  
+# Aragón             :   0             3:2462   2:   0   2      :   0   Abades :   0  
+# Canarias           :   0             4:   0   3:   0   3      :   0   Abadía :   0  
+# Cantabria          :   0             5:   0   4:   0   4      :   0   Abadín :   0  
+# Castilla y León    :   0             6:   0            5      :   0   Abadiño:   0  
+# (Other)            :   0             7:   0            (Other):   0   (Other):   0  
+#          geometry   
+# MULTIPOLYGON :2462  
+# epsg:25830   :   0  
+# +proj=utm ...:   0  
 ```
 
 
