@@ -1,0 +1,14 @@
+COMUNIDAD;PROVINCIA;CARRETERA;PK INI;PK FIN;SENTIDO;LOCALIZACIÓN;HACIA;NIVEL DE SERVICIO
+Andalucía;Cádiz;CA-4102;2,00;3,20;AMBOS SENTIDOS;NA;NA;NEGRO
+Andalucía;Granada;GR-4104;15,00;16,00;AMBOS SENTIDOS;El Bejarín - Benalúa;NA;NEGRO
+Comunitat Valenciana;València/Valencia;CV-36;5,50;3,19;NA;Torrent - Picanya;Valencia;ROJO
+Comunitat Valenciana;València/Valencia;CV-36;9,00;8,50;NA;Alaquàs;VALENCIA;ROJO
+Comunitat Valenciana;València/Valencia;CV-391;9,28;9,40;AMBOS SENTIDOS;Villar de Olmos;NA;NEGRO
+Comunitat Valenciana;València/Valencia;CV-395;17,00;27,00;AMBOS SENTIDOS;Chera - Sot de Chera;NA;NEGRO
+Comunitat Valenciana;València/Valencia;CV-417;3,44;3,44;AMBOS SENTIDOS;Godelleta;NA;NEGRO
+Comunitat Valenciana;València/Valencia;CV-422;4,00;4,50;AMBOS SENTIDOS;Turís;NA;NEGRO
+Comunitat Valenciana;València/Valencia;CV-426;8,50;8,90;AMBOS SENTIDOS;Buñol;NA;NEGRO
+Comunitat Valenciana;València/Valencia;CV-429;16,00;28,00;NA;Yátova - Hortunas;NA;NEGRO
+Comunitat Valenciana;València/Valencia;CV-472;7,90;8,29;NA;Los Corrales - Las Cuevas;NA;NEGRO
+Madrid, Comunidad de;Madrid;CM-2031;0,00;0,00;AMBOS SENTIDOS;Peña Ambite;NA;NEGRO
+Murcia, Región de;Murcia;RM-D20;4,00;12,50;AMBOS SENTIDOS;NA;NA;NEGRO

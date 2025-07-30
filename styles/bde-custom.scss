@@ -1,0 +1,14 @@
+
+/*-- scss:uses --*/
+@use "quarto" with (
+  $primary: #003366,
+  $body-color: #000000,
+  $body-bg: #ffffff,
+  $link-color: #003366,
+  $link-hover-color: #001a33,
+  $font-family-base: "Arial, sans-serif",
+  $headings-font-family: "Georgia, serif",
+  $border-color: #e0e0e0,
+  $navbar-bg: white,
+  $grid-gutter-width: 2rem
+);

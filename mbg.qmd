@@ -1,0 +1,349 @@
+---
+title: "Getting started with MBG (mbg vignette)"
+format: html
+self-contained: true
+---
+
+```{r}
+#| include: false
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette introduces `mbg`, a package for modern Model-Based Geostatistics. This package offers tools for spatial regression analysis:
+
+1.  Running Bayesian geostatistical models that relate point-georeferenced outcome data to underlying spatial patterns
+2.  Fitting machine learning algorithms with point-georeferenced outcome data and raster covariate data
+3.  Fast aggregation from (gridded, continuous) raster estimates to (discrete) polygon boundaries, allowing for fractional splitting of raster grid cells and population weighting. A common application for aggregation is generating administrative summaries of fine-scale raster data
+
+`mbg` combines functions from several packages:
+
+-   `INLA`: for running Bayesian geostatistical models
+-   `data.table`: for handling tabular data
+-   `sf` for handling polygons
+-   `terra` for handling raster data
+-   `caret` for running ML models with point outcomes and raster predictors
+
+In this tutorial, we will run a simple `mbg` model with prepared data to demonstrate core package functions.
+
+# Setting up
+
+Load the `mbg` package, as well as the `data.table`, `sf`, and `terra` packages for data processing, and the `ggplot2` package for plotting.
+
+```{r}
+#| eval: false
+#| label: inla-instalation
+
+install.packages("INLA",repos=c(getOption("repos"),INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE) 
+```
+
+```{r setup}
+# Load packages
+library(data.table)
+library(ggplot2)
+library(sf)
+library(terra)
+library(mbg)
+```
+
+For this tutorial, we will estimate stunting rates among children under 5 years of age across Benin. Load point observations of this outcome from the package data and print the first few rows:
+
+```{r load-outcome-data, message = FALSE, warning = FALSE}
+# Outcome: child stunting
+outcomes <- data.table::fread(
+  system.file('extdata/child_stunting.csv', package = 'mbg')
+)
+```
+
+```{r head-outcome-data, asis = TRUE, echo = FALSE}
+knitr::kable(head(outcomes))
+```
+
+The outcome data has 505 rows, each representing one surveyed location, and five columns:
+
+-   **cluster_id**: A unique identifier for each surveyed location
+-   **samplesize**: The number of children under 5 surveyed at the location
+-   **indicator**: The outcome of interest---in this case, the number of sampled children who met the definition for stunting
+-   **x**: The surveyed location's longitude
+-   **y**: The surveyed location's latitude
+
+Let's map this survey data over a map of Benin.
+
+```{r plot-outcome-data, message = FALSE, warning = FALSE, fig.align = 'center'}
+# Administrative boundaries
+communes <- sf::st_read(
+  system.file('extdata/Benin_communes.gpkg', package = 'mbg'),
+  quiet = TRUE
+)
+
+# Convert point data to sf
+outcome_sf <- sf::st_as_sf(
+  outcomes,
+  coords = c('x', 'y'),
+  crs = sf::st_crs(communes)
+)
+
+outcome_sf$stunting_rate <- outcome_sf$indicator / outcome_sf$samplesize
+
+ggplot2::ggplot() +
+  ggplot2::geom_sf(data = communes) +
+  ggplot2::geom_sf(
+    data = outcome_sf,
+    ggplot2::aes(color = stunting_rate, size = samplesize),
+    alpha = 0.75
+  ) +
+  ggplot2::scale_size_continuous(range = c(0.5, 3)) +
+  ggplot2::scale_color_gradientn(
+    colors = terra::map.pal('viridis'),
+    labels = scales::percent
+  ) +
+  ggplot2::labs(
+    title = 'Stunting point data',
+    color = 'Observed\nstunting\nrate',
+    size = 'Sample\nsize'
+  ) +
+  ggplot2::theme_minimal()
+```
+
+We can see that there seem to be spatial patterns in the surveyed stunting data---stunting generally seems to be lower around the urban regions of Porto Novo in the coastal south and Parakou in the center north, and higher in the far north and the inland south. To better understand the underlying trends in stunting risk across the country, we would ideally like to:
+
+-   Adjust for noise in the outcome due to small sample sizes in the point-level survey data;
+-   Understand likely stunting risk not just at surveyed points, but at locations across the entire country;
+-   Incorporate data about possible predictors of child stunting and spatial trends to inform our estimates, and;
+-   Propagate uncertainty due to small sample sizes, uncertain predictor relationships, and distance to data points into our estimates for all locations.
+
+A Bayesian geostatistical model can accomplish all of these goals. We will fit a Bayesian geostatistical model to the outcome data, with three potential predictors formatted as raster surfaces:
+
+1.  Travel time to the nearest city, in minutes
+2.  Enhanced vegetation index (EVI)
+3.  Mean annual temperature
+
+```{r load-covariates, message = FALSE, warning = FALSE, fig.align = 'center'}
+# Spatial covariates
+covariates <- list(
+  access = terra::rast(system.file('extdata/access.tif', package = 'mbg')),
+  evi = terra::rast(system.file('extdata/evi.tif', package = 'mbg')),
+  temperature = terra::rast(system.file('extdata/temperature.tif', package = 'mbg'))
+)
+
+# Plot the covariates
+plot(terra::rast(covariates), nr = 1)
+```
+
+## Building MBG model inputs
+
+The geostatistical model takes three more arguments:
+
+1.  `id_raster`: A `terra::SpatRaster` that lays out the prediction grid. The model will make predictions for all non-NA cells in the `id_raster`.
+2.  `aggregation_table` (`data.table::data.table`, optional): Used to aggregate model estimates from grid cells to commune polygons, preserving uncertainty
+3.  `population_raster` (`terra::SpatRaster`, optional): population-based indicators like child stunting should be aggregated using population weighting, which places greater weight on grid cells with higher populations when summarizing those grid cell results by polygon.
+
+```{r aggregation-prep, message = FALSE, warning = FALSE}
+# Create ID raster
+id_raster <- mbg::build_id_raster(
+  polygons = communes,
+  template_raster = covariates[[1]]
+)
+
+# Table to help with aggregation to higher administrative levels
+aggregation_table <- mbg::build_aggregation_table(
+  polygons = communes,
+  id_raster = id_raster,
+  polygon_id_field = 'commune_code'
+)
+
+# Population raster: used for aggregation to administrative boundaries
+population_raster <- terra::rast(
+  system.file('extdata/under_5_population.tif', package = 'mbg')
+)
+```
+
+```{r}
+summary(aggregation_table)
+#   polygon_id       pixel_id     masked_pixel_id area_fraction         country           department        department_code    commune           commune_code  
+# Min.   : 1.00   Min.   :   49   Min.   :   1    Min.   :2.000e-08   Length:7172        Length:7172        Min.   : 1.000   Length:7172        Min.   : 1.00  
+# 1st Qu.: 8.00   1st Qu.: 2918   1st Qu.:1567    1st Qu.:5.312e-01   Class :character   Class :character   1st Qu.: 2.000   Class :character   1st Qu.: 8.00  
+# Median :26.00   Median : 4490   Median :2986    Median :1.000e+00   Mode  :character   Mode  :character   Median : 4.000   Mode  :character   Median :26.00  
+# Mean   :26.69   Mean   : 5221   Mean   :3000    Mean   :7.627e-01                                         Mean   : 4.273                      Mean   :26.69  
+# 3rd Qu.:37.00   3rd Qu.: 7622   3rd Qu.:4512    3rd Qu.:1.000e+00                                         3rd Qu.: 5.000                      3rd Qu.:37.00  
+# Max.   :77.00   Max.   :11123   Max.   :5738    Max.   :1.000e+00                                         Max.   :12.000                      Max.   :77.00  
+```
+
+```{r}
+summary(population_raster)
+#     Band_1        
+# Min.   :    0.00  
+# 1st Qu.:   42.39  
+# Median :  147.14  
+# Mean   :  386.62  
+# 3rd Qu.:  304.20  
+# Max.   :32332.76  
+# NA's   :5437  
+```
+
+```{r plot-under-5-population, fig.align = 'center'}
+plot(population_raster)
+```
+
+# Fit the geostatistical model
+
+The entire Bayesian geostatistical regression workflow can be run using the `mbg::MbgModelRunner` class. The `MbgModelRunner$new()` method creates a new instance of the class, and the `MbgModelRunner$run_mbg_pipeline()` runs the entire workflow based on the passed inputs.
+
+The following code block runs the `mbg` model using mainly default settings. A typical workflow can take a few minutes to finish, although intermediate steps will be printed to screen. Because we want a regression intercept in this model, the first line in the code block below creates the intercept as one of the covariate rasters.
+
+```{r fit-mbg-model}
+# Add an intercept to the model
+covariates$intercept <- covariates[[1]] * 0 + 1
+
+# Run MBG models
+model_runner <- MbgModelRunner$new(
+  input_data = outcomes,
+  id_raster = id_raster,
+  covariate_rasters = covariates,
+  aggregation_table = aggregation_table,
+  aggregation_levels = list(
+    commune = c('commune_code', 'commune', 'department_code', 'department'),
+    region = c('department_code', 'department')
+  ),
+  population_raster = population_raster
+)
+
+model_runner$run_mbg_pipeline()
+```
+
+```{r}
+model_runner
+```
+
+## Plot gridded estimates
+
+The model makes predictions at each grid cell, with some uncertainty associated with each grid cell prediction. We capture that uncertainty by taking many (by default, 250) samples from the range of plausible model estimates and generating summary statistics across those samples.
+
+Once the geostatistical workflow has finished, we can pull the gridded raster model predictions from the `MbgModelRunner$grid_cell_predictions` attribute. This attribute is a list with the following items:
+
+-   `'parameter_draws'` (`matrix`): Samples of the underlying model parameters
+-   `'cell_draws'` (`matrix`): Samples of model estimates at each grid cell location from the `id_raster`
+-   `'cell_pred_mean'` (`terra::SpatRaster`): The mean estimates across all sampled `cell_draws`, represented as a raster.
+-   `'cell_pred_lower'` (`terra::SpatRaster`): Lower bounds of an uncertainty interval, summarized across the sampled `cell_draws` and represented as a raster. By default, we use a 95% uncertainty interval, so this raster shows the 2.5th percentile across the samples for each grid cell.
+-   `'cell_pred_upper'` (`terra::SpatRaster`): Upper bounds of the uncertainty interval, represented as a raster. By default, shows the 97.5th percentile of samples for each grid cell.
+
+We can plot the mean estimates from the geostatistical model:
+
+```{r plot-pixel-mean-predictions, fig.align = 'center'}
+# Get predictions by pixel
+grid_cell_predictions <- model_runner$grid_cell_predictions
+
+# Plot mean estimates
+plot(
+  grid_cell_predictions$cell_pred_mean * 100,
+  main = 'MBG mean estimates (%)'
+)
+
+# Add Communes separation
+lines(communes)
+```
+
+We can also show the width of the 95% uncertainty interval by subtracting the "lower" from the "upper" summary raster:
+
+```{r plot-pixel-ui-predictions, fig.align = 'center'}
+# Plot estimate uncertainty
+plot(
+  (grid_cell_predictions$cell_pred_upper - grid_cell_predictions$cell_pred_lower) * 100,
+  col = sf::sf.colors(n = 100),
+  main = 'MBG estimates: 95% uncertainty interval width (%)'
+)
+
+# Add Communes separation
+lines(communes)
+```
+
+Compare these gridded estimates to the underlying point data. The results seem to meet our goals for estimating stunting risk across Benin:
+
+1.  Gridded estimates are available for every region in Benin, not just at survey points
+2.  The mean estimates for stunting risk show a similar spatial pattern to the underlying point data
+3.  Some extreme values from the point data, which may have been noisy due to small sample sizes, have been smoothed out in these estimates
+4.  Model uncertainty, as shown by the width of the 95% uncertainty interval, is higher in areas that were far from any surveyed points.
+5.  Underlying relationships between the raster predictors and the point outcomes seem to have influenced estimates: for example, locations with a higher travel time to cities generally also have higher estimated stunting risk.
+
+Many of these observations can be quantified and tested, as demonstrated in later vignettes.
+
+## Plot aggregated estimates
+
+Each sample from the geostatistical model yields a *candidate map*, a single realization of the outcome across each pixel in the study area that is consistent with the fitted model parameters and uncertainty. These samples can be individually aggregated to administrative boundaries, preserving uncertainty, and then summarized.
+
+Aggregated samples and summaries are available from the `MbgModelRunner$aggregated_predictions` attribute. This attribute is a named list, where each item contains polygon estimates for each of the passed `aggregation_levels`. Each of those levels has two items:
+
+-   `'draws'` (`data.table::data.table`): Predictive model samples by aggregated polygon unit
+-   `'summary'` (`data.table::data.table`): Summaries of `draws` for each aggregated polygon unit, including the mean and the bounds of the 95% uncertainty interval across samples
+
+We can merge the commune estimate summaries back onto the `communes` sf object to plot the results.
+
+```{r plot-commune-mean-predictions, fig.align = 'center'}
+# Get predictions by commune
+aggregated_predictions <- model_runner$aggregated_predictions
+
+commune_summary <- aggregated_predictions$commune$summary
+
+summary_sf <- merge(
+  x = communes,
+  y = commune_summary,
+  by = c('commune_code', 'commune', 'department_code', 'department')
+)
+
+# Plot aggregated estimates by commune
+ggplot2::ggplot() +
+  ggplot2::geom_sf(data = summary_sf, ggplot2::aes(fill = mean), color = 'black') +
+  ggplot2::scale_fill_gradientn(
+    colors = terra::map.pal('viridis'),
+    breaks = seq(0.15, 0.45, by = .05),
+    labels = scales::percent
+  ) +
+  ggplot2::labs(
+    title = 'MBG mean estimates by commune',
+    fill = "Estimated\nstunting\nrate"
+  ) +
+  ggplot2::theme_minimal()
+```
+
+```{r}
+summary(commune_summary)
+#  commune_code   commune          department_code   department             mean            lower            upper          population    
+# Min.   : 1    Length:77          Min.   : 1.000   Length:77          Min.   :0.2322   Min.   :0.1685   Min.   :0.2980   Min.   :  2974  
+# 1st Qu.:20    Class :character   1st Qu.: 3.000   Class :character   1st Qu.:0.2984   1st Qu.:0.2297   1st Qu.:0.3739   1st Qu.: 15063  
+# Median :39    Mode  :character   Median : 6.000   Mode  :character   Median :0.3409   Median :0.2723   Median :0.4121   Median : 22104  
+# Mean   :39                       Mean   : 6.351                      Mean   :0.3343   Mean   :0.2687   Mean   :0.4066   Mean   : 26494  
+# 3rd Qu.:58                       3rd Qu.:10.000                      3rd Qu.:0.3694   3rd Qu.:0.3044   3rd Qu.:0.4486   3rd Qu.: 29463  
+# Max.   :77                       Max.   :12.000                      Max.   :0.4486   Max.   :0.3634   Max.   :0.5432   Max.   :148111  
+```
+
+We can also plot the width of the 95% uncertainty interval by commune.
+
+```{r plot-commune-ui-widths, fig.align = 'center'}
+# Plot aggregated uncertainty interval widths by commune
+summary_sf$ui <- summary_sf$upper - summary_sf$lower
+ggplot2::ggplot() +
+  ggplot2::geom_sf(data = summary_sf, ggplot2::aes(fill = ui), color = 'black') +
+  ggplot2::scale_fill_gradientn(
+    colors = sf::sf.colors(n = 100),
+    labels = scales::percent
+  ) +
+  ggplot2::labs(
+    title = 'MBG 95% uncertainty interval width by commune',
+    fill = 'Uncertainty\ninterval\nwidth'
+  ) +
+  ggplot2::theme_minimal()
+```
+
+Note that in general, uncertainty intervals tend to be wider at the pixel level than for aggregated polygons. This is because some sources of uncertainty are uncorrelated between pixels, and this uncorrelated uncertainty shrinks when estimates are aggregated across pixels.
+
+# Links
+
+-   [mbg Package](https://henryspatialanalysis.github.io/mbg/articles/mbg.html)
+-   [mbg Github](https://github.com/henryspatialanalysis/mbg/)
+
+# Licencias
+
+-   [Paquete mbg](https://github.com/henryspatialanalysis/mbg/?tab=MIT-2-ov-file)

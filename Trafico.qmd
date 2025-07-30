@@ -1,0 +1,1576 @@
+---
+title:    "Tráfico"
+author:   "by [Santiago Mota](https://www.linkedin.com/in/santiagomota/)"
+mail:     "santiago_mota@yahoo.es"
+linkedin: "santiagomota"
+twitter:  "mota_santiago"
+github:   "santiagomota"
+keywords: "R, Quarto"
+# categories: [r, spatial, quarto, duckDB]
+date:     today
+logo:     "./figs/logo-madrid.png"
+title-block-banner: "#27445C"
+license:
+  type: "MIT"
+  text: "Este proyecto está licenciado bajo la Licencia MIT. Puedes ver los detalles en el siguiente enlace https://opensource.org/licenses/MIT"
+  url:  "https://opensource.org/licenses/MIT"
+urlcolor: blue
+always_allow_html: true
+params:
+  p_directorio_in:  './data/' # ''
+  p_directorio_out: ''
+  p_directorio_externo: '/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/' #  'C:/Varios/R/Archivos/' # 
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-depth: 6
+    theme: 
+        light: cosmo   # flatly, cosmo, sandstone, yeti bootswatch theme
+        dark: solar
+    number-sections: true
+    page-layout: full # article full
+    # max-width: 3000px
+    title-block-banner: true
+    code-fold: false
+    code-copy: true
+    code-summary: "" # Show the code"
+    # code-tools: true
+    # grid:
+    #     body-width: 2600px
+    #     sidebar-width: 200px
+    #     margin-width: 200px
+    include-after-body: footer_V2.html
+    # include-in-header: github-corner.html
+    self-contained: true
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+  docx:
+    toc: true
+    number-sections: true
+    colorlinks: true  
+  pptx: 
+    reference-doc: template.pptx
+    incremental:  true
+engine: knitr 
+---
+
+Creamos una variable parametrizada, `p_directorio_externo`, para que sea mas fácil pasar el material de un ordenador a otro.
+
+```{r}
+#| label: incorporacion-parametros
+
+# https://bookdown.org/yihui/rmarkdown-cookbook/parameterized-reports.html
+directorio_externo <- params$p_directorio_externo
+directorio_externo
+```
+
+```{r}
+#| include: false
+#| echo: false
+
+# Para conseguir que salgan los iconos en documentos Rmarkdown
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+```{r}
+library(leaflet)
+library(dplyr)
+library(readr)
+library(sf)
+library(spanishoddata)
+```
+
+
+### Con una url al fichero
+
+En este caso, vamos a utilizar un código algo mas extenso para acceder a un fichero zip a partir de una url, bajarlo y descomprimirlo. 
+
+Dentro del [Portal de datos abiertos del ayuntamiento de Madrid](http://datos.madrid.es/portal/site/egob) se puede extraer gran cantidad de información. Bajaremos los datos de [intensidad de tráfico](http://datos.madrid.es/sites/v/index.jsp?vgnextoid=33cb30c367e78410VgnVCM1000000b205a0aRCRD&vgnextchannel=20d612b9ace9f310VgnVCM100000171f5a0aRCRD). Estos datos ocupan unos 700 Mb, así que descargaremos un único mes [abril de 2025](https://datos.madrid.es/egobfiles/MANUAL/208627/06-2025.zip).
+
+El siguiente bloque de código no se ejecuta para no saturar la web del Ayuntamiento de Madrid, pero se puede modificar fácilmente para obtener otro mes.
+
+```{r}
+fecha_objetivo <- data.frame(mes = '06', anio = '2025')
+```
+
+```{r}
+#| label: descargar-datos-trafico
+#| eval: false
+
+# Incluimos la url (este fichero corresponde a junio 2025)
+url <- paste0('https://datos.madrid.es/egobfiles/MANUAL/208627/', 
+              fecha_objetivo$mes[1], '-', fecha_objetivo$anio[1], '.zip')
+
+# La url
+# url
+
+# Definimos el fichero
+# fichero  <- paste0(tempfile(), ".zip")
+fichero <- paste0(directorio_externo, 'ayuntamientoMadrid/trafico/historico/', 
+                  fecha_objetivo$mes[1], '-', fecha_objetivo$anio[1], '.zip')
+
+# Descargamos el fichero al ordenador (comprimido ocupa 72 Mb)
+download.file(url, destfile = fichero)
+
+# Leemos el fichero con la función read.table()
+# trafico_mes <- read.table(unzip(fichero, files = "06-2025.csv", exdir = tempdir()), 
+#                       header = TRUE, sep = ';', dec = '.')
+trafico_mes <- read.table(unzip(fichero, exdir = tempdir()), 
+                      header = TRUE, sep = ';', dec = '.')
+
+# Como alternativa si lo hemos bajado de internet
+# trafico_mes <- read.csv2("06-2025.csv", sep=';', header=TRUE)
+
+# El fichero
+fichero
+
+# Vemos el tamaño del fichero
+print(object.size(trafico_mes), units = "Mb")
+# 645.1 Mb
+
+# Imprimimos el timestamp
+fs::file_info(fichero)$modification_time
+# [1] "2025-07-14 11:14:15 CEST"
+```
+
+::: callout-warning
+## Aviso
+
+El tamaño del fichero hace que no sea muy fácil trabajar en Posit Cloud.
+:::
+
+Vemos la memoria disponible.
+
+```{r}
+#| eval: false
+
+# Por ahora no funciona en Windows
+# Ejecutamos el comando de Bash dentro de R y capturamos la salida
+memoria_disponible <- as.numeric(system("free -m | awk '/^Mem:/ {print $7}'", intern = TRUE))
+memoria_disponible
+```
+
+En vez de eso, usamos los datos guardados.
+
+```{r}
+#| label: abrir-datos-trafico
+
+# Incluimos la ubicación del zip
+# fichero <- paste0(directorio_externo, 'ayuntamientoMadrid/trafico/historico/06-2025.zip')
+# fichero <- './data/06-2025_reducido.zip'
+fichero <- paste0(directorio_externo, 'ayuntamientoMadrid/trafico/historico/', 
+                  fecha_objetivo$mes[1], '-', fecha_objetivo$anio[1], '.zip')
+
+# Leemos el fichero con la función read.table()
+# trafico_mes <- read.table(unzip(fichero, files = "06-2025.csv", exdir = tempdir()), 
+#                       header = TRUE, sep = ';', dec = '.')
+trafico_mes <- read.table(unzip(fichero, exdir = tempdir()), 
+                      header = TRUE, sep = ';', dec = '.')
+
+# Vemos el tamaño del fichero
+print(object.size(trafico_mes), units = "Mb")
+# 645.1 Mb
+```
+
+```{r}
+# Vemos el timestamp
+fs::file_info(paste0(directorio_externo, 'ayuntamientoMadrid/trafico/historico/', 
+                  fecha_objetivo$mes[1], '-', fecha_objetivo$anio[1], '.zip'))$modification_time
+# [1] "2025-07-14 11:14:15 CEST"
+```
+
+
+De la [Estructura_DS_Contenido_Trafico_Historico.pdf](https://datos.madrid.es/FWProjects/egob/Catalogo/Transporte/Trafico/ficheros/Estructura_DS_Contenido_Trafico_Historico.pdf) sobre el contenido del fichero, resumimos los siguientes datos:
+
+- **Nombre (Tipo)**    : **Descripción**
+- `id` (Entero)        : Identificación única del Punto de Medida en los sistemas de control del tráfico del Ayuntamiento de Madrid. 
+- `fecha` (Fecha)      : Fecha y hora oficiales de Madrid con formato yyyy-mm-dd hh:mi:ss.
+- `identif` (Texto)    : Identificador del Punto de Medida en los Sistemas de Tráfico (se proporciona por compatibilidad hacia atrás). 
+- `tipo_elem` (Texto)  : Nombre del Tipo de Punto de Medida: Urbano o M30. 
+- `intensidad` (Entero): Número de vehículos en el periodo de 15 minutos, expresada en vehículos/hora. El valor efectivo de vehículos que han circulado en ese periodo se obtiene dividiendo entre cuatro. Un valor negativo implica la ausencia de datos.
+- `ocupacion` (Entero) : Porcentaje de tiempo que está un detector de tráfico ocupado por un vehículo. Por ejemplo, una ocupación del 50% en un periodo de 15 minutos significa que ha habido vehículos situados sobre el detector durante 7 minutos y 30 segundos. Un valor negativo implica la ausencia de datos.
+- `carga` (Entero)     : Parámetro de carga del vial en el periodo de 15 minutos. Representa una estimación del grado de congestión, calculado a partir de un algoritmo que usa como variables la intensidad y ocupación, con ciertos factores de corrección. Establece el grado de uso de la vía en un rango de 0 (vacía) a 100 (colapso). Un valor negativo implica la ausencia de datos.
+- `vmed` (Entero)      : Velocidad media de los vehículos en el periodo de 15 minutos (Km./h). Solo para puntos de medida interurbanos M30. Un valor negativo implica la ausencia de datos.
+- `error` (Texto)      : Indicación de si ha habido al menos una muestra errónea o sustituida en el periodo de 15 minutos. 
+   * N: no ha habido errores ni sustituciones. 
+   * E: los parámetros de calidad de alguna de las muestras integradas no son óptimos. 
+   * S: alguna de las muestras recibidas era totalmente errónea y no se ha integrado. 
+- `periodo_integracion` (Entero): Número de muestras recibidas y consideradas para el periodo de integración. 
+
+
+3.1 Carga
+
+El parámetro carga es un indicador sintético que intenta medir el grado de saturación de una vía para la toma de decisiones sobre la duración de las fases de la regulación semafórica. En la bibliografía técnica existen múltiples fórmulas para su cálculo.
+
+Al tratarse de un valor sintético se utiliza una fórmula para su cálculo, que depende del análisis de los ingenieros de tráfico y del análisis concreto de cada uno de los cruces a los que aplica.
+
+En la fórmula de la carga se emplean unos parámetros que se adaptan de manera empírica para atender a las características de la vía y de su entorno.
+
+A efectos de regulación existen dos entornos en la ciudad de Madrid:
+- Zona urbana
+- M30. Con carácter general, en M30 no se calcula el parámetro carga y su valor es cero. No obstante, hay puntos de medida para los cuales sí se realiza el cálculo.
+
+La fórmula que se utiliza es la siguiente:
+𝑪 = 𝒀 + (𝟏 − 𝒀) × 𝑻𝑶 × 𝑲𝑪
+
+siendo
+𝒀= 𝑰/ 𝑰𝒔
+
+El significado de los parámetros es el siguiente:
+- C: Carga del punto de medida (%)
+Y: Relación entre la intensidad (vehículos/hora) y la intensidad de saturación del punto de medida
+I: Intensidad del punto de medida (vehículos/hora)
+Is: Intensidad de saturación (capacidad máxima de la vía, vehículos/hora)
+TO: Tiempo de ocupación (tanto por 1)
+KC: Coeficiente de Carga. Por defecto se pone 1, pero es susceptible de modificarse después de un estudio de tráfico para adecuarlo a las características de la vía.
+
+*Estructura de la fórmula de carga*
+La fórmula de carga tiene dos términos:
+- El primer término, predomina en el valor de la carga del sistema cuando estamos en una situación de carga elevada, baja la intensidad, pero el tiempo de ocupación sube.
+- El segundo término, predomina cuando estamos lejos de la saturación.
+
+*Interpretación de la fórmula de carga*
+La interpretación de este parámetro ha de hacerse el valor de la intensidad de vehículos de la vía:
+- Una situación de elevada saturación de la vía dará un valor de carga alto y una intensidad, expresada en vehículos/hora, alta. Esto es así hasta alcanzar un máximo
+a partir del cual tanto intensidad como carga decrecen.
+- Una situación de escaso tráfico dará un valor de carga bajo y una intensidad, expresada en vehículos/hora, baja.
+
+*Datos de carga publicados*
+Los valores de carga publicados son los datos brutos de carga que utilizan cada uno de los sistemas. Dado que no es un dato primario que puede variar para cada semáforo y a lo largo del tiempo con parámetros de ajuste libres para adecuarse a la realidad de cada momento, solo se publica como valor adimensional, sin justificar los coeficientes que se utilizan para su cálculo.
+
+3.2 Tiempo de ocupación
+Porcentaje de tiempo que está un detector de tráfico ocupado (con un vehículo situado encima). Por ejemplo, una ocupación del 50% en un periodo de 15 minutos significa que ha habido vehículos situados sobre el detector durante 7 minutos y 30 segundos.
+
+
+```{r}
+summary(trafico_mes)
+#       id           fecha            tipo_elem           intensidad     
+# Min.   : 1006   Length:13004398    Length:13004398    Min.   :    0.0  
+# 1st Qu.: 4687   Class :character   Class :character   1st Qu.:   55.0  
+# Median : 5971   Mode  :character   Mode  :character   Median :  168.0  
+# Mean   : 6754                                         Mean   :  362.6  
+# 3rd Qu.:10076                                         3rd Qu.:  420.0  
+# Max.   :11435                                         Max.   :12307.0  
+#                                                                        
+#   ocupacion           carga             vmed            error          
+# Min.   :  0.000   Min.   :  0.00   Min.   :  0.000   Length:13004398   
+# 1st Qu.:  1.000   1st Qu.:  4.00   1st Qu.:  0.000   Class :character  
+# Median :  2.000   Median : 12.00   Median :  0.000   Mode  :character  
+# Mean   :  5.611   Mean   : 17.64   Mean   :  5.129                     
+# 3rd Qu.:  6.000   3rd Qu.: 26.00   3rd Qu.:  0.000                     
+# Max.   :100.000   Max.   :100.00   Max.   :169.000                     
+#                                    NA's   :11859                       
+# periodo_integracion
+# Min.   : 1.00      
+# 1st Qu.:15.00      
+# Median :15.00      
+# Mean   :15.96      
+# 3rd Qu.:15.00      
+# Max.   :30.00  
+```
+
+```{r}
+str(trafico_mes)
+# 'data.frame':	13004398 obs. of  9 variables:
+#  $ id                 : int  1006 1006 1006 1006 1006 1006 1006 1006 1006 1006 ...
+#  $ fecha              : chr  "2025-06-01 00:00:00" "2025-06-01 00:15:00" "2025-06-01 00:30:00" "2025-06-01 00:45:00" ...
+#  $ tipo_elem          : chr  "C30" "C30" "C30" "C30" ...
+#  $ intensidad         : int  1260 984 864 924 720 744 648 756 876 552 ...
+#  $ ocupacion          : int  4 3 3 3 2 2 2 2 3 2 ...
+#  $ carga              : int  0 0 0 0 0 0 0 0 0 0 ...
+#  $ vmed               : num  61 62 62 60 65 67 62 65 67 62 ...
+#  $ error              : chr  "N" "N" "N" "N" ...
+#  $ periodo_integracion: int  5 5 5 5 5 5 5 5 5 5 ...
+```
+
+```{r}
+names(trafico_mes)
+```
+
+Analizamos la columna periodo de integración
+
+```{r, fig.align="center"}
+hist(trafico_mes$periodo_integracion, main = 'Periodo de integración')
+```
+
+```{r}
+table(trafico_mes$periodo_integracion, useNA = 'ifany')
+```
+
+
+
+La ocupación
+
+```{r, fig.align="center"}
+hist(trafico_mes$ocupacion, main = 'Ocupación')
+```
+
+```{r}
+table(trafico_mes$ocupacion, useNA = 'ifany')
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Tráfico en Madrid en tiempo real
+
+Vamos a hacer un gráfico mas avanzado siguiendo con los datos del Ayuntamiento de Madrid.
+
+Lo primero es cargar la ubicación de los puntos de medida. En la pagina del Ayuntamiento de Madrid, la ubicación de esos puntos se encuentra [aqui](https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=ee941ce6ba6d3410VgnVCM1000000b205a0aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD). En nuestro caso, nos hemos bajado [este](https://datos.madrid.es/egobfiles/MANUAL/202468/pmed_ubicacion_04-2024.zip). La explicación de los datos del fichero esta [aqui](https://datos.madrid.es/FWProjects/egob/Catalogo/Transporte/Trafico/ficheros/PuntosMedidaTraficoMdrid.pdf) y en esa misma página podemos encontrar un [Real decreto para la implantación de Sistemas Inteligentes de Transporte](https://datos.madrid.es/FWProjects/egob/Catalogo/Transporte/Trafico/ficheros/BOE_A_2012-5043.pdf) y la [Directiva Europea referente a los SIT](https://datos.madrid.es/FWProjects/egob/Catalogo/Transporte/Trafico/ficheros/Directiva_its_sist_transp_intelig_2010_40_UE.pdf). 
+
+
+
+
+```{r}
+#| eval: false
+
+# directorio_zips <- list.files(paste0(directorio_externo, 'ayuntamientoMadrid/trafico/puntos_medida/'), 'shp')
+
+library(sf)
+
+# sf_list <- lapply(zip_files, function(zip_path) {
+#   tmpdir <- tempdir()
+#   unzip(zip_path, exdir = tmpdir)
+#   shp_file <- list.files(tmpdir, pattern = "\\.shp$", full.names = TRUE)
+#   st_read(shp_file)
+# })
+
+
+read_shp_from_zip <- function(zip_path = "/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/ayuntamientoMadrid/trafico/puntos_medida", 
+                              elemento = 1) {
+  # tmpdir <- tempdir()
+  tmpdir <- tempfile(pattern = paste0("unzip_", elemento))
+  dir.create(tmpdir)
+  unzip(zip_files[elemento], exdir = tmpdir)
+
+  shp_files       <- list.files(tmpdir, pattern = "\\.shp$", full.names = TRUE)
+  shp_files_names <- list.files(tmpdir, pattern = "\\.shp$", full.names = FALSE)
+
+  # if (length(shp_files) == 0) {
+  #   stop("No se encontró ningún archivo .shp en el zip.")
+  # } else if (length(shp_files) > 1) {
+  #   warning("Se encontraron múltiples archivos .shp. Se leerá solo el primero.")
+  # }
+
+  puntos_medida_temp <- st_read(shp_files[elemento], quiet = TRUE)
+  puntos_medida_temp$fichero <- paste0(substr(shp_files_names[elemento], 19, 22),
+                                  "-",
+                                  substr(shp_files_names[elemento], 16, 17))
+
+  return(puntos_medida_temp)
+}
+
+# Función segura para leer un shapefile desde un zip
+# read_shp_from_zip <- function(zip_path, elemento = 1) {
+#   # Crear subdirectorio único temporal
+#   tmpdir <- tempfile(pattern = "unzip_")
+#   dir.create(tmpdir)
+#   
+#   # Descomprimir dentro del subdirectorio
+#   unzip(zip_path, exdir = tmpdir)
+#   
+#   # Buscar archivos .shp
+#   shp_files       <- list.files(tmpdir, pattern = "\\.shp$", full.names = TRUE)
+#   shp_files_names <- list.files(tmpdir, pattern = "\\.shp$", full.names = FALSE)
+#   
+#   print(shp_files[elemento])
+#   print("\n")
+#   
+#   if (length(shp_files) == 0) {
+#     stop(paste("No se encontró ningún archivo .shp en", zip_path))
+#   } else if (length(shp_files) > 1 && elemento == 1) {
+#     warning(paste("Se encontraron múltiples archivos .shp en", zip_path, "- se leerá solo el primero."))
+#   }
+#   
+#   puntos_medida <- st_read(shp_files[elemento], quiet = TRUE)
+#   puntos_medida$fichero <- paste0(substr(shp_files_names[elemento], 19, 22),
+#                                   "-",
+#                                   substr(shp_files_names[elemento], 16, 17))
+#   
+#   return(puntos_medida)
+# }
+
+# puntos_medida <- read_shp_from_zip("paste0(directorio_externo, 'ayuntamientoMadrid/trafico/puntos_medida')")
+
+# Ruta a todos los .zip
+# zip_files <- list.files(
+#   path = paste0(directorio_externo, "ayuntamientoMadrid/trafico/puntos_medida"),
+#   pattern = "\\.zip$", full.names = TRUE
+# )
+
+# Leer cada uno en una lista
+# puntos_medida_list <- lapply(zip_files[36:41], read_shp_from_zip)
+
+# Unir todos los datos en un único objeto sf
+# puntos_medida <- do.call(rbind, puntos_medida_list)
+
+# puntos_medida <- read_shp_from_zip(elemento = 1)
+# 
+# for (i in 2:40) {
+#     print(zip_files[i])
+#     puntos_medida <- rbind(puntos_medida, read_shp_from_zip(elemento = i))
+# }
+```
+
+```{r}
+# Ruta a todos los .zip
+# zip_files <- list.files(
+#   path = paste0(directorio_externo, "trafico/puntos_medida"),
+#   pattern = "\\.zip$", full.names = TRUE
+# )
+
+directorio_zips <- paste0(directorio_externo, 'ayuntamientoMadrid/trafico/puntos_medida/todos')
+
+shp_files       <- list.files(directorio_zips, 
+                                pattern = "\\.shp$", 
+                                include.dirs = TRUE,
+                                recursive = TRUE,
+                                full.names = TRUE)
+shp_files_names <- list.files(directorio_zips, 
+                                pattern = "\\.shp$", 
+                                include.dirs = TRUE,
+                                recursive = TRUE,
+                                full.names = FALSE)
+
+# puntos_medida <- read_shp_from_zip(elemento = 1)
+
+puntos_medida <- data.frame()
+
+for (i in 1:length(shp_files)) {
+  elemento = i    
+  # tmpdir <- tempdir()
+  # tmpdir <- tempfile(pattern = paste0("unzip_", elemento))
+  # dir.create(tmpdir)
+  # print(tempdir())
+  # unzip(zip_files[elemento], exdir = tmpdir)
+  
+  
+  print(i)
+  print(shp_files[elemento])
+
+  # if (length(shp_files) == 0) {
+  #   stop("No se encontró ningún archivo .shp en el zip.")
+  # } else if (length(shp_files) > 1) {
+  #   warning("Se encontraron múltiples archivos .shp. Se leerá solo el primero.")
+  # }
+
+  puntos_medida_temp <- st_read(shp_files[elemento], quiet = FALSE)
+  puntos_medida_temp$fichero <- paste0(substr(shp_files_names[elemento], 19, 22),
+                                  "-",
+                                  substr(shp_files_names[elemento], 16, 17))
+  # print(zip_files[i])
+  
+  names(puntos_medida_temp) <- tolower(names(puntos_medida_temp))
+  
+  puntos_medida <- rbind(puntos_medida, puntos_medida_temp)
+  
+  # file.remove(tempdir())
+}
+
+
+
+```
+
+```{r}
+sort(unique(puntos_medida$fichero))
+#  [1] "2018-12" "2019-01" "2019-02" "2019-03" "2019-06" "2019-12" "2020-06" "2020-09"
+#  [9] "2020-12" "2021-06" "2021-09" "2021-12" "2022-06" "2022-09" "2022-12" "2023-02"
+# [17] "2023-03" "2023-04" "2023-05" "2023-06" "2023-07" "2023-08" "2023-09" "2023-10"
+# [25] "2023-11" "2023-12" "2024-01" "2024-02" "2024-03" "2024-04" "2024-05" "2024-06"
+# [33] "2024-08" "2024-09" "2024-10" "2024-11" "2024-12" "2025-01" "2025-02" "2025-03"
+# [41] "2025-04" "2025-05"
+```
+
+
+```{r}
+#| eval: false
+
+tabla_id_cod <- table(puntos_medida_ultimo$id, puntos_medida_ultimo$cod_cent)
+tabla_id_cod <- as.matrix(tabla_id_cod)
+```
+
+```{r}
+#| eval: false
+
+diag(tabla_id_cod) <- 0
+```
+
+```{r}
+#| eval: false
+
+colSums(tabla_id_cod)
+```
+
+
+
+
+```{r}
+puntos_medida$activo <- FALSE
+puntos_medida$activo[puntos_medida$fichero == "2025-05"] <- TRUE
+```
+
+```{r}
+summary(puntos_medida)
+#  tipo_elem            distrito           id          cod_cent        
+# Length:197436      Min.   : 1.00   Min.   :    0   Length:197436     
+# Class :character   1st Qu.: 6.00   1st Qu.: 4619   Class :character  
+# Mode  :character   Median :10.00   Median : 5851   Mode  :character  
+#                    Mean   :10.07   Mean   : 6515                     
+#                    3rd Qu.:15.00   3rd Qu.: 7131                     
+#                    Max.   :21.00   Max.   :11435                     
+#                    NA's   :198                                       
+#    nombre              utm_x            utm_y            longitud     
+# Length:197436      Min.   :429056   Min.   :4464902   Min.   :-3.837  
+# Class :character   1st Qu.:439508   1st Qu.:4472280   1st Qu.:-3.713  
+# Mode  :character   Median :441571   Median :4475817   Median :-3.689  
+#                    Mean   :441822   Mean   :4475679   Mean   :-3.686  
+#                    3rd Qu.:444118   3rd Qu.:4478930   3rd Qu.:-3.659  
+#                    Max.   :453195   Max.   :4485213   Max.   :-3.552  
+#                                                                       
+#    latitud        fichero                   geometry        activo       
+# Min.   :40.33   Length:197436      POLYGON      :197436   Mode :logical  
+# 1st Qu.:40.40   Class :character   epsg:25830   :     0   FALSE:192449   
+# Median :40.43   Mode  :character   +proj=utm ...:     0   TRUE :4987     
+# Mean   :40.43                                                            
+# 3rd Qu.:40.46                                                            
+# Max.   :40.52    
+```
+
+```{r}
+length(unique(puntos_medida$id))
+# [1] 5152
+```
+
+```{r}
+length(unique(puntos_medida$nombre))
+# [1] 8375
+```
+
+```{r}
+length(unique(puntos_medida$cod_cent))
+# [1] 5215
+```
+
+
+
+```{r}
+saveRDS(puntos_medida, paste0(directorio_externo, 
+                              'ayuntamientoMadrid/trafico/puntos_medida/puntos_medida.rds'))
+```
+
+
+
+
+Lo hacemos por `id` pero se podría hacer por `cod_cent`. El problema es que este último no aparece en el fichero de intensidad.
+
+```{r}
+# Leer el CSV con codificación adecuada
+# puntos_medida <- read_csv("puntos_medida.csv", locale = locale(encoding = "ISO-8859-1"))
+
+puntos_medida$fichero_date <- lubridate::ymd(paste0(puntos_medida$fichero, "-01"))
+
+# Identificar las columnas excepto 'fichero'
+cols_sin_fichero <- setdiff(names(puntos_medida), c("fichero", "fichero_date"))
+
+# Agrupar y calcular mínimo y máximo de 'fichero'
+agrupado <- puntos_medida %>%
+  st_set_geometry(NULL) %>%  # Quitamos la geometriz
+  # group_by(across(all_of(cols_sin_fichero))) %>%
+  # group_by(cod_cent) %>%    
+  group_by(id) %>%    
+  summarise(
+    minimo = min(fichero_date),
+    maximo = max(fichero_date),
+    .groups = "drop"
+  )
+```
+
+```{r}
+summary(agrupado)
+#       id            minimo               maximo          
+# Min.   :    0   Min.   :2018-12-01   Min.   :2018-12-01  
+# 1st Qu.: 4694   1st Qu.:2018-12-01   1st Qu.:2025-05-01  
+# Median : 6018   Median :2018-12-01   Median :2025-05-01  
+# Mean   : 6815   Mean   :2019-07-21   Mean   :2025-03-22  
+# 3rd Qu.:10100   3rd Qu.:2018-12-01   3rd Qu.:2025-05-01  
+# Max.   :11435   Max.   :2025-05-01   Max.   :2025-05-01  
+```
+
+
+```{r}
+dim(puntos_medida)
+puntos_medida <- left_join(puntos_medida, agrupado)
+dim(puntos_medida)
+```
+
+
+
+
+
+
+```{r}
+#| eval: false
+
+puntos_medida_ultimo <- puntos_medida %>%
+    filter(maximo == as.Date("2025-05-01", "%Y-%m-%d"))
+```
+
+```{r}
+puntos_medida_ultimo <- puntos_medida[puntos_medida$fichero == "2025-05", ]
+```
+
+```{r}
+summary(puntos_medida_ultimo)
+#  tipo_elem            distrito           id          cod_cent        
+# Length:4987        Min.   : 1.00   Min.   : 1001   Length:4987       
+# Class :character   1st Qu.: 6.00   1st Qu.: 4710   Class :character  
+# Mode  :character   Median :10.00   Median : 6026   Mode  :character  
+#                    Mean   :10.33   Mean   : 6829                     
+#                    3rd Qu.:15.00   3rd Qu.:10110                     
+#                    Max.   :21.00   Max.   :11435                     
+#                    NA's   :5                                         
+#    nombre              utm_x            utm_y            longitud     
+# Length:4987        Min.   :429061   Min.   :4464902   Min.   :-3.837  
+# Class :character   1st Qu.:439545   1st Qu.:4472330   1st Qu.:-3.713  
+# Mode  :character   Median :441760   Median :4475893   Median :-3.687  
+#                    Mean   :441985   Mean   :4475781   Mean   :-3.684  
+#                    3rd Qu.:444362   3rd Qu.:4479047   3rd Qu.:-3.656  
+#                    Max.   :453195   Max.   :4485213   Max.   :-3.552  
+#                                                                       
+#    latitud        fichero           activo         fichero_date       
+# Min.   :40.33   Length:4987        Mode:logical   Min.   :2025-05-01  
+# 1st Qu.:40.40   Class :character   TRUE:4987      1st Qu.:2025-05-01  
+# Median :40.43   Mode  :character                  Median :2025-05-01  
+# Mean   :40.43                                     Mean   :2025-05-01  
+# 3rd Qu.:40.46                                     3rd Qu.:2025-05-01  
+# Max.   :40.52                                     Max.   :2025-05-01  
+#                                                                       
+#     minimo               maximo                    geometry   
+# Min.   :2018-12-01   Min.   :2025-05-01   POLYGON      :4987  
+# 1st Qu.:2018-12-01   1st Qu.:2025-05-01   epsg:25830   :   0  
+# Median :2018-12-01   Median :2025-05-01   +proj=utm ...:   0  
+# Mean   :2019-07-24   Mean   :2025-05-01                       
+# 3rd Qu.:2018-12-01   3rd Qu.:2025-05-01                       
+# Max.   :2025-05-01   Max.   :2025-05-01  
+```
+
+```{r}
+id_activos    <- unique(puntos_medida_ultimo$id)
+id_no_activos <- puntos_medida$id[!(puntos_medida$id %in% id_activos)]
+puntos_medida_no_activo <- puntos_medida[!(puntos_medida$id %in% id_activos), ]
+```
+
+```{r}
+summary(puntos_medida_no_activo)
+#  tipo_elem            distrito          id          cod_cent        
+# Length:2310        Min.   : 1.0   Min.   :    0   Length:2310       
+# Class :character   1st Qu.: 5.0   1st Qu.: 4485   Class :character  
+# Mode  :character   Median : 9.0   Median : 5992   Mode  :character  
+#                    Mean   : 9.5   Mean   : 6424                     
+#                    3rd Qu.:15.0   3rd Qu.: 7081                     
+#                    Max.   :21.0   Max.   :11349                     
+#    nombre              utm_x            utm_y            longitud     
+# Length:2310        Min.   :434028   Min.   :4468585   Min.   :-3.778  
+# Class :character   1st Qu.:439856   1st Qu.:4471517   1st Qu.:-3.709  
+# Mode  :character   Median :441926   Median :4474559   Median :-3.685  
+#                    Mean   :442022   Mean   :4475128   Mean   :-3.683  
+#                    3rd Qu.:444695   3rd Qu.:4478882   3rd Qu.:-3.652  
+#                    Max.   :451183   Max.   :4483510   Max.   :-3.575  
+#    latitud        fichero            activo         fichero_date       
+# Min.   :40.37   Length:2310        Mode :logical   Min.   :2018-12-01  
+# 1st Qu.:40.39   Class :character   FALSE:2310      1st Qu.:2019-06-01  
+# Median :40.42   Mode  :character                   Median :2021-06-01  
+# Mean   :40.42                                      Mean   :2021-07-15  
+# 3rd Qu.:40.46                                      3rd Qu.:2023-07-01  
+# Max.   :40.50                                      Max.   :2025-04-01  
+#     minimo               maximo                    geometry   
+# Min.   :2018-12-01   Min.   :2018-12-01   POLYGON      :2310  
+# 1st Qu.:2018-12-01   1st Qu.:2021-09-01   epsg:25830   :   0  
+# Median :2018-12-01   Median :2024-04-01   +proj=utm ...:   0  
+# Mean   :2019-02-10   Mean   :2023-04-24                       
+# 3rd Qu.:2018-12-01   3rd Qu.:2024-12-24                       
+# Max.   :2024-10-01   Max.   :2025-04-01 
+```
+
+```{r}
+puntos_medida <- rbind(puntos_medida_ultimo, puntos_medida_no_activo)
+```
+
+
+```{r}
+puntos_medida$fichero   <- as.factor(puntos_medida$fichero)
+puntos_medida$tipo_elem <- as.factor(puntos_medida$tipo_elem)
+puntos_medida$distrito  <- as.factor(puntos_medida$distrito)
+puntos_medida$cod_cent  <- as.factor(puntos_medida$cod_cent)
+```
+
+```{r}
+summary(puntos_medida)
+# tipo_elem       distrito          id              cod_cent       nombre         
+# M30  : 630   8      : 720   Min.   :    0   90EL00PM01:  41   Length:7297       
+# other: 174   5      : 629   1st Qu.: 4668   31018     :  40   Class :character  
+# URB  :6493   15     : 624   Median : 6002   11025     :  39   Mode  :character  
+#              10     : 524   Mean   : 6701   14042     :  38                     
+#              2      : 441   3rd Qu.: 9980   82403     :  38                     
+#              (Other):4354   Max.   :11435   82404     :  38                     
+#              NA's   :   5                   (Other)   :7063                     
+#     utm_x            utm_y            longitud         latitud     
+# Min.   :429061   Min.   :4464902   Min.   :-3.837   Min.   :40.33  
+# 1st Qu.:439596   1st Qu.:4472113   1st Qu.:-3.712   1st Qu.:40.40  
+# Median :441782   Median :4475295   Median :-3.687   Median :40.43  
+# Mean   :441997   Mean   :4475574   Mean   :-3.684   Mean   :40.43  
+# 3rd Qu.:444561   3rd Qu.:4478986   3rd Qu.:-3.654   3rd Qu.:40.46  
+# Max.   :453195   Max.   :4485213   Max.   :-3.552   Max.   :40.52  
+#                                                                    
+#    fichero       activo         fichero_date            minimo          
+# 2025-05:4987   Mode :logical   Min.   :2018-12-01   Min.   :2018-12-01  
+# 2019-02: 141   FALSE:2310      1st Qu.:2023-09-01   1st Qu.:2018-12-01  
+# 2019-03: 139   TRUE :4987      Median :2025-05-01   Median :2018-12-01  
+# 2018-12: 138                   Mean   :2024-02-17   Mean   :2019-06-02  
+# 2019-06: 136                   3rd Qu.:2025-05-01   3rd Qu.:2018-12-01  
+# 2019-01: 135                   Max.   :2025-05-01   Max.   :2025-05-01  
+# (Other):1621                                                            
+#     maximo                    geometry   
+# Min.   :2018-12-01   POLYGON      :7297  
+# 1st Qu.:2025-01-01   epsg:25830   :   0  
+# Median :2025-05-01   +proj=utm ...:   0  
+# Mean   :2024-09-09                       
+# 3rd Qu.:2025-05-01                       
+# Max.   :2025-05-01  
+```
+
+
+
+```{r}
+#| eval: false
+
+# Unir con el dataframe original
+puntos_medida_completo <- puntos_medida %>%
+  st_join(agrupado, by = cols_sin_fichero)
+
+# Eliminar la columna 'fichero'
+puntos_medida_final <- puntos_medida_completo %>%
+  select(-fichero) %>%
+  distinct()
+
+# Guardar si lo deseas
+# write_csv(puntos_medida_final, "puntos_medida_limpio.csv")
+
+# Ver primeras filas
+print(head(puntos_medida_final))
+```
+
+
+
+
+
+```{r}
+#| eval: true
+
+saveRDS(puntos_medida, paste0(directorio_externo, 
+                              'ayuntamientoMadrid/trafico/puntos_medida/puntos_medida.rds'))
+```
+
+```{r}
+#| eval: false
+
+puntos_medida <- readRDS(paste0(directorio_externo, 
+                                'ayuntamientoMadrid/trafico/puntos_medida/puntos_medida.rds'))
+```
+
+
+```{r}
+#| eval: false
+
+puntos_por_igualdad <- puntos_medida %>%
+  select(-fichero, -fichero_date) %>%
+  st_equals(puntos_medida) %>%
+  # lengths() %>%
+  duplicated() 
+
+sum(puntos_por_igualdad)
+```
+
+```{r}
+#| eval: false
+
+# Total distintos:
+n_distintos <- nrow(puntos_medida) - puntos_por_igualdad
+print(n_distintos)
+```
+
+
+```{r}
+#| eval: true
+
+puntos_distintos_completos <- puntos_medida %>%
+  select(-fichero, -fichero_date) %>%
+  distinct()
+
+summary(puntos_distintos_completos)
+# tipo_elem       distrito          id           cod_cent       nombre         
+# M30  : 341   8      : 550   Min.   :    0   11025  :   5   Length:5320       
+# other: 130   15     : 469   1st Qu.: 4692   14042  :   5   Class :character  
+# URB  :4849   16     : 392   Median : 6016   46406  :   5   Mode  :character  
+#              5      : 382   Mean   : 6808   46409  :   5                     
+#              11     : 379   3rd Qu.:10081   02008  :   4                     
+#              (Other):3143   Max.   :11435   15303  :   4                     
+#              NA's   :   5                   (Other):5292                     
+#     utm_x            utm_y            longitud         latitud     
+# Min.   :429061   Min.   :4464902   Min.   :-3.837   Min.   :40.33  
+# 1st Qu.:439559   1st Qu.:4472312   1st Qu.:-3.713   1st Qu.:40.40  
+# Median :441752   Median :4475760   Median :-3.687   Median :40.43  
+# Mean   :441997   Mean   :4475727   Mean   :-3.684   Mean   :40.43  
+# 3rd Qu.:444408   3rd Qu.:4478998   3rd Qu.:-3.656   3rd Qu.:40.46  
+# Max.   :453195   Max.   :4485213   Max.   :-3.552   Max.   :40.52  
+#                                                                    
+#   activo            minimo               maximo                    geometry   
+# Mode :logical   Min.   :2018-12-01   Min.   :2018-12-01   POLYGON      :5320  
+# FALSE:333       1st Qu.:2018-12-01   1st Qu.:2025-05-01   epsg:25830   :   0  
+# TRUE :4987      Median :2018-12-01   Median :2025-05-01   +proj=utm ...:   0  
+#                 Mean   :2019-07-18   Mean   :2025-03-01                       
+#                 3rd Qu.:2018-12-01   3rd Qu.:2025-05-01                       
+#                 Max.   :2025-05-01   Max.   :2025-05-01   
+```
+
+Si atendemos a la separación espacial.
+
+```{r}
+#| eval: true
+
+puntos_puntos_distintos <- puntos_medida %>%
+  select(-fichero, -fichero_date) %>%
+  st_geometry() %>%
+  unique()
+  
+
+print(length(puntos_puntos_distintos))
+# [1] 5170
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+#| label: identificar-puntos-medida
+
+fichero_puntos <- list.files(paste0(directorio_externo, 
+                                    'ayuntamientoMadrid/trafico/puntos_medida/ultimo'), 'shp')
+```
+
+```{r}
+#| eval: false
+
+# ETRS89 / UTM zone 30N / EPSG:25830
+# La base de datos de sistemas de referencia: http://spatialreference.org/ref/
+
+# La librería maptools
+# library(maptools)
+
+# datos de proyecciones
+# usados en datos cartográficos 
+# ED50       <- CRS(paste("+proj=utm +zone=30 +ellps=intl +units=m +no_defs"))
+# WGS84      <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+# EPSG_25830 <- CRS("+init=epsg:25830")
+
+# Los leemos con sf
+# https://datos.madrid.es/egobfiles/MANUAL/202468/pmed_ubicacion_06-2025.zip
+# puntos_medida <- sf::st_read("./data/pmed_ubicacion_06-2025/pmed_ubicacion_06-2025.shp")
+# fichero2 <- paste0(directorio_externo, 'ayuntamientoMadrid/trafico/puntos_medida/pmed_ubicacion_06-2025.zip')
+
+# puntos_medida <- sf::st_read(unzip(fichero2, exdir = tempdir()))  
+# puntos_medida <- sf::st_read(paste0(directorio_externo, 'ayuntamientoMadrid/trafico/puntos_medida/pmed_ubicacion_06-2025/pmed_ubicacion_04-2025.shp'))  
+puntos_medida_ultimo <- sf::st_read(paste0(directorio_externo, 'ayuntamientoMadrid/trafico/puntos_medida/ultimo/', fichero_puntos))  
+# Reading layer `pmed_ubicacion_04-2025' from data source `/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/ayuntamientoMadrid/trafico/puntos_medida/ultimo/pmed_ubicacion_04-2025.shp' using driver `ESRI Shapefile'
+# Simple feature collection with 5001 features and 9 fields
+# Geometry type: POLYGON
+# Dimension:     XY
+# Bounding box:  xmin: 429051.7 ymin: 4464892 xmax: 453204.2 ymax: 4485222
+# Projected CRS: ETRS89 / UTM zone 30N
+```
+
+Un gráfico con la función base de R, `plot()`.
+
+```{r}
+#| fig-align: center
+
+plot(puntos_medida_ultimo,  max.plot = 1)
+```
+
+```{r}
+#| fig-align: center
+
+plot(puntos_medida_no_activo,  max.plot = 1)
+```
+
+
+
+Comprobamos el sistema de coordenadas de los puntos de medida.
+
+```{r}
+sf::st_crs(puntos_medida_ultimo)$input
+# [1] "ETRS89 / UTM zone 30N"
+```
+
+Y lo transformamos en el CRS `EPSG:4326` que es el que usa `leaflet`.
+
+```{r}
+puntos_medida_ultimo <- sf::st_transform(puntos_medida_ultimo, 4326)
+```
+
+Comprobamos ahora el CRS.
+
+```{r}
+sf::st_crs(puntos_medida_ultimo)$input
+# [1] "EPSG:4326"
+```
+
+Y ponemos los nombres en minúsculas.
+
+```{r}
+names(puntos_medida_ultimo) <- tolower(names(puntos_medida_ultimo))
+```
+
+Obtenemos ahora los [datos de tráfico en tiempo real del Ayuntamiento de Madrid](http://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=02f2c23866b93410VgnVCM1000000b205a0aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default) en formato `XML`.
+
+Tenemos dos puntos de acceso: [https://datos.madrid.es/egob/catalogo/202087-0-trafico-intensidad.xml](https://datos.madrid.es/egob/catalogo/202087-0-trafico-intensidad.xml) y [https://informo.madrid.es/informo/tmadrid/pm.xml](https://informo.madrid.es/informo/tmadrid/pm.xml)
+
+```{r}
+# https://stackoverflow.com/questions/32019566/r-xml-parse-for-a-web-address
+library(httr)
+library(XML)
+
+# La url
+# intensidad_url <- "https://datos.madrid.es/egob/catalogo/202087-0-trafico-intensidad.xml"
+intensidad_url <- "https://informo.madrid.es/informo/tmadrid/pm.xml"
+
+# El User Agent. Hace falta desde hace poco, si no se usa no lee los datos
+UA     <- "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36"
+my_url <- intensidad_url
+
+# Si aparece un error, nos quedamos con el valor guardado
+tryCatch( {
+    intensidad_doc <- GET(my_url, user_agent(UA), encoding = "UTF-8")
+}, error = function(e) {
+    print(paste("Hay un error al acceder a: ", my_url, "\n"))
+    cli::cli_alert(
+        "El mensaje de error es: {e$message}"
+    )
+    # Nos quedamos con el valor de 2024-11-21
+    intensidad_doc <- readRDS('./data/intensidad_doc_2025-05-07.rds')
+    }
+)
+
+# Otras dos formas con las que podríamos "parsear" los datos
+# intensidad_doc  <- XML::xmlParse(content(intensidad_doc, "text"))
+# intensidad_doc <- xml2::read_xml(content(intensidad_doc, "text"))
+
+# El documento XML asignamos a intensidad_doc
+intensidad_doc <- xmlTreeParse(intensidad_doc, useInternal = TRUE, 
+                               encoding = "UTF-8")
+
+# Vemos la clase
+class(intensidad_doc)
+```
+
+En el código anterior hemos usado la función `tryCatch()` para evitar que el código se pare si aparece un error. En este caso, lo que hace la función es asignar al objeto `intensidad_doc` el valor almacenado en el directorio `./data`.
+
+Lo pasamos a una lista con la función `xmlToList()`.
+
+```{r}
+intensidad_list <- xmlToList(intensidad_doc)
+
+# Vemos la clase del objeto
+class(intensidad_list)
+# [1] "list"
+```
+
+Vemos la hora de los datos:
+
+```{r}
+intensidad_list$fecha_hora
+```
+
+Creamos un data frame `intensidad` vacío de la dimensión adecuada.
+
+```{r}
+intensidad <- data.frame(idelem         = rep("", length(intensidad_list)), 
+                         descripcion    = rep("", length(intensidad_list)), 
+                         accesoAsociado = rep("", length(intensidad_list)), 
+                         intensidad     = rep("", length(intensidad_list)), 
+                         ocupacion      = rep("", length(intensidad_list)), 
+                         carga          = rep("", length(intensidad_list)), 
+                         nivelServicio  = rep("", length(intensidad_list)), 
+                         intensidadSat  = rep("", length(intensidad_list)), 
+                         error          = rep("", length(intensidad_list)), 
+                         subarea        = rep("", length(intensidad_list)), 
+                         st_x           = rep("", length(intensidad_list)), 
+                         st_y           = rep("", length(intensidad_list)), 
+                         stringsAsFactors = FALSE)
+```
+
+En los datos hay valores con errores, así que definimos una función para comprobarlos antes.
+
+```{r}
+chequeaDatos <- function(variable) {
+      if (length(variable) > 0) {as.character(variable)} else {""}
+}
+```
+
+Esta función lo único que hace es comprobar si la longitud de la variable es `>0` la pasa a `caracter` y sino le adjudica el valor `""` (carácter vacío).
+
+Analizamos en un bucle todas la variables.
+
+```{r}
+for (i in 1:length(intensidad_list)){
+      intensidad$idelem[i]         <- chequeaDatos(intensidad_list[i]$pm$idelem)
+      intensidad$descripcion[i]    <- chequeaDatos(intensidad_list[i]$pm$descripcion)
+      intensidad$accesoAsociado[i] <- chequeaDatos(intensidad_list[i]$pm$accesoAsociado)
+      intensidad$intensidad[i]     <- chequeaDatos(intensidad_list[i]$pm$intensidad)
+      intensidad$ocupacion[i]      <- chequeaDatos(intensidad_list[i]$pm$ocupacion)
+      intensidad$carga[i]          <- chequeaDatos(intensidad_list[i]$pm$carga)
+      intensidad$nivelServicio[i]  <- chequeaDatos(intensidad_list[i]$pm$nivelServicio)
+      intensidad$intensidadSat[i]  <- chequeaDatos(intensidad_list[i]$pm$intensidadSat)
+      intensidad$error[i]          <- chequeaDatos(intensidad_list[i]$pm$error)
+      intensidad$subarea[i]        <- chequeaDatos(intensidad_list[i]$pm$subarea)
+      intensidad$st_x[i]           <- chequeaDatos(intensidad_list[i]$pm$st_x)
+      intensidad$st_y[i]           <- chequeaDatos(intensidad_list[i]$pm$st_y)
+}
+```
+
+Un poco de ETL.
+
+Cambiamos de formato algunas variables.
+
+```{r}
+# Seleccionamos los campos
+cambia_a_numeric <- c("idelem", "intensidad", "ocupacion", "carga", 
+                      "nivelServicio", "intensidadSat")
+
+# Pasamos a numeric
+intensidad[, cambia_a_numeric] <- lapply(intensidad[, cambia_a_numeric], as.numeric)
+```
+
+```{r}
+# Caso especial para las coordenadas, ya que el decimal es una coma
+intensidad$st_x <- as.numeric(gsub('[,]', '.', intensidad$st_x))
+intensidad$st_y <- as.numeric(gsub('[,]', '.', intensidad$st_y)) 
+```
+
+Y limpiamos otras.
+
+```{r}
+# Nivel de servicio
+intensidad$nivelServicio[intensidad$nivelServicio == ""]   <- NA
+intensidad$nivelServicio[intensidad$nivelServicio == "-1"] <- NA
+
+# Pasamos a factor
+intensidad$nivelServicio <- as.factor(intensidad$nivelServicio)
+
+# Convertimos los errores vacíos en NAs
+intensidad$error[intensidad$error == ""] <- NA
+
+# Pasamos a factor
+intensidad$error <- as.factor(intensidad$error)
+```
+
+Si hay algún elemento con `id = NA` o cero y lo eliminamos.
+
+```{r}
+intensidad <- intensidad[!(is.na(intensidad$idelem)), ]
+intensidad <- intensidad[!(intensidad$idelem == 0), ]
+```
+
+Y vamos a quitar los puntos con `intensidad < 0`
+
+```{r}
+intensidad <- intensidad[!(intensidad$intensidad < 0), ]
+```
+
+Usamos la función `merge()` para unir con `id` en `puntos_medida_ultimo` y `idelem` en `intensidad`.
+
+Vemos los puntos del dataset que no aprecen en el mapa.
+
+```{r}
+intensidad$idelem[!(unique(intensidad$idelem) %in% unique(puntos_medida_ultimo$id))]
+```
+
+Y los sensores que no están aportando datos.
+
+```{r}
+puntos_medida_ultimo$id[!(unique(puntos_medida_ultimo$id) %in% unique(intensidad$idelem))]
+```
+
+```{r}
+# Unimos puntos_medida_ultimo e intensidad
+intensidad_espacial <- merge(puntos_medida_ultimo, intensidad, by.x = 'id', by.y = 'idelem')
+```
+
+Los errores de la ubicación.
+
+```{r}
+intensidad_espacial$error_x <- intensidad_espacial$utm_x - intensidad_espacial$st_x
+intensidad_espacial$error_y <- intensidad_espacial$utm_y - intensidad_espacial$st_y
+intensidad_espacial$error_espacial <- sqrt(intensidad_espacial$error_x * intensidad_espacial$error_x +
+                                           intensidad_espacial$error_y * intensidad_espacial$error_y)
+```
+
+```{r}
+# Cambiamos la latitud y la longitud
+names(intensidad_espacial) <- gsub('latitud', 'latitude', names(intensidad_espacial))
+names(intensidad_espacial) <- gsub('longitud', 'longitude', names(intensidad_espacial))
+
+# Y vemos el resultado
+summary(intensidad_espacial)
+#       id         tipo_elem            distrito       cod_cent        
+# Min.   : 3395   Length:5924        Min.   : 1.00   Length:5924       
+# 1st Qu.: 4843   Class :character   1st Qu.: 8.00   Class :character  
+# Median : 5976   Mode  :character   Median :10.00   Mode  :character  
+# Mean   : 6963                      Mean   :10.49                     
+# 3rd Qu.:10232                      3rd Qu.:15.00                     
+# Max.   :11435                      Max.   :21.00                     
+#                                    NA's   :7                         
+#    nombre              utm_x            utm_y           longitudee    
+# Length:5924        Min.   :429061   Min.   :4464902   Min.   :-3.837  
+# Class :character   1st Qu.:439043   1st Qu.:4471572   1st Qu.:-3.719  
+# Mode  :character   Median :441092   Median :4475598   Median :-3.694  
+#                    Mean   :441376   Mean   :4475507   Mean   :-3.691  
+#                    3rd Qu.:443866   3rd Qu.:4479149   3rd Qu.:-3.662  
+#                    Max.   :453195   Max.   :4485213   Max.   :-3.552  
+#                                                                       
+#   latitudee       fichero           activo         fichero_date       
+# Min.   :40.33   Length:5924        Mode:logical   Min.   :2025-05-01  
+# 1st Qu.:40.39   Class :character   TRUE:5924      1st Qu.:2025-05-01  
+# Median :40.43   Mode  :character                  Median :2025-05-01  
+# Mean   :40.43                                     Mean   :2025-05-01  
+# 3rd Qu.:40.46                                     3rd Qu.:2025-05-01  
+# Max.   :40.52                                     Max.   :2025-05-01  
+#                                                                       
+#     minimo               maximo           descripcion        accesoAsociado    
+# Min.   :2018-12-01   Min.   :2025-05-01   Length:5924        Length:5924       
+# 1st Qu.:2018-12-01   1st Qu.:2025-05-01   Class :character   Class :character  
+# Median :2018-12-01   Median :2025-05-01   Mode  :character   Mode  :character  
+# Mean   :2019-07-26   Mean   :2025-05-01                                        
+# 3rd Qu.:2018-12-01   3rd Qu.:2025-05-01                                        
+# Max.   :2025-05-01   Max.   :2025-05-01                                        
+#                                                                                
+#   intensidad        ocupacion           carga        nivelServicio
+# Min.   :    0.0   Min.   :  0.000   Min.   :  0.00   0   :3861    
+# 1st Qu.:  100.0   1st Qu.:  1.000   1st Qu.: 10.00   1   :1673    
+# Median :  240.0   Median :  3.000   Median : 20.00   2   : 300    
+# Mean   :  434.8   Mean   :  7.817   Mean   : 24.02   3   :  71    
+# 3rd Qu.:  540.0   3rd Qu.:  7.000   3rd Qu.: 33.00   NA's:  19    
+# Max.   :11420.0   Max.   :100.000   Max.   :234.00                
+#                                                                   
+# intensidadSat    error        subarea               st_x       
+# Min.   :    0   N   :5328   Length:5924        Min.   :429061  
+# 1st Qu.: 1200   S   : 582   Class :character   1st Qu.:439043  
+# Median : 1500   NA's:  14   Mode  :character   Median :441092  
+# Mean   : 1992                                  Mean   :441376  
+# 3rd Qu.: 3000                                  3rd Qu.:443866  
+# Max.   :18830                                  Max.   :453195  
+# NA's   :293                                                    
+#      st_y                  geometry       error_x              error_y          
+# Min.   :4464902   POLYGON      :5924   Min.   :-15.301798   Min.   :-12.295397  
+# 1st Qu.:4471572   epsg:4326    :   0   1st Qu.:  0.000000   1st Qu.:  0.000000  
+# Median :4475598   +proj=long...:   0   Median :  0.000000   Median :  0.000000  
+# Mean   :4475507                        Mean   : -0.001644   Mean   : -0.003829  
+# 3rd Qu.:4479149                        3rd Qu.:  0.000000   3rd Qu.:  0.000000  
+# Max.   :4485213                        Max.   :  8.199879   Max.   :  6.563747  
+#                                                                                 
+# error_espacial    
+# Min.   : 0.00000  
+# 1st Qu.: 0.00000  
+# Median : 0.00000  
+# Mean   : 0.01471  
+# 3rd Qu.: 0.00000  
+# Max.   :19.62962     
+```
+
+Y representamos.
+
+```{r}
+#| fig-align: center
+#| label: leaflet-trafico-madrid
+
+# Creamos una paleta de colores
+paleta <- leaflet::colorNumeric(palette = "Blues", domain = c(intensidad_espacial$intensidad), 
+                       reverse = FALSE, na.color = "transparent")
+
+leaflet(intensidad_espacial) %>% 
+  # Los mapas base      
+  # setView(lng = -0.15, lat = 40.14, zoom = 8)%>%
+  # setView(lng = center[2], lat = center[1], zoom = 7) %>%
+  
+  addProviderTiles("CartoDB.DarkMatter", group = "Dark") %>% 
+  addProviderTiles("OpenStreetMap.Mapnik", group = "OSM") %>%
+  addProviderTiles("Esri", group = "Esri") %>%
+  addProviderTiles("Esri.WorldImagery", group = "Satelite") %>%
+  addProviderTiles("Stadia.StamenWatercolor", group = "Watercolor") %>%
+  # El controlador interactivo de los mapas base
+  addLayersControl(baseGroups = c("Satelite", "Dark", "OSM", "Esri", "Watercolor")) %>%  
+  # Los puntos, en lo que incluimos valores al desplegar
+  # addCircleMarkers(radius = 5, color = ~paleta(intensidad), opacity = 0.8, 
+  #                  popup = ~paste0("Intensidad: ", intensidad, "<br/>", 
+  #                                  "Ocupación:  ", ocupacion, "<br/>", 
+  #                                  "Carga:      ", carga, "<br/>",
+  #                                  "Servicio:   ", nivelServicio)) %>%
+  addPolygons(color = ~paleta(intensidad), opacity = 0.8, 
+              popup = ~paste0("Intensidad: ", intensidad, "<br/>", 
+                              "Ocupación:  ", ocupacion, "<br/>", 
+                              "Carga:      ", carga, "<br/>",
+                              "Servicio:   ", nivelServicio, "<br/>",
+                              "Nombre:   ", nombre),) %>%    
+  # La leyenda, con la paleta que hemos creado antes
+  addLegend(pal      = paleta,
+            values   = intensidad_espacial$intensidad,
+            opacity  = 0.75,
+            title    = "Intensidad",
+            position = "topleft") %>%    
+  # Añadir el pluggin con opciones de medición dentro del mapa
+  addMeasure(position   = "bottomleft",
+      primaryLengthUnit = "meters",
+      primaryAreaUnit   = "sqmeters",
+      activeColor       = "#3D535D",
+      completedColor    = "#7D4479")
+```
+
+Ahora vamos a hacer un gráfico en el que creamos subconjuntos en función de la intensidad del tráfico.
+
+```{r}
+#| fig-align: center
+#| label: leaflet-trafico-madrid-agrupado
+
+# Crear subconjuntos por rango de intensidad
+grupo_0_500      <- intensidad_espacial %>% filter(intensidad > 0     & intensidad <=  500)
+grupo_500_1000   <- intensidad_espacial %>% filter(intensidad > 500   & intensidad <= 1000)
+grupo_1000_1500  <- intensidad_espacial %>% filter(intensidad > 1000  & intensidad <= 1500)
+grupo_1500_2000  <- intensidad_espacial %>% filter(intensidad > 1500  & intensidad <= 2000)
+grupo_2000_2500  <- intensidad_espacial %>% filter(intensidad > 2000  & intensidad <= 2500)
+grupo_mas_2500   <- intensidad_espacial %>% filter(intensidad > 2500)
+
+# Paleta
+paleta <- colorNumeric(palette = "Blues", domain = intensidad_espacial$intensidad, 
+                       reverse = FALSE, na.color = "transparent")
+
+leaflet() %>% 
+  # Capas base
+  addProviderTiles("CartoDB.DarkMatter", group = "Dark") %>% 
+  addProviderTiles("OpenStreetMap.Mapnik", group = "OSM") %>%
+  addProviderTiles("Esri", group = "Esri") %>%
+  addProviderTiles("Esri.WorldImagery", group = "Satelite") %>%
+  addProviderTiles("Stadia.StamenWatercolor", group = "Watercolor") %>%
+
+  # Capas por rango
+  addPolygons(data = grupo_0_500, fillColor = ~paleta(intensidad), fillOpacity = 0.8,
+              color = "#444", weight = 1, group = "0–500",
+              popup = ~paste0("Intensidad: ", intensidad, "<br/>", 
+                              "Ocupación:  ", ocupacion, "<br/>", 
+                              "Carga:      ", carga, "<br/>",
+                              "Servicio:   ", nivelServicio, "<br/>",
+                              "Nombre:     ", nombre)) %>%
+  
+  addPolygons(data = grupo_500_1000, fillColor = ~paleta(intensidad), fillOpacity = 0.8,
+              color = "#444", weight = 1, group = "501–1000",
+              popup = ~paste0("Intensidad: ", intensidad, "<br/>",
+                              "Ocupación:  ", ocupacion, "<br/>",
+                              "Carga:      ", carga, "<br/>",
+                              "Servicio:   ", nivelServicio, "<br/>",
+                              "Nombre:     ", nombre)) %>%
+  
+  addPolygons(data = grupo_1000_1500, fillColor = ~paleta(intensidad), fillOpacity = 0.8,
+              color = "#444", weight = 1, group = "1001–1500",
+              popup = ~paste0("Intensidad: ", intensidad, "<br/>",
+                              "Ocupación:  ", ocupacion, "<br/>",
+                              "Carga:      ", carga, "<br/>",
+                              "Servicio:   ", nivelServicio, "<br/>",
+                              "Nombre:     ", nombre)) %>%
+  
+  addPolygons(data = grupo_1500_2000, fillColor = ~paleta(intensidad), fillOpacity = 0.8,
+              color = "#444", weight = 1, group = "1501–2000",
+              popup = ~paste0("Intensidad: ", intensidad, "<br/>",
+                              "Ocupación:  ", ocupacion, "<br/>",
+                              "Carga:      ", carga, "<br/>",
+                              "Servicio:   ", nivelServicio, "<br/>",
+                              "Nombre:     ", nombre)) %>%
+  
+  addPolygons(data = grupo_2000_2500, fillColor = ~paleta(intensidad), fillOpacity = 0.8,
+              color = "#444", weight = 1, group = "2001–2500",
+              popup = ~paste0("Intensidad: ", intensidad, "<br/>",
+                              "Ocupación:  ", ocupacion, "<br/>",
+                              "Carga:      ", carga, "<br/>",
+                              "Servicio:   ", nivelServicio, "<br/>",
+                              "Nombre:     ", nombre)) %>%
+  
+  addPolygons(data = grupo_mas_2500, fillColor = ~paleta(intensidad), fillOpacity = 0.8,
+              color = "#444", weight = 1, group = "Mayor a 2500",
+              popup = ~paste0("Intensidad: ", intensidad, "<br/>",
+                              "Ocupación:  ", ocupacion, "<br/>",
+                              "Carga:      ", carga, "<br/>",
+                              "Servicio:   ", nivelServicio, "<br/>",
+                              "Nombre:     ", nombre)) %>%
+
+  # Control de capas
+  addLayersControl(
+    baseGroups = c("Dark", "Satelite", "OSM", "Esri", "Watercolor"),
+    overlayGroups = c("0–500", "501–1000", "1001–1500", "1501–2000", "2001–2500", "Mayor a 2500"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+
+  addLegend(pal = paleta,
+            values = intensidad_espacial$intensidad,
+            opacity = 0.75,
+            title = "Intensidad",
+            position = "topleft") %>%
+
+  addMeasure(position = "bottomleft",
+             primaryLengthUnit = "meters",
+             primaryAreaUnit = "sqmeters",
+             activeColor = "#3D535D",
+             completedColor = "#7D4479")
+
+```
+
+
+
+
+
+
+
+
+## Secciones censales
+
+Distritos.
+
+```{r}
+distritos <- spod_get_zones("distritos", ver = 2)
+distritos_wgs84 <- distritos |>
+    sf::st_simplify(dTolerance = 200) |>
+    sf::st_transform(4326)
+```
+
+```{r}
+madrid_zones <- zonebuilder::zb_zone("Madrid")
+
+distritos_madrid <- distritos_wgs84[madrid_zones, ]
+
+plot(distritos_madrid)
+```
+
+```{r}
+distritos_madrid_2 <- distritos_madrid[distritos_madrid$municipalities == "28079", ]
+```
+
+
+
+```{r}
+secciones_censales_shp <- sf::read_sf(paste0(directorio_externo, 
+                                             'ine/seccionado_2025/España_Seccionado2025_ETRS89H30/SECC_CE_20250101.shp'),
+                                      stringsAsFactors = TRUE)
+```
+
+```{r}
+secciones_censales <- secciones_censales_shp[secciones_censales_shp$CUMUN == '28079', ]
+```
+
+```{r}
+summary(secciones_censales)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Info
+
+
+Acabamos con la información de la sesión con `sessionInfo()`. Esto lo incluimos para en caso de error facilitar el seguimiento del mismo.
+
+```{r}
+sessionInfo()
+```
+
+Los siguientes bloques no los ejecuto porque contienen información del sistema que podría ser algo sensible.
+
+```{r}
+#| eval: false
+
+Sys.getenv()
+```
+
+```{r}
+#| eval: false
+
+Sys.info()
+```
+
+```{r}
+#| eval: false
+
+benchmarkme::get_sys_details()
+```
+
+Estas funciones nos permite, por ejemplo, guardar la versíón de R en una variable. 
+
+```{r}
+version_r <- sessionInfo()$R.version$version.string
+version_r
+```
+
+
+
+## Links
+
+- [Libro Advanced R](https://adv-r.hadley.nz/index.html)
+- [Open data, libros y cursos (mio)](https://github.com/santiagomota/Open_Data)
+- [Super Fast Crash Course in R (for developers)](https://machinelearningmastery.com/r-crash-course-for-developers/)
+- [Ejemplo con Leaflet](https://github.com/walkerke/teaching-with-datavis/blob/master/wdi-leaflet/wdi_leaflet.R)
+- [Visual Vocabulary](https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary)\
+- [Datavizcatalogue](https://datavizcatalogue.com)\
+- [Data to viz](https://www.data-to-viz.com)
+- [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)
+- [Hands-On Data Visualization](https://handsondataviz.org/)
+- [Introduction to Probability for Data Science](https://probability4datascience.com/)
+- [Common Statistical Tests in R - Part I](https://martinctc.github.io/blog/common-statistical-tests-in-r-part-i/)
+- [Introducción a la Estadística para Científicos de Datos con R](https://analisisydecision.es/estadistica-data-scientist/)
+- [Learning Statistics with R](https://learningstatisticswithr.com/)
+- [Data Cleaning for Data Sharing Using R](https://cghlewis.github.io/ncme-data-cleaning-workshop/slides.html)
+- [R Highcharts: How to Make Animated and Interactive Data Visualizations in R](https://www.appsilon.com/post/r-highcharts)
+- [Tidymodels Machine Learning: Diabetes Classification](https://boiled-data.github.io/ClassificationDiabetes.html#)
+- [A Gentle Introduction to Tidy Statistics in R](https://posit.co/resources/videos/a-gentle-introduction-to-tidy-statistics-in-r/)
+- [Posit Recipes. Some tasty R code snippets](https://posit.cloud/learn/recipes)
+- [Mastering R presentations](https://codingclubuc3m.rbind.io/post/2019-09-24/)
+- [htmlwidgets.qmd](https://github.com/quarto-dev/quarto-web/blob/main/docs/interactive/widgets/htmlwidgets.qmd)
+- [R for the Rest of Us: A Statistics-Free Introduction](https://book.rfortherestofus.com/)
+- [Visualizing {dplyr}’s mutate(), summarize(), group_by(), and ungroup() with animations](https://www.andrewheiss.com/blog/2024/04/04/group_by-summarize-ungroup-animations/)
+- [What They Forgot to Teach You About R](https://rstats.wtf/)
+- [Tidyverse Skills for Data Science](https://jhudatascience.org/tidyversecourse/)
+- [Modern Data Visualization with R](https://rkabacoff.github.io/datavis/)
+- [Analysis of ecological data](https://github.com/Ludwigm6/analysis_of_ecological_data)
+- [Taxi and Limousine Commission (TLC)](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
+- [Machine Learning con R y tidymodels](https://www.cienciadedatos.net/documentos/59_machine_learning_con_r_y_tidymodels#)
+- [The 6 Most Fundamental Functions for Data Cleaning with R](https://albert-rapp.de/posts/24_data_cleaning_fundamentals/24_data_cleaning_fundamentals.html)
+- [UC Irvine 2024 Hackathon Workshop: Arrow & DuckDB](https://github.com/javorraca/UCI-2024-Hackathon-Workshop-Arrow-DuckDB/)
+- [Quarto](https://quarto.org/docs/get-started/hello/rstudio.html)
+- Una presentación sobre mapas en Quarto: [DataViz: Técnicas de optimización para visualización en mapas](https://github.com/hhkaos/spatial-dataviz-optimization-techniques) y el [vídeo](https://www.youtube.com/watch?v=3uhMCt1HS98).
+- [Quarto presentations with Python](https://www.meyerperin.com/using-quarto/#powerpoint-templates)
+- [Get started with Quarto - 05 Presentations](https://rstudio-conf-2022.github.io/get-started-quarto/materials/05-presentations.html#/presentations)
+- [quarto_sample.qmd](https://github.com/Shuntaro-Ono/quarto/blob/main/)
+- [Awesome Quarto](https://github.com/mcanouil/awesome-quarto#presentations-formats)
+- [Quarto for the Python user](https://www.jumpingrivers.com/blog/quarto-for-python-users/)
+- [Welcome to Shiny](https://shiny.posit.co/r/getstarted/shiny-basics/lesson1/index.html)
+- [Mastering Shiny](https://mastering-shiny.org/) muy recomendable para cuando sepas que quieres meter shiny en tu día a día.
+- [Cómo alojar en un servidor](https://posit.co/products/open-source/shinyserver/) tu app para que otros accedan.
+- [Data Visualization with R](https://datavizs23.classes.andrewheiss.com/example/)
+- [Introduction to MySQL with R](https://programminghistorian.org/en/lessons/getting-started-with-mysql-using-r)
+- [Creating R tutorial worksheets (with and without solutions) using Quarto](https://nrennie.rbind.io/blog/r-tutorial-worksheets-quarto/)
+- [Paquete tidyBdE](https://github.com/dieghernan/tidyBdE)
+- [H2O Database-like ops benchmark](https://h2oai.github.io/db-benchmark/)
+- [Uso de memoria en duckDB](https://duckdb.org/2024/03/29/external-aggregation.html)
+- [Study finds 94% of business spreadsheets have critical errors](https://phys.org/news/2024-08-business-spreadsheets-critical-errors.html)
+- [Mastering Date and Time Data in R with lubridate](https://mfatihtuzen.netlify.app/posts/2024-09-30_lubridate/)
+- [How to work with remote Parquet files with the duckdb R package?](https://francoismichonneau.net/2023/06/duckdb-r-remote-data/)
+- [Bounding Box Tools](https://boundingbox.klokantech.com/)
+- [R Universe search](https://r-universe.dev/search)
+- [R in Visual Studio Code](https://code.visualstudio.com/docs/languages/r)
+- [Elmer - Gitub](https://github.com/hadley/elmer/)
+- [The Ultimate Guide to Creating Lists in R: From Basics to Advanced Examples](https://www.spsanderson.com/steveondata/posts/2024-10-29/)
+- [always_plot_data.R](https://gist.github.com/battenr/93f02acf0044a546073639c8aab22e80#file-always_plot_data-r)
+- [Gemini 1.5 Flash Better Than RAG? Let's Check It Out In R!](https://www.kenkoonwong.com/blog/gemini/)
+- [Usando el paquete fs](https://albert-rapp.de/posts/36_fs_package/)
+
+
+## Licencias de uso
+
+En caso de usar datos externos, **siempre** se debe revisar la licencia de uso de los mismos. En caso de ser internos es igual o de importante o mas. La UE está siendo cada vez mas dura con el mas uso de los datos. 
+
+- [Multas por GDPR](https://www.xataka.com/pro/15-multas-cuantiosas-que-se-han-puesto-gdpr-ahora)
+- [Elegir una licencia](https://choosealicense.com/)
+- [Licencias CC](https://creativecommons.org/licenses/?lang=en)
+- [Elegir una licencia CC interactivamente](https://chooser-beta.creativecommons.org/)
+
+Licencias del material utilizado en esta clase:
+
+- [Ayuntamiento de Madrid](https://datos.madrid.es/portal/site/egob/menuitem.400a817358ce98c34e937436a8a409a0/?vgnextoid=b4c412b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextchannel=b4c412b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default)
+- [Guardia Civil](https://www.guardiacivil.es/es/institucional/directorio/)
+- [Aviso legal INE](https://www.ine.es/ss/Satellite?L=0&c=Page&cid=1254735849170&p=1254735849170&pagename=Ayuda%2FINELayout)
+- [Office for National Statistics UK](https://www.ons.gov.uk/methodology/geography/licences)
+- [New York City - Taxi and Limousine Commission (TLC)](https://www.nyc.gov/home/terms-of-use.page)
+- [Creating R tutorial worksheets (with and without solutions) using Quarto](https://nrennie.rbind.io/blog/r-tutorial-worksheets-quarto/)
+
+
+## Datos personales
+
+- [Microsoft Presidio - Data Protection and De-identification SDK](https://microsoft.github.io/presidio/)
+
+
+
+Para [instalar FontAwesome](https://github.com/quarto-ext/fontawesome#readme), abro un terminal en el directorio del proyecto y escribo:
+
+>quarto add quarto-ext/fontawesome
+
+<span style="color:white">{{< fa brands github >}}</span>

@@ -1,0 +1,2250 @@
+---
+title:    "Análisis DANA 2024"
+author:   "by [Santiago Mota](https://www.linkedin.com/in/santiagomota/)"
+mail:     "santiago_mota@yahoo.es"
+linkedin: "santiagomota"
+twitter:  "mota_santiago"
+github:   "santiagomota"
+date:     "`r Sys.Date()`"
+image:     styles/logo_web.png 
+license:
+  type: "MIT"
+  text: "Este proyecto está licenciado bajo la Licencia MIT. Puedes ver los detalles en el siguiente enlace https://opensource.org/licenses/MIT"
+  url:  "https://opensource.org/licenses/MIT"
+urlcolor: blue
+always_allow_html: true
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-depth: 6
+    theme:
+        light: cosmo
+        dark: solar
+        # light: styles/bde-custom.scss
+    # css: styles/custom.css
+    number-sections: true
+    # page-layout: full # article full
+    # max-width: 3000px
+    title-block-banner: true
+    code-fold: false
+    code-copy: true
+    code-summary: "" # Show the code"
+    # code-tools: true
+    # grid:
+    #     body-width: 2600px
+    #     sidebar-width: 200px
+    #     margin-width: 200px
+    include-after-body: footer_V2.html
+    # include-before-body: auth0-protect.html
+    # include-in-header: github-corner.html
+    self-contained: true
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+    include-in-header: |
+      \usepackage{graphicx}
+      \usepackage{titling}
+      \pretitle{\begin{center}\includegraphics[width=0.25\linewidth]{styles/logo_web.png}\\[\bigskipamount]}
+  docx:
+    toc: true
+    number-sections: true
+    colorlinks: true
+  revealjs:
+    # theme: [dark, custom.scss]
+    slide-number: c/t
+    show-slide-number: all
+    # logo: styles/logo_web.png
+    footer: "Test para el Banco de España"
+    preview-links: auto
+    chalkboard: true
+  pptx:
+    reference-doc: template.pptx    
+    incremental:  true
+---
+
+
+```{r}
+#| include: false
+#| echo: false
+
+# Para obligar a que salgan los iconos en documentos Rmarkdown
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+<right> 
+![](styles/logo_web.png)
+
+**[Aunque el código está licenciado como MIT se ruega no publicar el contenido del mismo. Se evaluará esta opción tras la finalización del proceso de selección.]{style="color:green;"}**
+
+**[GRACIAS]{style="color:green;"}**
+
+
+# Paquetes
+
+```{r}
+#| eval: false
+
+if (!require("pak")) install.packages("pak")
+options(repos = c(rOpenSpain = "https://ropenspain.r-universe.dev", CRAN = "https://cloud.r-project.org"))
+packages <- c("sf", "tidyverse", "spanishoddata", "mapSpain", "ggimage", "rostemplate", "ggtext", "resmush", "svglite", "flowmapblue", "flowmapper", "patchwork", "arcpullr", "fs", "ggnewscale", "tabulapdf", "rJavaEnv", "e-kotov/cartogram@cdec44b", "Cairo", "RcppSimdJson", "mapview",  "htmlwidgets", "base64enc", "mapgl", "ineAtlas")
+pak::pkg_install(packages, upgrade = TRUE, ask = FALSE)
+
+extract_pkg_name <- function(pkg) {
+  if (grepl("/", pkg) && grepl("@", pkg)) {
+    # Extract text between '/' and '@'
+    pkg_name <- sub("^.*/(.*?)@.*$", "\\1", pkg)
+  } else {
+    # Take the whole string if '/' and '@' are not present
+    pkg_name <- pkg
+  }
+  return(pkg_name)
+}
+
+# Cleaned package names
+clean_packages <- sapply(packages, extract_pkg_name)
+
+suppressPackageStartupMessages(invisible(lapply(clean_packages, library, character.only = TRUE)))
+```
+
+```{r}
+clean_packages <- c("sf", "tidyverse", "spanishoddata", "mapSpain", "ggimage", "rostemplate", "ggtext", "resmush", "svglite", "flowmapblue", "flowmapper", "patchwork", "arcpullr", "fs", "ggnewscale", "tabulapdf", "rJavaEnv",  "cartogram", "Cairo", "RcppSimdJson", "mapview",  "htmlwidgets", "base64enc", "mapgl", "ineAtlas")
+lapply(clean_packages, library, character.only = TRUE)
+```
+
+
+# Datos Origen Destino
+
+
+## Municipios3
+
+**Explicar de donde sale esto**
+
+```{r}
+municipios3 <- readRDS("/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/municipios3.rds")
+```
+
+```{r}
+glimpse(municipios3)
+```
+
+The columns for v2 (2022 onwards) data include:
+
+- `id`: A character vector containing the unique identifier for each zone, assigned by the data provider.
+
+- `name`: A character vector with the name of each district.
+
+- `population`: A numeric vector representing the population of each district (as of 2022).
+
+- `census_sections`: A string with semicolon-separated identifiers of census sections corresponding to each district.
+
+- `census_districts`: A string with semicolon-separated identifiers of census districts as classified by the Spanish Statistical Office (INE) corresponding to each district.
+
+- `municipalities`: A string with semicolon-separated identifiers of municipalities classified by the Spanish Statistical Office (INE) corresponding to each district.
+
+- `municipalities_mitma`: A string with semicolon-separated identifiers of municipalities, as assigned by the data provider, that correspond to each district.
+
+- `luas_mitma`: A string with semicolon-separated identifiers of LUAs (Local Urban Areas) from the provider, associated with each district.
+
+- `district_ids_in_v1`/`municipality_ids_in_v1`: A string with semicolon-separated district identifiers from v1 data corresponding to each district in v2. If no match exists, it is marked as NA.
+
+- `geometry`: A MULTIPOLYGON column containing the spatial geometry of each district, stored as an sf object. The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.
+
+
+## Paquete `spanishoddata`
+
+Gain seamless access to origin-destination (OD) data from the Spanish Ministry of Transport, hosted at  [https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad). This package simplifies the management of these large datasets by providing tools to download zone boundaries, handle associated origin-destination data, and process it efficiently with the 'duckdb' database interface. Local caching minimizes repeated downloads, streamlining workflows for researchers and analysts. Extensive documentation is available at [https://ropenspain.github.io/spanishoddata/index.html](https://ropenspain.github.io/spanishoddata/index.html), offering guides on creating static and dynamic mobility flow visualizations and transforming large datasets into analysis-ready formats.
+
+Obtenemos las fechas válidas.
+
+```{r}
+range(spod_get_valid_dates(ver = 2))
+# [1] "2022-01-01" "2025-06-08"
+```
+
+Y los datos disponibles.
+
+```{r}
+#| warning: false
+
+od_data <- spod_available_data(ver = 2)
+head(od_data)
+# # A tibble: 6 × 13
+#   target_url    pub_ts              file_size_bytes etag  file_extension data_ym    data_ymd   local_path study type  period
+#   <chr>         <dttm>                        <dbl> <chr> <chr>          <date>     <date>     <chr>      <fct> <fct> <fct> 
+# 1 https://movi… 2025-06-12 13:28:51         5811201 4641… xml            NA         NA         /tmp/Rtmp… NA    meta… NA    
+# 2 https://movi… 2025-06-12 13:28:39              29 9acd… csv            2025-06-01 2025-06-07 /tmp/Rtmp… basic data… day   
+# 3 https://movi… 2025-06-12 13:28:39              29 7071… csv            2025-06-01 2025-06-08 /tmp/Rtmp… basic data… day   
+# 4 https://movi… 2025-06-12 13:28:38              29 34ff… csv            2025-06-01 2025-06-03 /tmp/Rtmp… basic data… day   
+# 5 https://movi… 2025-06-12 13:28:38              29 a116… csv            2025-06-01 2025-06-05 /tmp/Rtmp… basic data… day   
+# 6 https://movi… 2025-06-12 13:28:38              29 55b9… csv            2025-06-01 2025-06-06 /tmp/Rtmp… basic data… day   
+# # ℹ 2 more variables: zones <fct>, remote_file_size_mb <dbl> 
+```
+
+Cargamos los datos para todos los municipios.
+
+```{r}
+# get polygons for municipalities for the v2 data
+flujos_municipios <- spod_get_zones(zones = "municipios", 
+                                    ver = 2, 
+                                    quiet = FALSE)
+```
+
+Hay municipios en Francia y Portugal, los quitamos.
+
+```{r}
+sum(substr(flujos_municipios$id, 1, 2) == "FR")
+# [1] 94
+```
+
+```{r}
+sum(substr(flujos_municipios$id, 1, 2) == "PT")
+# [1] 23
+```
+
+```{r}
+flujos_municipios <- flujos_municipios[((substr(flujos_municipios$id, 1, 2) != "FR") & (substr(flujos_municipios$id, 1, 2) != "PT")), ]
+```
+
+```{r}
+provincias_index <- data.frame(provincia = c("01::ALAVA", "02::ALBACETE", 
+                                             "03::ALICANTE", "04::ALMERIA", 
+                                             "05::AVILA", "06::BADAJOZ", 
+                                             "07::BALEARES", "08::BARCELONA", 
+                                             "09::BURGOS", "10::CACERES", 
+                                             "11::CADIZ", "12::CASTELLON", 
+                                             "13::CIUDAD REAL", "14::CORDOBA", 
+                                             "15::A CORUÑA", "16::CUENCA", 
+                                             "17::GIRONA", "18::GRANADA", 
+                                             "19::GUADALAJARA", "20::GUIPUZCOA", 
+                                             "21::HUELVA", "22::HUESCA", 
+                                             "23::JAEN", "24::LEON", 
+                                             "25::LLEIDA", "26::LA RIOJA", 
+                                             "27::LUGO", "28::MADRID", 
+                                             "29::MALAGA", "30::MURCIA", 
+                                             "31::NAVARRA", "32::OURENSE", 
+                                             "33::ASTURIAS", "34::PALENCIA", 
+                                             "35::LAS PALMAS", "36::PONTEVEDRA", 
+                                             "37::SALAMANCA", "38::TENERIFE", 
+                                             "39::CANTABRIA", "40::SEGOVIA", 
+                                             "41::SEVILLA", "42::SORIA", 
+                                             "43::TARRAGONA", "44::TERUEL", 
+                                             "45::TOLEDO", "46::VALENCIA", 
+                                             "47::VALLADOLID", "48::VIZCAYA", 
+                                             "49::ZAMORA", "50::ZARAGOZA", 
+                                             "51::CEUTA", "52::MELILLA"))
+
+comunidades_index <- data.frame(comunidad = c("01::ANDALUCIA", "02::ARAGON", 
+                                              "03::ASTURIAS", "04::BALEARES", 
+                                              "05::CANARIAS", "06::CANTABRIA", 
+                                              "07::CASTILLA-LEON", "08::CASTILLA-LA MANCHA", 
+                                              "09::CATALUÑA", "10::C. VALENCIANA", 
+                                              "11::EXTREMADURA", "12::GALICIA", 
+                                              "13::MADRID", "14::MURCIA", 
+                                              "15::NAVARRA", "16::P. VASCO", 
+                                              "17::LA RIOJA", 
+                                              "18::CEUTA", "19::MELILLA"))
+```
+
+Incluimos el código de la provincia.
+
+```{r}
+flujos_municipios$codigo_provincia <- substr(flujos_municipios$id, 1, 2)
+```
+
+```{r}
+flujos_municipios$codigo_provincia <- factor(flujos_municipios$codigo_provincia, 
+                                  levels = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", 
+                                             "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", 
+                                             "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", 
+                                             "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", 
+                                             "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", 
+                                             "51", "52"),
+                                  labels = c("01::ALAVA",    "02::ALBACETE",  "03::ALICANTE", 
+                                             "04::ALMERIA",  "05::AVILA",     "06::BADAJOZ", 
+                                             "07::BALEARES", "08::BARCELONA", "09::BURGOS", 
+                                             "10::CACERES",  "11::CADIZ",     "12::CASTELLON", 
+                                             "13::CIUDAD REAL", "14::CORDOBA", "15::A CORUÑA", 
+                                             "16::CUENCA", "17::GIRONA", "18::GRANADA", 
+                                             "19::GUADALAJARA", "20::GUIPUZCOA", "21::HUELVA", 
+                                             "22::HUESCA", "23::JAEN", "24::LEON", 
+                                             "25::LLEIDA", "26::LA RIOJA", "27::LUGO", 
+                                             "28::MADRID", "29::MALAGA", "30::MURCIA", 
+                                             "31::NAVARRA", "32::OURENSE", "33::ASTURIAS", 
+                                             "34::PALENCIA", "35::LAS PALMAS", "36::PONTEVEDRA", 
+                                             "37::SALAMANCA", "38::TENERIFE", "39::CANTABRIA", 
+                                             "40::SEGOVIA", "41::SEVILLA", "42::SORIA", 
+                                             "43::TARRAGONA", "44::TERUEL", "45::TOLEDO", 
+                                             "46::VALENCIA", "47::VALLADOLID", "48::VIZCAYA", 
+                                             "49::ZAMORA", "50::ZARAGOZA", "51::CEUTA", 
+                                             "52::MELILLA"))
+```
+
+Incluimos una variable, `agregado`, `TRUE`/`FALSE` si corresponde a un agregado de municipios (`TRUE`) o un municipio único (`FALSE`).
+
+```{r}
+flujos_municipios$agregado <- ifelse(substr(flujos_municipios$id, 6, 8) != "", TRUE, FALSE)
+```
+
+Creamos una variable con todos los municipios.
+
+```{r}
+agrupaciones_municipios <- flujos_municipios$municipalities
+```
+
+Incluimos una variable, `numero_municipios` con el número de municipios de esa agrupación.
+
+```{r}
+flujos_municipios$numero_municipios <- sapply(agrupaciones_municipios, function(x) length(unlist(strsplit(x, ";"))))
+```
+
+Vemos los elementos en cada provincia.
+
+```{r}
+table(flujos_municipios$codigo_provincia, useNA = 'ifany')
+```
+
+```{r}
+table(municipios3$codigo_provincia, useNA = 'ifany')
+```
+
+```{r}
+#| eval: false
+
+table(municipios3$codigo_provincia, flujos_municipios$codigo_provincia)
+```
+
+El total de población en `flujos_municipios`.
+
+```{r}
+sum(flujos_municipios$population, na.rm = TRUE)
+```
+
+El total de población en `municipios3`.
+
+```{r}
+sum(municipios3$total_población, na.rm = TRUE)
+```
+
+Cuantos municipios hay en `flujos_municipios`:
+
+```{r}
+sum(flujos_municipios$numero_municipios, na.rm = TRUE)
+```
+
+Hay algunos que no están en `municipios3`.
+
+```{r}
+listado_municipios <- unique(trimws(unlist(strsplit(agrupaciones_municipios, ";"))))
+```
+
+```{r}
+length(listado_municipios)
+```
+
+¿Hay duplicados?
+
+```{r}
+all_values <- trimws(unlist(strsplit(agrupaciones_municipios, ";")))
+municipios_duplicados <- all_values[duplicated(all_values)]
+municipios_duplicados
+```
+
+Por un lado, tenemos una serie de líneas que corresponden a elemento de Palencia cuyo municipio está codificado como `"NA"` (OJO: no es `NA` sino `"NA"`, `texto`)
+
+```{r}
+temp <- flujos_municipios[flujos_municipios$municipalities == "NA", ]
+```
+
+```{r}
+glimpse(temp)
+```
+
+```{r}
+glimpse(flujos_municipios)
+```
+
+Y por otro, el municipio "03903", Los Montesions de Alicante, que tiene una línea propia con ese código, pero aparece también en el agrupado de Almoradí "03015". No sé por qué es así.
+
+```{r}
+summary(flujos_municipios)
+```
+
+
+
+## Matrices de origen destino
+
+Estas matrices son objetos duckDB.
+
+Obtenemos los valores para "2024-04-17".
+
+```{r}
+origen_destino_distritos_2024_04_17 <- spod_get("od", zones = "distritos", dates = "2024-04-17")
+```
+
+```{r}
+glimpse(origen_destino_distritos_2024_04_17)
+```
+
+
+## aggregate data
+
+```{r}
+incoming_trips_ratio <- origen_destino_distritos_2024_04_17 |> 
+  filter(!is.na(sex)) |>
+  filter(activity_origin == "home" & activity_destination == "work_or_study") |>
+  group_by(id_destination, sex) |> 
+  summarise(total_trips = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
+  collect() |> 
+  spread(sex, total_trips, fill = 0) |> 
+  mutate(sex_ratio = male / female) |> 
+  mutate(sex_ratio_category = if_else(
+    condition = sex_ratio < 1, 
+    true = "More Female Trips", 
+    false = "More Male Trips")
+  ) |> 
+  filter(id_destination != "external") |>
+  select(id_destination, sex_ratio, sex_ratio_category)
+```
+
+```{r}
+glimpse(incoming_trips_ratio)
+```
+
+
+## get zones and add the aggregation results
+
+```{r}
+centroides_distritos <- spod_get_zones("distritos", ver = 2) |> 
+    # Quitamos Francia y Portugal    
+    filter(!grepl("FR.*|PT.*", id)) |> 
+    st_point_on_surface() |> 
+    # Pasamos al CRS 4326
+    st_transform(4326) |>
+    left_join(incoming_trips_ratio, by = c("id" = "id_destination")) |> 
+    # Nos quedamos sólo con las variables id, sex_ratio y sex_ratio_category
+    select(id, sex_ratio, sex_ratio_category)
+```
+
+```{r}
+summary(centroides_distritos)
+```
+
+
+## move Canary Islands closer to Spain
+
+Para que el gráfico quede mejor, acercamos las Islas Canarias a la península.
+
+```{r}
+dots_sf <- rbind(
+  # all zones except for Canary Islands
+  centroides_distritos |> 
+    filter(!grepl("^38|^35", id)),
+  # Canary Islands moved closer to mainland Spain
+  esp_move_can(
+    centroides_distritos |> filter(grepl("^38|^35", id))
+    )
+  ) |> 
+  # Cambiamos el valor NA en sex_ratio_category    
+  mutate(sex_ratio_category = if_else(is.na(sex_ratio_category), "No Data Available", sex_ratio_category))
+```
+
+
+## prepare paths to logos
+
+```{r}
+spod_logo <- system.file("help/figures", "logo.png", package = "spanishoddata")
+ropenspain_logo <- system.file("help/figures", "logo.png", package = "rostemplate")
+```
+
+
+## prepare the map
+
+```{r}
+map_01_points <- ggplot() +
+  geom_sf(
+    data = dots_sf,
+    aes(col = sex_ratio_category),
+    size = 0.5,
+    alpha = 0.8,
+    shape = 15) +
+  scale_color_manual(
+    values = c(
+      "More Female Trips" = "#f7de38",
+      "More Male Trips" = "#440852",
+      "No Data Available" = "grey80"),
+    labels = c(
+      "More Female Trips" = "<span style='color:#f7de38'>More Female Trips</span>",
+      "More Male Trips" = "<span style='color:#440852'>More Male Trips</span>",
+      "No Data Available" = "<span style='color:grey80'>No Data Available</span>"),
+    name = "<span style='color:grey10'>Commuters</span></b>"
+  ) +
+  geom_image(data = tibble(x = 3, y = 37),
+             aes(image = spod_logo, x = x, y = y), size = 0.3) +
+  geom_image(data = tibble(x = 2.05, y = 35),
+             aes(image = ropenspain_logo, x = x, y = y), size = 0.05) +
+  annotate("text", x = 2.55, y = 35, label = "rOpenSpain", size = 3, hjust = 0, color = "grey30") +
+  # annotate("text", x = 1.55, y = 32.5, label = "Author: Egor Kotov", size = 3, hjust = 0, color = "grey30", family = "Roboto") +
+  labs(
+    title = "Dominance of <span style='color:#f7de38'>Female</span> Commuters<br>in Urban Destinations Across Spain",
+    caption = "Author: Egor Kotov | #30DayMapChallenge | Day 1: Points\nR package to get the data: https://ropenspain.github.io/spanishoddata/\nOriginal data source: Ministry of Transport and Sustainable Mobility of Spain; Nommon"
+  ) +
+  theme_void() +
+  theme(
+    text = element_text(family = "Roboto", size = 18),
+    panel.background = element_rect(fill = "grey65", color = NA),
+    plot.background = element_rect(fill = "grey65", color = NA),
+    legend.text = element_markdown(),
+    legend.title = element_markdown(),
+    plot.title = element_markdown(hjust = 0.5, color = "grey10"),
+    plot.subtitle = element_markdown(),
+    plot.caption = element_text(size = 9, hjust = 0.5, color = "grey30"),
+    plot.margin = margin(t = 20, r = 5, b = 20, l = 5),
+    legend.position = "inside",
+    legend.position.inside = c(0.18, 0.6)
+  )
+```
+
+```{r}
+#| fig-align: center
+
+map_01_points
+```
+
+
+## save maps
+
+
+### save map to png
+
+```{r}
+#| eval: false
+
+ggsave(
+  # filename = "maps/01-points.png",
+  filename = "./figs/01-points.png",
+  map_01_points,
+  width = 8,
+  height = 7,
+  units = "in",
+  dpi = 300,
+  create.dir = TRUE
+)
+```
+
+
+### opmimise png with resmush.it
+
+```{r}
+#| eval: false
+
+# resmush_fichero("maps/12-time-and-space.png", overwrite = TRUE)
+resmush_fichero("./figs/01-points.png", 
+             overwrite = TRUE)
+```
+
+
+### save to svg
+
+```{r}
+#| eval: false
+
+ggsave(
+  # filename = "maps/01-points.svg",
+  filename = "./figs/01-points.svg",
+  map_01_points,
+  width = 8,
+  height = 7,
+  units = "in",
+  dpi = 300,
+  create.dir = TRUE
+)
+```
+
+
+
+# 02 Lineas
+
+
+## cache folder
+
+```{r}
+#| eval: false
+
+cache_dir_path <- "./cache/02-lines/"
+if (!dir.exists(cache_dir_path)) {
+  dir.create(cache_dir_path, recursive = TRUE)
+}
+```
+
+
+## download pdf with list of affected roads
+
+```{r}
+# cached_pdf_path <- "cache/02-lines/CarreterasCortadasInundaciones.pdf"
+cached_pdf_path <- "./data/CarreterasCortadasInundaciones.pdf"
+
+
+pdf_url <- "https://www.dgt.es/estaticos/movilidad/CarreterasCortadasInundaciones.pdf" # was relevant as of 2024-11-02
+if (!file.exists(cached_pdf_path)) {
+  download.file(pdf_url, destfile = cached_pdf_path)  
+}
+
+# cached_csv_nov_02 <- "cache/02-lines/2024-11-02-affected_roads.csv"
+cached_csv_nov_02 <- "./data/2024-11-02-affected_roads.csv"
+
+if (!file.exists(cached_csv_nov_02)) {
+  # make sure java is available for tabulapdf with rJavaEnv
+  use_java(21)
+  
+  # extract and bind tables
+  tables <- extract_tables(cached_pdf_path)
+  carreteras_afectadas_nov_02_tabla <- do.call(bind_rows, tables) |> 
+    filter(!is.na(CARRETERA))
+  
+  write_csv2(carreteras_afectadas_nov_02_tabla, cached_csv_nov_02)
+}
+```
+
+```{r}
+carreteras_afectadas_nov_02_tabla <- read_csv2(cached_csv_nov_02)
+
+carreteras_afectadas_nov_02_nombres <- unique(carreteras_afectadas_nov_02_tabla$CARRETERA) |>
+  str_extract("\\b[A-Z]+-\\d+\\b")
+```
+
+```{r}
+summary(carreteras_afectadas_nov_02_tabla)
+```
+
+```{r}
+carreteras_afectadas_nov_02_nombres
+```
+
+
+## download affected roads as of Oct 31
+
+```{r}
+# cached_csv_oct_31 <- "cache/02-lines/2024-10-31-affected_roads.csv"
+cached_csv_oct_31 <- "./data/2024-10-31-affected_roads.csv"
+
+if (!file.exists(cached_csv_oct_31)) {
+  download_oct_31 <- "https://github.com/DataMirai/ShinyCarreterasInundaciones/raw/refs/heads/main/carreteras_cortadas.csv"
+  download.file(download_oct_31, destfile = cached_csv_oct_31)
+}
+```
+
+```{r}
+carreteras_afectadas_oct_31_tabla <- read_csv2(cached_csv_oct_31)
+
+carreteras_afectadas_oct_31_nombres <- unique(carreteras_afectadas_oct_31_tabla$CARRETERA) |> 
+  str_extract("\\b[A-Z]+-\\d+\\b")
+```
+
+```{r}
+summary(carreteras_afectadas_oct_31_tabla)
+```
+
+```{r}
+carreteras_afectadas_oct_31_nombres
+```
+
+
+## get road segments
+
+```{r}
+arcgis_server_base_url <- "https://services1.arcgis.com/nCKYwcSONQTkPA4K/arcgis/rest/services/Tramos_de_carreteras/FeatureServer/0/"
+
+# carreteras_afectadas_oct_31_fichero <- "cache/02-lines/2024-10-31-affected_roads_sf.rds"
+carreteras_afectadas_oct_31_fichero <- "./data/2024-10-31-affected_roads_sf.rds"
+
+if (!file.exists(carreteras_afectadas_oct_31_fichero)) {
+  carreteras_afectadas_oct_31 <- get_spatial_layer(
+    url = arcgis_server_base_url,
+    where = paste0(
+      "nombre IN ('",
+      paste(carreteras_afectadas_oct_31_nombres, collapse = "','"),
+      "')"),
+    sf_type = "esriGeometryPolyline"
+  )
+  saveRDS(carreteras_afectadas_oct_31, carreteras_afectadas_oct_31_fichero)
+}
+
+carreteras_afectadas_oct_31 <- readRDS(carreteras_afectadas_oct_31_fichero)
+```
+
+```{r}
+summary(carreteras_afectadas_oct_31)
+```
+
+```{r}
+# carreteras_afectadas_nov_02_fichero <- "cache/02-lines/2024-11-02-affected_roads_sf.rds"
+carreteras_afectadas_nov_02_fichero <- "./data/2024-11-02-affected_roads_sf.rds"
+
+if (!file.exists(carreteras_afectadas_nov_02_fichero)) {
+  carreteras_afectadas_nov_02 <- get_spatial_layer(
+    url = arcgis_server_base_url,
+    where = paste0(
+      "nombre IN ('",
+      paste(carreteras_afectadas_nov_02_nombres, collapse = "','"),
+      "')"),
+    sf_type = "esriGeometryPolyline"
+  )
+  saveRDS(carreteras_afectadas_nov_02, carreteras_afectadas_nov_02_fichero)
+}
+
+carreteras_afectadas_nov_02 <- readRDS(carreteras_afectadas_nov_02_fichero)
+```
+
+```{r}
+summary(carreteras_afectadas_nov_02)
+```
+
+```{r}
+carreteras_afectadas_oct_31_menos_nov_02 <- carreteras_afectadas_oct_31 |>
+  filter(!nombre %in% carreteras_afectadas_nov_02$nombre) |> 
+  mutate(date = "2024-10-31")
+```
+
+```{r}
+summary(carreteras_afectadas_oct_31_menos_nov_02)
+```
+
+```{r}
+carreteras_afectadas <- bind_rows(
+  carreteras_afectadas_oct_31_menos_nov_02,
+  carreteras_afectadas_nov_02 |> mutate(date = "2024-11-02")
+)
+```
+
+```{r}
+summary(carreteras_afectadas)
+```
+
+
+## get Spanish provinces and move the roads data for Canary Islands
+
+```{r}
+spain <- esp_get_country(moveCAN = TRUE, epsg = "4326")
+
+provincias <- esp_get_prov(moveCAN = FALSE, epsg = "4326")
+
+islas_canarias <- provincias |> filter(nuts1.name == "CANARIAS")
+
+carreteras_afectadas_canarias <- carreteras_afectadas[islas_canarias,] |> esp_move_can()
+
+carreteras_afectadas_sin_canarias <- carreteras_afectadas |> 
+  filter(!OBJECTID %in% carreteras_afectadas_canarias$OBJECTID)
+
+carreteras_afectadas_movedCAN <- rbind(
+  carreteras_afectadas_canarias,
+  carreteras_afectadas_sin_canarias
+)
+```
+
+
+## build plot
+
+```{r}
+map_02_lines <- ggplot() +
+  geom_sf(data = spain, fill = NA, col = "grey", linewidth = 0.07) +
+  # this layer is just for the legend
+  geom_sf(data = carreteras_afectadas_movedCAN, aes(col = date), linewidth = 1.5) +
+  # to make sure later dates are on top of earlier ones, plot layers by date one by one, otherwise 'natural' order of objects in the dataset may affect the drawing order
+  geom_sf(data = carreteras_afectadas_movedCAN |> filter(date == "2024-10-31"), col = "#0088d9", linewidth = 1.5) +
+  geom_sf(data = carreteras_afectadas_movedCAN |> filter(date == "2024-11-02"), col = "#d8be02", linewidth = 1.5) +
+  scale_color_manual(
+    values = c(
+      "2024-10-31" = "#0088d9",
+      "2024-11-02" = "#d8be02"),
+    labels = c(
+      "2024-10-31" = "<span style='color:#0088d9'>2024-10-31</span>",
+      "2024-11-02" = "<span style='color:#d8be02'>2024-11-02</span>"),
+    name = "<span style='color:grey70'>Carreteras<br>Cortadas</span></b>"
+  ) +
+  labs(
+    title = "Restablecimiento gradual<br>de la conectividad vial tras el paso de DANA",
+    subtitle = "Segmentos de carretera afectados pueden ser más cortos.\n Consulte los intervalos exactos de kilómetros en https://www.dgt.es/",
+    caption = "<i>En solidaridad con las víctimas y sus familias</i><br><br>Autor: Egor Kotov | #30DayMapChallenge | Día 2: Líneas<br>Créditos a Virgilio Gómez-Rubio ( @precariobecario ) y Mireia Camacho ( @mireiacamacho75 )<br>por señalarme los datos y capturar las carreteras afectadas al 31 de octubre"
+  ) +
+  theme_void() +
+  theme(
+    text = element_text(family = "Roboto", size = 18),
+    panel.background = element_rect(fill = "grey5", color = NA),
+    plot.background = element_rect(fill = "grey5", color = NA),
+    legend.text = element_markdown(),
+    legend.title = element_markdown(),
+    plot.title = element_markdown(hjust = 0.5, color = "grey80"),
+    plot.subtitle = element_text(hjust = 0.5, color = "grey80", size = 12, face = "italic"),
+    plot.caption = element_markdown(size = 9, hjust = 0.5, color = "grey70"),
+    plot.margin = margin(t = 20, r = 5, b = 20, l = 5),
+    legend.position = "inside",
+    legend.position.inside = c(0.18, 0.6)
+  )  
+```
+
+```{r}
+#| fig-align: center
+
+map_02_lines
+```
+
+## save plot
+
+
+### save map to png
+
+```{r}
+#| eval: false
+
+ggsave(
+  # filename = "maps/02-lines.png",
+  filename = "./figs/02-lines.png",
+  map_02_lines,
+  width = 8,
+  height = 7,
+  units = "in",
+  dpi = 300,
+  create.dir = TRUE
+)
+```
+
+
+### opmimise png with resmush.it
+
+```{r}
+#| eval: false
+
+# resmush_fichero("maps/02-lines.png", overwrite = TRUE)
+resmush_fichero("./figs/02-lines.png", overwrite = TRUE)
+```
+
+
+
+
+
+
+
+
+# 03 Polígonos
+
+## get the data from IGN
+
+no time to automate this
+https://centrodedescargas.cnig.es/CentroDescargas/buscar.do?filtro.codFamilia=REDTR#
+extract all archives and link them to cache/spain/
+
+
+## cache folder
+
+```{r}
+#| eval: false
+
+cache_dir_path <- "./cache/03-polygons/"
+if (!dir.exists(cache_dir_path)) {
+  dir.create(cache_dir_path, recursive = TRUE)
+}
+```
+
+
+## download affected roads as of Oct 31
+
+```{r}
+# cached_csv_oct_31 <- "cache/02-lines/2024-10-31-affected_roads.csv"
+cached_csv_oct_31 <- "./data/2024-10-31-affected_roads.csv"
+
+if (!file.exists(cached_csv_oct_31)) {
+  download_oct_31 <- "https://github.com/DataMirai/ShinyCarreterasInundaciones/raw/refs/heads/main/carreteras_cortadas.csv"
+  download.file(download_oct_31, destfile = cached_csv_oct_31)
+}
+```
+
+```{r}
+provincias <- esp_get_prov(moveCAN = FALSE, epsg = "4326") |>
+  st_drop_geometry() |> 
+  select(ine.prov.name, cpro)
+```
+
+**OJO: Aparece mas adelante con otro formato**
+
+```{r}
+carreteras_afectadas_oct_31_tabla <- read_csv2(cached_csv_oct_31) |> 
+  mutate(nombre = str_extract(CARRETERA, "\\b[A-Z]+-\\d+\\b")) |> 
+  relocate(nombre, .before = CARRETERA) |> 
+  rename('PK_INI' = 'PK INI', 'PK_FIN' = 'PK FIN') |> 
+  select(-CARRETERA) |> 
+  left_join(provincias, by = c("PROVINCIA" = "ine.prov.name")) |>
+    mutate(cpro = if_else(grepl("Valencia", PROVINCIA), true = "46", false = cpro)) |>
+    mutate(cpro = if_else(grepl("Castelló/Castellón", PROVINCIA), true = "12", false = cpro))
+
+carreteras_afectadas_oct_31_nombres <- unique(carreteras_afectadas_oct_31_tabla$nombre)
+```
+
+```{r}
+carreteras_afectadas_oct_31_nombres
+```
+
+
+## get road segments
+
+```{r}
+# roads_cache_path <- "cache/03-polygons/roads_sf.rds"
+roads_cache_path <- "./data/roads_sf.rds"
+
+if(!file.exists(roads_cache_path)) {
+  # get all roads that are mentioned in the original 31 DGT pdf
+  # filter each province gpkg to the required road names
+  # gpkg_list <- dir_ls("cache/spain/", regexp = "red_viaria\\.gpkg$", recurse = TRUE)
+  gpkg_list <- dir_ls("/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/cnig/redes_transporte/", regexp = "red_viaria\\.gpkg$", recurse = TRUE)
+  
+  roads_list <- gpkg_list |> 
+    map(
+      ~ st_read(dsn = path_real(.x),
+      query = sql(paste0(
+        "SELECT *
+          FROM rt_tramo_vial
+          WHERE nombre IN ('", paste(carreteras_afectadas_oct_31_nombres, collapse = "', '"), "')"
+        )),
+        quiet = TRUE
+      ),
+      .progress = TRUE
+    )
+  
+  roads_sf <- do.call(rbind, roads_list)
+  provincias <- esp_get_prov(moveCAN = FALSE, epsg = "4258")
+  roads_sf <- roads_sf |>
+    cbind(roads_sf |> 
+      select(id_tramo) |>
+      st_centroid() |> 
+      st_join(provincias |> select(cpro)) |> 
+      st_drop_geometry() |> 
+      select(cpro) |>
+      as_tibble()
+    ) |> 
+    remove_rownames() |> 
+    filter(!is.na(cpro))
+  # roads_sf |> filter(is.na(cpro)) # sanity check
+  # roads_sf |> filter(is.na(cpro)) |> st_length() # there are 3 of them and all zero length, so ok to drop them
+
+  saveRDS(roads_sf, roads_cache_path)
+}
+
+roads_sf <- readRDS(roads_cache_path)
+```
+
+```{r}
+#| eval: false
+
+gpkg_list
+```
+
+```{r}
+all(carreteras_afectadas_oct_31_nombres %in% roads_sf$nombre) # sanity check
+```
+
+```{r}
+carreteras_afectadas_oct_31_nombres %in% roads_sf$nombre
+```
+
+ 
+## create road-name road-code pairs
+
+```{r}
+# road_codes_cache_fichero <- "cache/03-polygons/road_codes_tbl.rds"
+road_codes_cache_fichero <- "./data/road_codes_tbl.rds"
+
+if(!file.exists(road_codes_cache_fichero)) {
+  api_road_codes_per_prov <- "https://infocar.dgt.es/etraffic/ShareAjax?accion=getRoad4Provincia&codProv="
+  
+  required_provincias <- unique(na.omit(roads_sf$cpro))
+  
+  road_codes_list <- required_provincias |> 
+    map(~ fload(paste0(api_road_codes_per_prov, .x), max_simplify_lvl = "data_frame"), .progress = TRUE)
+  
+  road_codes_tbl <- do.call(bind_rows, road_codes_list) |> as_tibble()
+  saveRDS(road_codes_tbl, road_codes_cache_fichero)
+}
+
+road_codes_tbl <- readRDS(road_codes_cache_fichero)
+```
+
+```{r}
+glimpse(road_codes_tbl)
+```
+
+```{r}
+table(road_codes_tbl$poblacion, useNA = 'ifany')
+```
+
+
+## match back the provinces from road names from sf object
+
+```{r}
+road_codes_tbl_for_queries <- road_codes_tbl |> 
+  select(-poblacion) |> 
+  distinct() |> 
+  left_join(
+    roads_sf |>
+      st_drop_geometry() |> 
+      select(nombre, cpro) |> 
+      distinct() |>
+      as_tibble(),
+    by = c("carrNombre" = "nombre"),
+    relationship = "many-to-many"
+  ) |> 
+  na.omit() |> # if not matched, we are not intereseted as these roads were not affected
+  select(nombre = carrNombre, codCarretera = carrCodigo, cpro)
+```
+
+
+## prepare the km intervals for querying
+
+```{r}
+exact_km_intervals_for_queries <- 
+  carreteras_afectadas_oct_31_tabla |> 
+  select(
+    cpro,
+    nombre,
+    PK_INI,
+    PK_FIN
+  ) |> 
+  left_join(road_codes_tbl_for_queries, by = c("nombre", "cpro"), relationship = "many-to-many")
+```
+
+
+## create more sample points
+
+```{r}
+exact_km_intervals_for_queries <- exact_km_intervals_for_queries |> 
+  mutate(
+    segment_id = row_number(),
+    distance = PK_FIN - PK_INI
+  ) |> 
+  # Swap PK_INI and PK_FIN where distance is negative
+  mutate(
+    temp_PK_INI = ifelse(distance < 0, PK_FIN, PK_INI),
+    temp_PK_FIN = ifelse(distance < 0, PK_INI, PK_FIN),
+    PK_INI = temp_PK_INI,
+    PK_FIN = temp_PK_FIN
+  ) |> 
+  select(-temp_PK_INI, -temp_PK_FIN) |> 
+  mutate(distance = PK_FIN - PK_INI)
+```
+
+```{r}
+# Function to create additional rows at every X km interval, rounding up the last interval to match PK_FIN
+generate_intervals <- function(row, interval, min_distance) {
+  if (row$distance > min_distance) {
+    intervals <- seq(from = row$PK_INI, by = interval, to = row$PK_FIN)
+    
+    # If the last interval doesn't match PK_FIN, adjust the last segment
+    if (tail(intervals, 1) != row$PK_FIN) {
+      intervals <- c(intervals, row$PK_FIN)
+    }
+    
+    data.frame(
+      cpro = row$cpro,
+      nombre = row$nombre,
+      PK_INI = intervals[-length(intervals)],
+      PK_FIN = intervals[-1],
+      codCarretera = row$codCarretera,
+      segment_id = row$segment_id,
+      distance = c(rep(interval, length(intervals) - 2), row$PK_FIN - intervals[length(intervals) - 1])
+    )
+  } else {
+    # Return the original row if the distance is not greater than Y
+    return(data.frame(row))
+  }
+}
+```
+
+```{r}
+# Apply the function to each row and bind the results
+expanded_km_intervals <- exact_km_intervals_for_queries |> 
+  rowwise() |> 
+  do(generate_intervals(., interval = 0.5, min_distance = 1.1)) |> 
+  ungroup()
+```
+
+
+## query coordinates
+
+```{r}
+# km_coords_tbl_cache_path <- "cache/03-polygons/km_coords_tbl.rds"
+km_coords_tbl_cache_path <- "./data/km_coords_tbl.rds"
+
+if(!file.exists(km_coords_tbl_cache_path)) {
+  get_road_coords_from_km <- function(tbl_to_match, sleep = 0.5) {
+    # tbl_to_match <- expanded_km_intervals[1,]
+    # tbl_to_match <- expanded_km_intervals[115,]
+    # tbl_to_match <- expanded_km_intervals[124,]
+    api_road_km_coords <- "https://infocar.dgt.es/etraffic/BuscarElementos?accion=centrar&" # provincia=46&codCarretera=59960&PK=371
+    
+    start_coords <- fload(
+      paste0(api_road_km_coords,
+        "provincia=", tbl_to_match$cpro,
+        "&codCarretera=", tbl_to_match$codCarretera,
+        "&PK=", tbl_to_match$PK_INI),
+        max_simplify_lvl = "data_frame") |>
+      as_tibble()
+    
+    if(tbl_to_match$PK_INI == tbl_to_match$PK_FIN) {
+      end_coords <- start_coords
+    } else {
+      Sys.sleep(sleep)
+      end_coords <- fload(
+        paste0(api_road_km_coords,
+          "provincia=", tbl_to_match$cpro,
+          "&codCarretera=", tbl_to_match$codCarretera,
+          "&PK=", tbl_to_match$PK_FIN),
+          max_simplify_lvl = "data_frame") |>
+        as_tibble()
+    }
+
+    if (nrow(start_coords) == 1 & nrow(end_coords) == 1) {
+      tbl_matched <- tbl_to_match |> 
+        mutate(
+          PK_INIT_lng = start_coords$lng,
+          PK_INIT_lat = start_coords$lat,
+          PK_FIN_lng = end_coords$lng,
+          PK_FIN_lat = end_coords$lat
+        )
+      return(tbl_matched)
+    } else {
+      return(tbl_to_match)
+    }
+  }
+  
+  # testing
+  # i <- 124
+  # test_1 <- get_road_coords_from_km(
+  #   expanded_km_intervals[i,]
+  # )
+  # test_1
+  
+  
+  # takes about 8-10 minutes to avoid hitting the rate limit
+  km_coords_list <- 1:nrow(expanded_km_intervals) |>
+    map(~ get_road_coords_from_km(
+      expanded_km_intervals[.x,],
+      sleep = 0.2
+    ), .progress = TRUE)
+  
+  km_coords_tbl <- do.call(bind_rows, km_coords_list) |> as_tibble()
+  km_coords_tbl <- km_coords_tbl[complete.cases(km_coords_tbl),]
+
+  saveRDS(km_coords_tbl, km_coords_tbl_cache_path)
+}
+
+km_coords_tbl <- readRDS(km_coords_tbl_cache_path)
+```
+
+```{r}
+summary(km_coords_tbl)
+```
+
+
+## create lines to match with roads
+
+```{r}
+km_coords_sf <- km_coords_tbl |> 
+  rowwise() |> 
+  mutate(
+    geometry = st_sfc(st_linestring(matrix(
+      c(PK_INIT_lng, PK_INIT_lat, PK_FIN_lng, PK_FIN_lat),
+      ncol = 2, byrow = TRUE
+    )), crs = 4326)
+  ) |> 
+  ungroup() |> 
+  st_as_sf(sf_column_name = "geometry")
+# mapview(km_coords_sf)
+```
+
+```{r}
+summary(km_coords_sf)
+```
+
+```{r}
+#| fig-align: center
+
+mapview::mapview(km_coords_sf)
+```
+
+
+## buffer and select from all actual roads
+
+```{r}
+km_coords_sf_buffers <- km_coords_sf |> 
+  st_transform(3035) |> 
+  st_buffer(40) |> 
+  st_transform(4258)
+
+selected_roads <- roads_sf[km_coords_sf_buffers,]
+```
+
+```{r}
+#| fig-align: center
+
+mapviewOptions(platform = "leafgl")
+mapview(selected_roads) + mapview(km_coords_sf_buffers, col.regions = "red")
+```
+
+
+## MITMS data
+
+```{r}
+flujos_distritos <- spod_get_zones("distritos", ver = 2) |> 
+  filter(!grepl("FR.*|PT.*", id))
+```
+
+```{r}
+glimpse(flujos_distritos)
+```
+
+```{r}
+selected_roads <- st_transform(selected_roads, st_crs(flujos_distritos))
+```
+
+```{r}
+glimpse(selected_roads)
+```
+
+```{r}
+# mark the zones with affected roads
+distritos_afectados <- flujos_distritos[selected_roads,] |>
+  mutate(affected = TRUE)
+
+distritos_clasificados <- flujos_distritos |> 
+  filter(!id %in% distritos_afectados$id) |> 
+  mutate(affected = FALSE) |>
+  rbind(distritos_afectados)
+```
+
+```{r}
+glimpse(distritos_afectados)
+```
+
+```{r}
+glimpse(distritos_clasificados)
+```
+
+
+## move Canary islands
+
+```{r}
+distritos_clasificados_grafico <- rbind(
+  # all zones except for Canary Islands
+  distritos_clasificados |> 
+    filter(!grepl("^38|^35", id)),
+  # Canary Islands moved closer to mainland Spain
+  esp_move_can(
+    distritos_clasificados |> filter(grepl("^38|^35", id))
+    )
+  ) |> 
+  st_simplify(preserveTopology = TRUE, dTolerance = 100)
+```
+
+
+## get number of trips
+
+```{r}
+# distritos_con_viajes_directorio <- "cache/03-polygons/distritos_con_viajes_grafico_2023_10_25.rds"
+distritos_con_viajes_directorio <- "./data/distritos_con_viajes_grafico_2023_10_25.rds"
+
+if(!file.exists(distritos_con_viajes_directorio)) {
+  origen_destino_distritos_2023_10_25 <- spod_get(
+    type = "origin-destination",
+    zones = "distr",
+    dates = c("2023-10-25") # roughly equivalent to 2024-10-30
+  )
+
+  viajes_por_origen_2023_10_25 <- origen_destino_distritos_2023_10_25 |> 
+    group_by(id_origin) |> 
+    summarise(total_trips = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
+    collect()
+
+  distritos_con_viajes_grafico_2023_10_25 <- distritos_clasificados_grafico |> 
+    left_join(viajes_por_origen_2023_10_25, by = c("id" = "id_origin")) |> 
+    mutate(total_trips = if_else(is.na(total_trips), 1, total_trips))
+
+  saveRDS(distritos_con_viajes_grafico_2023_10_25, distritos_con_viajes_directorio)
+}
+
+distritos_con_viajes_grafico_2023_10_25 <- readRDS(distritos_con_viajes_directorio)
+```
+
+```{r}
+glimpse(distritos_con_viajes_grafico_2023_10_25)
+```
+
+
+## cartogram
+
+```{r}
+transporte_afectado_2023_1025 <- distritos_con_viajes_grafico_2023_10_25 |>
+  filter(affected) |>
+  cartogram_cont(weight = "total_trips", itermax = 15)
+```
+
+```{r}
+#| fig-align: center
+
+mapview(transporte_afectado_2023_1025)
+```
+
+
+## the share of potentially disrupted trips
+
+```{r}
+share_num_disrupted_2023_10_25 <- distritos_con_viajes_grafico_2023_10_25 |> 
+  st_drop_geometry() |> 
+  group_by(affected) |>
+  summarise(total_trips = sum(total_trips, na.rm = TRUE), .groups = "drop") |>
+  mutate(share_disrupted = round(total_trips / sum(total_trips) * 100, 0)) |> 
+  filter(affected)
+```
+
+```{r}
+share_num_disrupted_2023_10_25
+```
+
+
+## prepare paths to logos
+
+```{r}
+spod_logo <- system.file("help/figures", "logo.png", package = "spanishoddata")
+ropenspain_logo <- system.file("help/figures", "logo.png", package = "rostemplate")
+```
+
+
+## generate plot
+
+```{r}
+#| fig-align: center
+
+map_03_polygons <- ggplot() +
+  geom_sf(data = esp_get_country(),
+          fill = "grey90", col = "grey20", linewidth = 0.03) +
+  geom_sf(data = transporte_afectado_2023_1025,
+          # aes(fill = total_trips),
+          fill = "grey30",
+          col = "grey80",
+          linewidth = 0.2) +
+  # scale_fill_viridis_c(option = "inferno", name = "Viajes") +
+  geom_image(data = tibble(x = 3, y = 37),
+    aes(image = spod_logo, x = x, y = y), size = 0.3) +
+  geom_image(data = tibble(x = 2.05, y = 35),
+    aes(image = ropenspain_logo, x = x, y = y), size = 0.05) +
+  annotate("text", x = 2.55, y = 35, label = "rOpenSpain", size = 3, hjust = 0, color = "grey30") +
+  labs(
+    title = paste0("Hasta el ", share_num_disrupted_2023_10_25$share_disrupted, "% de la Movilidad Diaria<br>Nacional Interrumpida por la DANA"),
+    subtitle = "Tamaño del municipio escalado según<br>el número de viajes potencialmente afectados",
+    caption = "<i>En solidaridad con las víctimas y sus familias</i><br><br>Autor: Egor Kotov | #30DayMapChallenge | Día 3: Polígonos<br>Paquete R para acceder a los datos: ropenspain.github.io/spanishoddata/<br>Fuentes de datos: Ministerio de Transportes y Movilidad Sostenible (MITMS); Nommon;<br>Dirección General de Trafico (DGT); Instituto Geográfico Nacional<br>Basado en los datos de cierres de carreteras de la DGT el 31 de octubre de 2024<br>y en los datos de movilidad típica del MITMS/Nommon<br>en un día comparable el 25 de octubre de 2023."
+  ) +
+  theme_void() +
+  theme(
+    text = element_text(family = "Roboto", size = 18),
+    panel.background = element_rect(fill = "grey70", color = NA),
+    plot.background = element_rect(fill = "grey70", color = NA),
+    legend.text = element_markdown(size = 8),
+    legend.title = element_markdown(size = 10),
+    plot.title = element_markdown(hjust = 0.5, color = "grey30"),
+    plot.subtitle = element_markdown(hjust = 0.5, color = "grey40", size = 12, face = "italic"),
+    plot.caption = element_markdown(size = 9, hjust = 0.5, color = "grey40"),
+    plot.margin = margin(t = 20, r = 5, b = 20, l = 5),
+    legend.position = "inside",
+    legend.position.inside = c(0.15, 0.6),
+    legend.key.width  = unit(0.5, "lines"),
+    legend.key.size = unit(1.4, "cm"),
+    legend.key.height = unit(0.2, "cm")
+  )
+
+map_03_polygons
+```
+
+
+## save maps
+
+
+### save map to png
+
+```{r}
+#| eval: false
+
+ggsave(
+  # filename = "maps/03-polygons.png",
+  filename = "./figs/03-polygons.png",
+  map_03_polygons,
+  width = 7,
+  height = 7,
+  units = "in",
+  dpi = 300,
+  create.dir = TRUE
+)
+```
+
+
+### opmimise png with resmush.it
+
+```{r}
+#| eval: false
+
+# resmush_fichero("maps/03-polygons.png", overwrite = TRUE)
+resmush_fichero("./figs/03-polygons.png", overwrite = TRUE)
+```
+
+
+### save to svg
+
+```{r}
+#| eval: false
+
+ggsave(
+  # filename = "maps/03-polygons.svg",
+  filename = "./figs/03-polygons.svg",
+  map_03_polygons,
+  width = 8,
+  height = 7,
+  units = "in",
+  dpi = 300,
+  create.dir = TRUE
+)
+```
+
+Below is archived info for when i was working with the roads data on ESRI, but it is outdated ----
+
+```{r}
+#| eval: false
+
+# affected road list
+# as of 31 Oct - 2 Nov, see code in 02-lines.R
+affected_roads_ids <- c("CA-3113", "CA-5101", "CA-6101", "CA-9101", "A-4200", "GR-4104", 
+"SE-4104", "A-1501", "Z-453", "CM-215", "GU-952", "GU-958", 
+"CV-130", "CV-134", "CV-137", "CV-1486", "CV-200", "A-7", "CV-33", 
+"CV-336", "CV-36", "CV-374", "CV-377", "CV-378", "CV-379", "CV-380", 
+"CV-382", "CV-383", "CV-390", "CV-391", "CV-395", "CV-401", "CV-403", 
+"CV-413", "CV-416", "CV-42", "CV-422", "CV-424", "CV-425", "CV-426", 
+"CV-427", "CV-429", "CV-431", "CV-448", "CV-472", "CV-473", "CV-50", 
+"CV-505", "CV-509", "CV-511", "CV-512", "CV-515", "N-3", "N-322", 
+"V-30", "V-31", "A-314", "A-372", "A-384", "A-393", "A-408", 
+"AP-4", "CA-3101", "CA-3102", "CA-3108", "CA-3205", "CA-4107", 
+"CA-5200", "CA-6105", "CA-6200", "SE-3102", "SE-3105", "SE-3201", 
+"SE-4108", "SE-6300", "TE-28", "A-1105", "A-3", "CV-10", "CV-148", 
+"AP-7", "CV-345", "CV-354", "CV-370", "CV-372", "CV-396", "CV-400", 
+"CV-415", "CV-417", "CV-421", "CV-43", "CV-435", "CV-470", "CV-506", 
+"CV-507", "CV-508", "CV-513", "CV-520", "CV-522", "CV-523", "CV-525", 
+"CV-543", "CV-544", "CV-545", "CV-557", "CV-573", "CV-575", "CV-576", 
+"CV-577", "CV-603", "CV-612", "N-330", "N-332")
+
+# failing roads "CV-413" "CV-426" "CV-448" "CV-544" "CV-577" "N-3" 
+# manual checks result in the following referene:
+# 'N-3' - 'N-III'
+# 'CV-577' - 'CV-5751'
+# 'CV-577' - 'CV-5752'
+# 'CV-544' - 'CV-5446'
+# 'CV-544' - 'CV-5447'
+# 'CV-448' - 'CV-4480'
+# 'CV-426' - 'CV-4290'
+# 'CV-426' - 'CV-4291'
+# 'CV-413' - 'CV-4131'
+
+# recode so that these roads match when querying
+# list of failing roads
+failing_roads <- c("CV-413", "CV-426", "CV-448", "CV-544", "CV-577", "N-3")
+
+# replace failing roads with correct references
+replacement_roads <- c("N-III", "CV-5751", "CV-5752", "CV-5446", "CV-5447", "CV-4480", "CV-4290", "CV-4291", "CV-4131")
+
+# remove failing roads
+updated_road_names <- setdiff(carreteras_afectadas_oct_31_nombres, failing_roads)
+
+# add replacements
+updated_road_names <- c(updated_road_names, replacement_roads)
+```
+
+
+
+# 12 Tiempo y espacio
+
+
+## get impact data
+
+```{r}
+# area_afectada_fichero <- "cache/12-time-and-space/2024-11-08-affected_area.rds"
+area_afectada_fichero <- "./data/2024-11-08-affected_area.rds"
+
+if(!file_exists(area_afectada_fichero)){
+  if(!dir_exists(path_dir(area_afectada_fichero))){
+    dir_create(path_dir(area_afectada_fichero), recurse = TRUE)
+  }
+  area_afectada_url <- "https://services8.arcgis.com/mApiu3uMEBwNqKz2/arcgis/rest/services/MapDANA_WFL1/FeatureServer/1"
+  
+  area_afectada <- arcpullr::get_spatial_layer(url = area_afectada_url)
+  saveRDS(area_afectada, area_afectada_fichero)
+}
+
+area_afectada <- readRDS(area_afectada_fichero)
+```
+
+```{r}
+summary(area_afectada)
+```
+
+
+## get the flows data 
+
+**Los datos están en duckdb**
+
+```{r}
+origen_destino_distritos_intervalo <- spod_get(
+  type = "od",
+  zones = "distr",
+  dates = c(start = "2024-10-28", end = "2024-10-31")
+)
+```
+
+```{r}
+glimpse(origen_destino_distritos_intervalo)
+```
+
+
+## get the zones
+
+```{r}
+flujos_distritos <- spod_get_zones("distritos", ver = 2)
+```
+
+```{r}
+summary(flujos_distritos)
+```
+
+
+## focus data on Valencia
+
+```{r}
+flujos_distritos_valencia <- flujos_distritos |>
+  filter(grepl("València", name, ignore.case = TRUE))
+```
+
+```{r}
+summary(flujos_distritos_valencia)
+```
+
+```{r}
+flujos_distritos_valencia_fua <- flujos_distritos[
+  st_buffer(flujos_distritos_valencia, dist = 30000)
+  ,
+]
+```
+
+```{r}
+summary(flujos_distritos_valencia_fua)
+```
+
+```{r}
+#| fig-align: center
+
+mapview(flujos_distritos_valencia_fua)
+```
+
+
+## prepare data for flowmap
+
+```{r}
+valencia_fua_coords <- flujos_distritos_valencia_fua |>
+  st_centroid() |>
+  st_transform(4326) |> 
+  st_coordinates() |>
+  as.data.frame() |>
+  mutate(id = flujos_distritos_valencia_fua$id, name = flujos_distritos_valencia_fua$name) |>
+  rename(lon = X, lat = Y) |> 
+  as_tibble()
+```
+
+```{r}
+summary(valencia_fua_coords)
+```
+
+
+```{r}
+origen_destino_distritos_intervalo_valencia <- origen_destino_distritos_intervalo |>
+  filter(id_origin %in% valencia_fua_coords$id | id_destination %in% valencia_fua_coords$id) |> 
+  # filter(date == as.Date("2024-10-29")) |> 
+  mutate(time = as.POSIXct(paste0(date, "T", time_slot, ":00:00"))) |>
+  group_by(origin = id_origin, dest = id_destination, time, date, time_slot) |>
+  summarise(count = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
+  collect() |> 
+  as_tibble()
+```
+
+```{r}
+glimpse(origen_destino_distritos_intervalo_valencia)
+```
+
+## flowmap
+
+```{r}
+# head(valencia_fua_coords)
+glimpse(valencia_fua_coords)
+```
+
+```{r}
+glimpse(origen_destino_distritos_intervalo_valencia)
+# head(origen_destino_distritos_intervalo_valencia)
+```
+
+```{r}
+flowmap <- flowmapblue(locations = valencia_fua_coords, flows = origen_destino_distritos_intervalo_valencia, mapboxAccessToken = Sys.getenv("MAPBOX_TOKEN"), animation = FALSE, clustering = FALSE)
+```
+
+```{r}
+#| fig-align: center
+#| eval: false
+
+flowmap
+```
+
+```{r}
+#| eval: false
+
+htmlwidgets::saveWidget(flowmap, "maps/12-time-and-space.html")
+```
+
+```{r}
+flowmapblue_28 <- flowmapblue(locations = valencia_fua_coords, 
+                          flows = origen_destino_distritos_intervalo_valencia |> filter(date == "2024-10-28"), 
+                          mapboxAccessToken = Sys.getenv("MAPBOX_TOKEN"), 
+                          animation = FALSE, 
+                          clustering = FALSE)
+```
+
+```{r}
+#| fig-align: center
+#| eval: false
+
+flowmapblue_28
+```
+
+```{r}
+#| eval: false
+
+htmlwidgets::saveWidget(flowmapblue_28, "maps/12-time-and-space-28oct.html")
+```
+
+```{r}
+flowmap_29 <- flowmapblue(locations = valencia_fua_coords, 
+                          flows = origen_destino_distritos_intervalo_valencia |> filter(date == "2024-10-29"), 
+                          mapboxAccessToken = Sys.getenv("MAPBOX_TOKEN"), 
+                          animation = FALSE, 
+                          clustering = FALSE)
+```
+
+```{r}
+#| fig-align: center
+#| eval: false
+
+flowmap_29
+```
+
+```{r}
+#| eval: false
+
+htmlwidgets::saveWidget(flowmap_29, "maps/12-time-and-space-29oct.html")
+```
+
+```{r}
+flowmap_30 <- flowmapblue(locations = valencia_fua_coords, 
+                          flows = origen_destino_distritos_intervalo_valencia |> filter(date == "2024-10-30"), 
+                          mapboxAccessToken = Sys.getenv("MAPBOX_TOKEN"), 
+                          animation = FALSE, 
+                          clustering = FALSE)
+```
+
+```{r}
+#| fig-align: center
+#| eval: false
+
+flowmap_30
+```
+
+```{r}
+#| eval: false
+
+htmlwidgets::saveWidget(flowmap_30, "maps/12-time-and-space-30oct.html")
+```
+
+```{r}
+flowmap_31 <- flowmapblue(locations = valencia_fua_coords, 
+                          flows = origen_destino_distritos_intervalo_valencia |> filter(date == "2024-10-31"), 
+                          mapboxAccessToken = Sys.getenv("MAPBOX_TOKEN"), 
+                          animation = FALSE, 
+                          clustering = FALSE)
+```
+
+```{r}
+#| fig-align: center
+#| eval: false
+
+flowmap_31
+```
+
+```{r}
+#| eval: false
+
+htmlwidgets::saveWidget(flowmap_31, "maps/12-time-and-space-31oct.html")
+```
+
+
+## prepare paths to logos
+
+```{r}
+spod_logo <- system.file("help/figures", "logo.png", package = "spanishoddata")
+ropenspain_logo <- system.file("help/figures", "logo.png", package = "rostemplate")
+```
+
+
+## 46186 static flowmap
+
+```{r}
+origen_destino_46186 <- origen_destino_distritos_intervalo_valencia |> 
+  filter(origin == "46186" | dest == "46186")
+```
+
+```{r}
+summary(origen_destino_46186)
+```
+
+```{r}
+distrito_46186 <- flujos_distritos |>
+  filter(id %in% origen_destino_46186$origin | id %in% origen_destino_46186$dest) |> 
+  st_transform(4326)
+```
+
+```{r}
+summary(distrito_46186)
+```
+
+```{r}
+flowmapper_nodes <- valencia_fua_coords |> 
+  select(-name) |> 
+    rename(x = lon, y = lat, name = id)
+```
+
+```{r}
+summary(flowmapper_nodes)
+```
+
+
+```{r}
+flowmapper_od <- origen_destino_46186 |>
+  filter(time_slot== 13) |> 
+    filter(origin %in% flowmapper_nodes$name & dest %in% flowmapper_nodes$name) |>
+      rename(o = origin, d = dest, value = count)
+```
+
+```{r}
+flowmapper_od
+```
+
+```{r}
+flujos_distritos_grafico <- flujos_distritos |> st_simplify(dTolerance = 100) |> st_transform(4326)
+base_plot <- ggplot() +
+  geom_sf(data = flujos_distritos_grafico, fill = "grey", color = "white", lwd = 0.1) +
+    geom_sf(data = flujos_distritos_grafico, fill = NA, color = "white", lwd = 0.1) +
+  coord_sf(xlim = c(-0.7, -0.2), ylim = c(39.3, 39.6))
+```
+
+```{r}
+glimpse(flujos_distritos_grafico)
+```
+
+```{r}
+flowmap_28 <- base_plot |> add_flowmap(od = flowmapper_od |> filter(date == "2024-10-28"), nodes = flowmapper_nodes, node_radius_factor = 0.5, edge_width_factor = 0.5, arrow_point_angle = 35) + theme_void() + labs(title = "13:00 - 14:00 28 Oct 2024")+ theme(legend.position = c(0.9, 0.5), plot.title = element_text(family = "Roboto")) + scale_fill_viridis_c(limits = c(0,500), name = "Viajes")
+```
+
+```{r}
+#| fig-align: center
+
+flowmap_28
+```
+
+
+```{r}
+area_afectada$area_type <- "Impacted Area"
+```
+  
+```{r}
+flowmap_30 <- ( base_plot +
+  geom_sf(data = area_afectada, aes(fill = area_type), alpha = 0.3) +
+  coord_sf(xlim = c(-0.7, -0.2), ylim = c(39.3, 39.6)) +
+  scale_fill_manual(values = c("Impacted Area" = "pink"), name = "", labels = "Delimitación\nCartográfica\nde la DANA") + new_scale_fill() )|>
+  add_flowmap(od = flowmapper_od |> filter(date == "2024-10-30"), nodes = flowmapper_nodes, node_radius_factor = 0.5, edge_width_factor = 0.5, arrow_point_angle = 35) + theme_void() + labs(title = "13:00 - 14:00 30 Oct 2024") + theme(legend.position = c(0.9, 0.5), plot.title = element_text(family = "Roboto")) + scale_fill_viridis_c(limits = c(0,500), guide = 'none')
+
+```
+
+```{r}
+#| fig-align: center
+
+flowmap_30
+```
+
+```{r}
+histograma_trayectos_28 <- origen_destino_46186 |>
+  filter(date == "2024-10-28") |> 
+  group_by(time_slot) |> 
+  summarise(count = sum(count, na.rm = TRUE)) |> 
+  ggplot() +
+  geom_bar(aes(x = time_slot, y = count), stat = "identity", fill = "grey70") +
+  geom_bar(data = origen_destino_46186 |> filter(date == "2024-10-28" & time_slot == 13), aes(x = time_slot, y = count), stat = "identity", fill = "darkblue") +
+  scale_x_continuous(breaks = seq(from = 0, to = 23, by = 4)) +
+  scale_y_continuous(breaks = c(0, 2000, 4000, 6000, 8000, 10000), limits = c(0, 10000)) +
+  labs(y = "", x = "Hora") +
+  theme_classic(base_size = 14, base_family = "Roboto")
+```
+ 
+```{r}
+#| fig-align: center
+
+histograma_trayectos_28
+```
+
+```{r}
+histograma_trayectos_30 <- origen_destino_46186 |>
+  filter(date == "2024-10-30") |> 
+  group_by(time_slot) |> 
+  summarise(count = sum(count, na.rm = TRUE)) |> 
+  ggplot() +
+  geom_bar(aes(x = time_slot, y = count), stat = "identity", fill = "grey70") +
+  geom_bar(data = origen_destino_46186 |> filter(date == "2024-10-30" & time_slot == 13), aes(x = time_slot, y = count), stat = "identity", fill = "darkblue") +
+  geom_image(data = tibble(x = 6, y = 6400),
+    aes(image = spod_logo, x = x, y = y), size = 0.65) +
+  geom_image(data = tibble(x = 13, y = 5500),
+    aes(image = ropenspain_logo, x = x, y = y), size = 0.2) +
+  annotate("text", x = 15, y = 5500, label = "rOpenSpain", size = 6, hjust = 0, color = "grey30") +
+  scale_x_continuous(breaks = seq(from = 0, to = 23, by = 4)) +
+  scale_y_continuous(breaks = c(0, 2000, 4000, 6000, 8000, 10000), limits = c(0, 10000)) +
+  labs(y = "", x = "Hora") +
+  theme_classic(base_size = 14, base_family = "Roboto")
+# histograma_trayectos_30
+```
+
+```{r}
+#| fig-align: center
+
+histograma_trayectos_30
+```
+
+
+```{r}
+combined_plot <- (flowmap_28 | flowmap_30) / (histograma_trayectos_28 | histograma_trayectos_30)
+```
+
+```{r}
+map_12_time_and_space <- combined_plot +
+  plot_layout(heights = c(3, 1)) +
+  plot_annotation(
+  title = "Impacto de la DANA en la movilidad en un barrio de València",
+  caption = "<i>En solidaridad con las víctimas y sus familias</i><br><br>Autor: Egor Kotov | #30DayMapChallenge | Día 12: Tiempo y espacio<br>Paquete R para acceder a los datos: ropenspain.github.io/spanishoddata/<br>Fuentes de datos: Ministerio de Transportes y Movilidad Sostenible (MITMS); Nommon;<br>Departamento de Geografía, Universitat de València; Instituto Geográfico Nacional<br>Basado en los datos de movilidad del MITMS/Nommon<br> 28-30 de octubre de 2024",
+  theme = theme(
+    plot.title = element_text(size = 24, hjust = 0.5, family = "Roboto"),
+    plot.subtitle = element_text(size = 18, family = "Roboto"),
+    plot.caption = element_markdown(family = "Roboto")
+    )
+  )
+```
+
+```{r}
+#| fig-align: center
+
+map_12_time_and_space
+```
+
+
+## save plot
+
+
+### save map to png
+
+```{r}
+#| eval: false
+
+ggsave(
+  # filename = "maps/12-time-and-space.png",
+  filename = "./figs/12-time-and-space.png",
+  map_12_time_and_space,
+  width = 12,
+  height = 8,
+  units = "in",
+  dpi = 300,
+  create.dir = TRUE
+)
+```
+
+
+### opmimise png with resmush.it
+
+```{r}
+#| eval: false
+
+# resmush_fichero("maps/12-time-and-space.png", overwrite = TRUE)
+resmush_fichero("./figs/12-time-and-space.png", overwrite = TRUE)
+```
+
+
+
+# 13 Una herramienta nueva
+
+
+## get impact data
+
+```{r}
+# area_afectada_fichero <- "cache/13-a-new-tool/2024-11-08-affected_area.rds"
+area_afectada_fichero <- "./data/2024-11-08-affected_area.rds"
+
+if(!file_exists(area_afectada_fichero)){
+  if(!dir_exists(path_dir(area_afectada_fichero))){
+    dir_create(path_dir(area_afectada_fichero), recurse = TRUE)
+  }
+  area_afectada_url <- "https://services8.arcgis.com/mApiu3uMEBwNqKz2/arcgis/rest/services/MapDANA_WFL1/FeatureServer/1"
+  
+  area_afectada <- get_spatial_layer(url = area_afectada_url)
+  saveRDS(area_afectada, area_afectada_fichero)
+}
+
+area_afectada <- readRDS(area_afectada_fichero)
+```
+
+
+## get data from INE atlas
+
+- `category`: Character string specifying the data category. Must be one of: "income", "income_sources", "demographics", "distribution_sex", "distribution_sex_age", "distribution_sex_nationality", or "gini_p80p20".
+
+Nos quedamos con la provincia de Madrid.
+
+```{r}
+seccion_censal_ingresos <- get_atlas("income", level = "tract")
+# seccion_censal <- get_tract_geom(year = 2022) |> filter(province == "Valencia/Valéncia")
+seccion_censal <- get_tract_geom(year = 2022) |> filter(province == "Madrid")
+```
+
+```{r}
+summary(seccion_censal_ingresos)
+```
+
+```{r}
+# seccion_censal$mun_code <- substr(seccion_censal$tract_code, 1, 5)
+```
+
+```{r}
+summary(seccion_censal)
+```
+
+```{r}
+seccion_censal_ingresos <- seccion_censal |> 
+    left_join(seccion_censal_ingresos |> 
+    filter(year == 2022) |> 
+    select(tract_code, net_income_pc), by = "tract_code")
+```
+
+```{r}
+seccion_censal_ingresos$mun_code <- substr(seccion_censal_ingresos$tract_code, 1, 5)
+```
+
+```{r}
+summary(seccion_censal_ingresos)
+```
+
+Nos quedamos con la ciudad de Madrid.
+
+```{r}
+seccion_censal_ingresos <- seccion_censal_ingresos[seccion_censal_ingresos$mun_code == '28079', ]
+```
+
+```{r}
+#| fig-align: center
+
+map1 <- maplibre(bounds = seccion_censal_ingresos) |> 
+  add_fill_layer(
+    id = "income",
+    source = seccion_censal_ingresos,
+    fill_color = interpolate(
+      column = "net_income_pc",
+      values = c(min(seccion_censal_ingresos$net_income_pc, na.rm = TRUE), max(seccion_censal_ingresos$net_income_pc, na.rm = TRUE)),
+    stops = c("lightblue", "darkblue")
+    )
+  )
+
+map1
+```
+
+
+## get the flows data
+
+```{r}
+origen_destino_distritos_2024_10_29 <- spod_get(
+  type = "od",
+  zones = "distritos",
+  dates = c("2024-10-29")
+)
+```
+
+```{r}
+glimpse(origen_destino_distritos_2024_10_29)
+```
+
+
+## get the zones
+
+```{r}
+flujos_distritos <- spod_get_zones("distritos", ver = 2)
+```
+
+```{r}
+glimpse(flujos_distritos)
+```
+
+
+## focus data on Madrid
+
+```{r}
+flujos_distritos_madrid <- flujos_distritos |>
+  # filter(grepl("Madrid", name, ignore.case = TRUE))
+  filter(municipalities == "28079")
+
+flujos_distritos_madrid_fua <- flujos_distritos[
+  st_buffer(flujos_distritos_madrid, dist = 10000)
+  ,
+]
+```
+
+```{r}
+glimpse(flujos_distritos_madrid)
+```
+
+```{r}
+#| fig-align: center
+
+mapview::mapview(flujos_distritos_madrid_fua)
+```
+
+
+## prepare data for flowmap
+
+```{r}
+nodes <- flujos_distritos_madrid_fua |>
+  st_centroid() |>
+  st_transform(4326) |> 
+  st_coordinates() |>
+  as.data.frame() |>
+  mutate(name = flujos_distritos_madrid_fua$id) |>
+  rename(x = X, y = Y) |> 
+  as_tibble()
+```
+
+```{r}
+glimpse(nodes)
+```
+
+```{r}
+od <- origen_destino_distritos_2024_10_29 |>
+  filter(id_origin %in% nodes$name & id_destination %in% nodes$name) |> 
+  group_by(o = id_origin, d = id_destination, date, activity_origin, activity_destination) |>
+  summarise(value = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
+  collect() |> 
+  as_tibble()
+```
+
+```{r}
+glimpse(od)
+```
+
+```{r}
+nodes_flows_hw <- flowmap_sf(
+  od = od |>
+    filter(activity_origin %in% c("home", "work_or_study") & activity_destination %in% c("home", "work_or_study")),
+  nodes = nodes,
+  crs = 4326,
+  k_nodes = 30
+)
+```
+
+```{r}
+glimpse(nodes_flows_hw)
+```
+
+**Aquí hay algo mal. Revisar**
+
+```{r}
+hw_min_max <- round(range(nodes_flows_hw$flow, na.rm = TRUE), 0)
+```
+
+```{r}
+
+m_hw <- maplibre(bounds = nodes_flows_hw,
+  style = carto_style("positron")) |> 
+  add_fill_layer(
+    id = "29 Oct HW",
+    source = nodes_flows_hw,
+    fill_color = interpolate(
+      column = "flow",
+      values = c(hw_min_max[[1]], hw_min_max[[2]]),
+      stops = c("lightblue", "darkblue"),
+      na_color = "lightgrey"
+    ),
+    tooltip = "flow"
+  ) |> 
+    add_legend(
+      "Daily\nHome-Work-Home Trips (thoudands)",
+      values = c(round(hw_min_max[[1]],0), round(hw_min_max[[2]]/1000,0)),
+      colors = c("lightblue", "darkblue")
+    )
+
+
+```
+
+```{r}
+#| fig-align: center
+#| eval: false
+
+m_hw
+```
+
+```{r}
+nodes_flows_other <- flowmap_sf(
+  od = od |>
+    filter(activity_origin %in% c("frequent_activityuent", "infrequent_activity") & activity_destination %in% c("frequent_activity", "infrequent_activity")),
+  nodes = nodes,
+  crs = 4326,
+  k_nodes = 30
+)
+```
+
+```{r}
+# other_min_max <- round(range(nodes_flows_other$flow, na.rm = TRUE),0)
+```
+
+```{r}
+m_other <- maplibre(bounds = nodes_flows_other,
+  style = carto_style("positron")) |> 
+  add_fill_layer(
+    id = "29 Oct other",
+    source = nodes_flows_other,
+    fill_color = interpolate(
+      column = "flow",
+      values = c(hw_min_max[[1]], hw_min_max[[2]]),
+      stops = c("lightblue", "darkblue"),
+      na_color = "lightgrey"
+    ),
+    tooltip = "flow"
+  ) |> 
+    add_legend(
+      "Daily\nOther Trips (thoudands)",
+      values = c(round(hw_min_max[[1]],0), round(hw_min_max[[2]]/1000,0)),
+      colors = c("lightblue", "darkblue"),
+      position = "top-right"
+    )
+```
+
+```{r}
+#| fig-align: center
+#| eval: false
+
+m_other
+```
+
+```{r}
+compare_plot <- compare(m_hw, m_other)
+```
+
+```{r}
+#| fig-align: center
+#| eval: false
+
+compare_plot
+```
+
+
+## prepare paths to logos
+
+```{r}
+spod_logo <- system.file("help/figures", "logo.png", package = "spanishoddata")
+ropenspain_logo <- system.file("help/figures", "logo.png", package = "rostemplate")
+base64_spod <- dataURI(file = spod_logo, mime = "image/png")
+base64_ropenspain <- dataURI(file = ropenspain_logo, mime = "image/png")
+```
+
+```{r}
+html_overlay <- sprintf(
+  '<style>
+     .floating-image1 {
+         position: absolute;
+         top: 320px;
+         right: 20px;
+         width: 200px;
+         z-index: 1000;
+         pointer-events: none;
+     }
+     .floating-image2 {
+         position: absolute;
+         top: 580px;
+         right: 160px;
+         width: 60px;
+         z-index: 1000;
+         pointer-events: none;
+     }
+      .floating-text {
+      position: absolute;
+      top: 610px;  
+      right: 120px; 
+      width: 20px;
+      z-index: 1000;
+      font-size: 22px;
+      color: black; 
+      pointer-events: none;
+     }
+   </style>
+   <img src="%s" class="floating-image1" alt="Overlay Image 1">
+   <img src="%s" class="floating-image2" alt="Overlay Image 2">
+   <div class="floating-text">rOpenSpain</div>', base64_spod, base64_ropenspain)
+
+# Inject the HTML overlay into the leaflet map's saved HTML
+map_with_overlay <- onRender(
+  compare_plot,
+  paste0(
+    "function(el, x) {",
+    "  var overlay = `", html_overlay, "`;",
+    "  document.getElementById(el.id).insertAdjacentHTML('beforeend', overlay);",
+    "}"
+  )
+)
+```
+
+```{r}
+#| fig-align: center
+#| eval: false
+
+map_with_overlay
+```
+
+```{r}
+#| eval: false
+
+# saveWidget(map_with_overlay, "maps/13-a-new-tool.html", selfcontained = FALSE)
+saveWidget(map_with_overlay, "13-a-new-tool.html", selfcontained = TRUE)
+```
+
+```{r}
+sessionInfo()
+```
+
+
+# Links
+
+- [12-time-and-space.R](https://github.com/e-kotov/2024-30DayMapChallenge/blob/main/R/12-time-and-space.R)
+- [Github](https://github.com/e-kotov/2024-30DayMapChallenge/tree/main)
+
+
+# Licencias
+
+- Datos de movilidad. Tienen licencia MIT a través del paquete, pero revisar.

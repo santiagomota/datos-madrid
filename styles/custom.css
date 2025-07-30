@@ -1,0 +1,59 @@
+
+/* Estilo Banco de España sobre tema cosmo */
+
+/* Tipografía */
+body {
+  font-family: Arial, sans-serif;
+  font-size: 1.05rem;
+  color: #000;
+}
+
+h1, h2, h3, h4 {
+  font-family: Georgia, serif;
+  font-weight: normal;
+  color: #003366;
+}
+
+/* Enlaces */
+a {
+  color: #003366;
+  text-decoration: underline;
+}
+a:hover {
+  color: #001a33;
+}
+
+/* Navbar */
+.navbar {
+  background-color: white !important;
+  border-bottom: 1px solid #e0e0e0;
+}
+.navbar-brand, .navbar-nav .nav-link {
+  color: #003366 !important;
+  font-weight: bold;
+}
+
+/* TOC lateral */
+.sidebar nav {
+  border-right: 1px solid #e0e0e0;
+}
+.sidebar nav .nav-link {
+  color: #003366;
+}
+
+/* Secciones */
+.section {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Footer */
+.footer {
+  font-size: 0.9rem;
+  background: #f8f8f8;
+  border-top: 1px solid #e0e0e0;
+  padding: 1rem 0;
+  color: #666;
+  text-align: center;
+}

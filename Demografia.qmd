@@ -1,0 +1,640 @@
+---
+title:    "Demografía"
+author:   "by [Santiago Mota](https://www.linkedin.com/in/santiagomota/)"
+mail:     "santiago_mota@yahoo.es"
+linkedin: "santiagomota"
+twitter:  "mota_santiago"
+github:   "santiagomota"
+keywords: "R, Quarto"
+# categories: [r, spatial, quarto, duckDB]
+date:     today
+logo:     "./figs/logo2_color.png"
+title-block-banner: "#27445C"
+license:
+  type: "MIT"
+  text: "Este proyecto está licenciado bajo la Licencia MIT. Puedes ver los detalles en el siguiente enlace https://opensource.org/licenses/MIT"
+  url:  "https://opensource.org/licenses/MIT"
+urlcolor: blue
+always_allow_html: true
+params:
+  p_directorio_in:  './data/' # ''
+  p_directorio_out: ''
+  p_directorio_externo: '/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/' #  'C:/Varios/R/Archivos/' # 
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-depth: 6
+    theme: 
+        light: cosmo   # flatly, cosmo, sandstone, yeti bootswatch theme
+        dark: solar
+    number-sections: true
+    page-layout: full # article full
+    # max-width: 3000px
+    title-block-banner: true
+    code-fold: false
+    code-copy: true
+    code-summary: "" # Show the code"
+    # code-tools: true
+    # grid:
+    #     body-width: 2600px
+    #     sidebar-width: 200px
+    #     margin-width: 200px
+    include-after-body: footer_V2.html
+    # include-in-header: github-corner.html
+    self-contained: true
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+  docx:
+    toc: true
+    number-sections: true
+    colorlinks: true  
+  pptx: 
+    reference-doc: template.pptx
+    incremental:  true
+engine: knitr 
+---
+
+Creamos una variable parametrizada, `p_directorio_externo`, para que sea mas fácil pasar el material de un ordenador a otro.
+
+```{r}
+#| label: incorporacion-parametros
+
+# https://bookdown.org/yihui/rmarkdown-cookbook/parameterized-reports.html
+directorio_externo <- params$p_directorio_externo
+directorio_externo
+```
+
+```{r}
+#| include: false
+#| echo: false
+
+# Para conseguir que salgan los iconos en documentos Rmarkdown
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+```{r}
+library(sf)
+library(terra)
+library(giscoR)
+library(dplyr)
+```
+
+
+## Seccionaes censales ayuntamiento Madrid
+
+```{r}
+# URL del archivo KML
+url_kml <- "https://datos.madrid.es/egob/catalogo/300724-12600124-Seccionado-censal-mapas.kml"
+
+# Leer directamente desde la URL
+secciones_municipio <- st_read(url_kml)
+```
+
+```{r}
+columnas_activas <- c("Name", # "description", "timestamp", "begin", "end", 
+                      # "altitudeMode", "tessellate", "extrude", "visibility", 
+                      # "drawOrder", "icon", 
+                      "COD_DIS", "NOM_DIS", "COD_BAR", "NOM_BAR", "COD_SECCIO", 
+                      # "VALUNICOS", 
+                      "MESAN", "ELECTO", "LOCAL_ELEC", 
+                      # "FCH_ALTA", "FCH_BAJA", "ACUERDO", "OBSERVACIO", 
+                      "Shape_Leng", "Shape_Area", # "snippet", 
+                      "geometry")
+```
+
+```{r}
+secciones_municipio <- secciones_municipio[, columnas_activas]
+```
+
+```{r}
+
+secciones_municipio$ELECTO     <- as.numeric(secciones_municipio$ELECTO)
+secciones_municipio$LOCAL_ELEC <- as.numeric(secciones_municipio$LOCAL_ELEC)
+secciones_municipio$Shape_Leng <- as.numeric(secciones_municipio$Shape_Leng)
+secciones_municipio$Shape_Area <- as.numeric(secciones_municipio$Shape_Area)
+```
+
+```{r}
+secciones_municipio$COD_DIS    <- as.factor(secciones_municipio$COD_DIS)
+secciones_municipio$NOM_DIS    <- as.factor(secciones_municipio$NOM_DIS)
+secciones_municipio$COD_BAR    <- as.factor(secciones_municipio$COD_BAR)
+secciones_municipio$NOM_BAR    <- as.factor(secciones_municipio$NOM_BAR)
+secciones_municipio$COD_SECCIO <- as.factor(secciones_municipio$COD_SECCIO)
+secciones_municipio$MESAN      <- as.factor(secciones_municipio$MESAN)
+```
+
+```{r}
+# Ver estructura
+summary(secciones_municipio)
+```
+
+```{r}
+saveRDS(secciones_municipio, "./data/secciones_municipio.rds")
+```
+
+
+## Gisco
+
+```{r}
+madrid <- gisco_get_lau(
+  country = "ES",
+  year = "2024"
+)
+
+# Filtramos la ciudad de Madrid (código LAU 28079)
+madrid_lines <- madrid[madrid$LAU_CODE == "28079", ]
+```
+
+```{r}
+madrid_lines <- st_transform(madrid_lines, crs(eurodem_terra))
+```
+
+```{r}
+# Recortar a la extensión de Madrid
+eurodem_terra_crop <- crop(eurodem_terra, vect(madrid_lines))
+
+# Aplicar máscara para dejar solo los píxeles dentro del municipio
+eurodem_madrid <- mask(eurodem_terra_crop, vect(madrid_lines))
+```
+
+
+
+
+```{r}
+# Get shapes
+nuts3 <- gisco_get_nuts(
+  year = "2024",
+  # epsg = "4326",
+  epsg = "3035",
+  resolution = "01",
+  country = "ES",
+  nuts_level = "3"
+)
+
+# Group by NUTS by country and convert to lines
+country_lines <- nuts3 %>%
+  group_by(
+    CNTR_CODE
+  ) %>%
+  summarise(n = n()) %>%
+  st_cast("MULTILINESTRING")
+
+madrid_lines <- nuts3 %>%
+  filter(
+    NAME_LATN == "Madrid"
+  ) %>%
+  summarise(n = n()) %>%
+  st_cast("MULTILINESTRING")
+```
+
+```{r}
+# Use eurostat
+library(eurostat)
+popdens <- get_eurostat("demo_r_d3dens") %>%
+  filter(TIME_PERIOD == "2023-01-01")
+```
+
+```{r}
+# Merge data
+nuts3_sf <- nuts3 %>%
+  left_join(popdens, by = "geo")
+
+nuts3_sf <- nuts3 %>%
+  left_join(popdens, by = c("NUTS_ID" = "geo"))
+
+
+# Breaks and labels
+
+br <- c(0, 25, 50, 100, 200, 500, 1000, 2500, 5000, 10000, 30000)
+labs <- prettyNum(br[-1], big.mark = ",")
+
+# Label function to be used in the plot, mainly for NAs
+labeller_plot <- function(x) {
+  ifelse(is.na(x), "No Data", x)
+}
+nuts3_sf <- nuts3_sf %>%
+  # Cut with labels
+  mutate(values_cut = cut(values, br, labels = labs))
+
+
+# Palette
+pal <- hcl.colors(length(labs), "Lajolla")
+
+
+# Plot
+ggplot(nuts3_sf) +
+  geom_sf(aes(fill = values_cut), linewidth = 0, color = NA, alpha = 0.9) +
+  geom_sf(data = country_lines, col = "black", linewidth = 0.1) +
+  # Center in Europe: EPSG 3035
+  coord_sf(
+    xlim = c(2377294, 7453440),
+    ylim = c(1313597, 5628510)
+  ) +
+  # Center in Europe: EPSG 3035
+  # coord_sf(
+  #   xlim = c(3171940, 3152301),
+  #   ylim = c(2037920, 2024584)
+  # ) +    
+  # Legends
+  scale_fill_manual(
+    values = pal,
+    # Label for NA
+    labels = labeller_plot,
+    drop = FALSE, guide = guide_legend(direction = "horizontal", nrow = 1)
+  ) +
+  # Theming
+  theme_void() +
+  # Theme
+  theme(
+    plot.title = element_text(
+      color = rev(pal)[2], size = rel(1.5),
+      hjust = 0.5, vjust = -6
+    ),
+    plot.subtitle = element_text(
+      color = rev(pal)[2], size = rel(1.25),
+      hjust = 0.5, vjust = -10, face = "bold"
+    ),
+    plot.caption = element_text(color = "grey60", hjust = 0.5, vjust = 0),
+    legend.text = element_text(color = "grey20", hjust = .5),
+    legend.title = element_text(color = "grey20", hjust = .5),
+    legend.position = "bottom",
+    legend.title.position = "top",
+    legend.text.position = "bottom",
+    legend.key.height = unit(.5, "line"),
+    legend.key.width = unit(2.5, "line")
+  ) +
+  # Annotate and labs
+  labs(
+    title = "Population density in 2023",
+    subtitle = "NUTS-3 level",
+    fill = "people per sq. kilometer",
+    caption = paste0(
+      "Source: Eurostat, ", gisco_attributions(),
+      "\nBased on Milos Popovic: ",
+      "https://milospopovic.net/how-to-make-choropleth-map-in-r/"
+    )
+  )
+```
+
+
+
+## Poblacion
+
+```{r}
+#| eval: false
+
+eurodem_terra <- terra::rast("/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/eurogeographics/EuroDEM/euro-dem-tif/data/eurodem/eurodem.tif")
+```
+
+```{r}
+#| eval: false
+
+eurodem_raster <- raster::raster(("/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/eurogeographics/EuroDEM/euro-dem-tif/data/eurodem/eurodem.tif"))
+```
+
+
+```{r}
+#| eval: false
+
+eurodem_terra
+# class       : SpatRaster 
+# size        : 85809, 119862, 1  (nrow, ncol, nlyr)
+# resolution  : 2, 2  (x, y)
+# extent      : -103385.9, 136338.1, 91145.85, 262763.8  (xmin, xmax, ymin, ymax)
+# coord. ref. : lon/lat ETRS89 
+# source      : eurodem.tif 
+# name        : eurodem 
+# min value   :    -244 
+# max value   :    4800 
+```
+
+```{r}
+#| eval: false
+
+terra::crs(eurodem_terra)
+```
+
+```{r}
+#| eval: false
+
+terra::crs(madrid_lines)
+```
+
+```{r}
+#| eval: false
+
+sf::st_crs(madrid_lines)$input
+```
+
+```{r}
+#| eval: false
+
+sf::st_crs(eurodem_terra)$input
+```
+
+
+```{r}
+#| eval: false
+
+terra::crs(eurodem_terra) <- terra::crs("EPSG:3035")
+```
+
+```{r}
+#| eval: false
+
+terra::same.crs(eurodem_terra, madrid_lines)
+```
+
+
+```{r}
+#| eval: false
+
+madrid_dem <- eurodem_terra %>% crop(vect(madrid_lines))
+```
+
+```{r}
+#| eval: false
+
+madrid_dem
+# class       : SpatRaster 
+# size        : 85809, 119862, 1  (nrow, ncol, nlyr)
+# resolution  : 2, 2  (x, y)
+# extent      : -103385.9, 136338.1, 91145.85, 262763.8  (xmin, xmax, ymin, ymax)
+# coord. ref. : lon/lat ETRS89 
+# source      : eurodem.tif 
+# name        : eurodem 
+# min value   :    -244 
+# max value   :    4800 
+```
+
+
+
+
+
+
+
+
+
+
+```{r}
+#| eval: false
+
+# =============================
+# 1. Cargar librerías
+# =============================
+library(terra)
+library(sf)
+library(giscoR)
+
+# =============================
+# 2. Cargar el raster (EuroDEM)
+# =============================
+# Admite RasterLayer (raster) o SpatRaster (terra)
+eurodem_raster <- terra::rast("/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/eurogeographics/EuroDEM/euro-dem-tif/data/eurodem/eurodem.tif")
+
+# =============================
+# 3. Descargar geometría (Madrid)
+# =============================
+madrid_sf <- gisco_get_lau(country = "ES", year = "2024")
+madrid_sf <- madrid_sf[madrid_sf$LAU_CODE == "28079", ]  # Municipio de Madrid
+
+# =============================
+# 4. Validar y reproyectar geometría
+# =============================
+# Validar geometría
+madrid_sf <- st_make_valid(madrid_sf)
+
+# Transformar al CRS del raster si no coincide
+if (sf::st_crs(madrid_sf)$epsg != terra::crs(eurodem_raster, describe = TRUE)$code) {
+  message("Reproyectando geometría al CRS del raster...")
+  madrid_sf <- st_transform(madrid_sf, crs(eurodem_raster))
+}
+
+# =============================
+# 5. Convertir a SpatVector (terra)
+# =============================
+madrid_vect <- terra::vect(madrid_sf)
+
+# =============================
+# 6. Comprobar cobertura antes de recortar
+# =============================
+if (is.null(intersect(ext(eurodem_raster), ext(madrid_vect)))) {
+  stop("El raster no cubre Madrid. Verifica que usas el EuroDEM completo.")
+}
+
+# =============================
+# 7. Recorte (crop + mask)
+# =============================
+eurodem_crop <- terra::crop(eurodem_raster, madrid_vect)
+eurodem_madrid <- terra::mask(eurodem_crop, madrid_vect)
+
+# =============================
+# 8. Guardar y visualizar
+# =============================
+terra::writeRaster(eurodem_madrid, 
+                   "/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/eurogeographics/EuroDEM/eurodem_madrid.tif", 
+                   overwrite = TRUE)
+
+plot(eurodem_madrid, main = "EuroDEM - Municipio de Madrid")
+plot(sf::st_geometry(madrid_sf), add = TRUE, border = "red", col = NA, lwd = 2)
+
+message("Proceso completado. Archivo guardado como eurodem_madrid.tif")
+```
+
+
+
+
+
+
+## OpenEuroRegionalMap
+
+```{r}
+OpenEuroRegionalMap_layers <- st_layers("/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/eurogeographics/EuroRegionalMap/data/FullEurope/OpenEuroRegionalMap.gpkg")
+```
+
+```{r}
+OpenEuroRegionalMap_layers
+Driver: GPKG 
+# Available layers:
+#    layer_name geometry_type features fields crs_name
+# 1     PolbndL   Line String   408333     10   ETRS89
+# 2     PolbndA Multi Polygon   170261     15   ETRS89
+# 3     AirfldA Multi Polygon     1226      8   ETRS89
+# 4     AirfldC         Point     1228     22   ETRS89
+# 5     AirfldP         Point     1686     22   ETRS89
+# 6    AquedctL   Line String      450      7   ETRS89
+# 7      BuildP         Point   254332     13   ETRS89
+# 8    BuiltupA Multi Polygon    64654      8   ETRS89
+# 9    BuiltupP         Point   282900     17   ETRS89
+# 10     CoastA Multi Polygon    10890     13   ETRS89
+# 11     CoastL   Line String    15078      6   ETRS89
+# 12    CtowerP         Point    37584      7   ETRS89
+# 13       DamC         Point    10978     13   ETRS89
+# 14       DamL   Line String     4453     13   ETRS89
+# 15      ExitC         Point      249     12   ETRS89
+# 16   ExtractP         Point     7853     15   ETRS89
+# 17     FerryC         Point     1984     13   ETRS89
+# 18     FerryL   Multi Curve     1499     12   ETRS89
+# 19     GNameL   Line String   213340     14   ETRS89
+# 20    HarborA Multi Polygon      571      8   ETRS89
+# 21    HarborC         Point      426     16   ETRS89
+# 22    HarborL   Line String    14293      6   ETRS89
+# 23    HarborP         Point     1900     16   ETRS89
+# 24      HeliP         Point     3549     14   ETRS89
+# 25    HynodeC         Point   699916      8   ETRS89
+# 26   IndprodL   Line String     3180      8   ETRS89
+# 27   IndprodP         Point    18300      7   ETRS89
+# 28    IntercC         Point    14663     13   ETRS89
+# 29    IslandA Multi Polygon    20137     13   ETRS89
+# 30   LakeresA Multi Polygon   126922     18   ETRS89
+# 31   LandIceA Multi Polygon     3005     13   ETRS89
+# 32  LandmaskA Multi Polygon    11903      6   ETRS89
+# 33   LandmrkP         Point    26883     12   ETRS89
+# 34    LevelcC         Point  1060919      6   ETRS89
+# 35   MisaeroP         Point      349      6   ETRS89
+# 36      ParkA Multi Polygon    18511     13   ETRS89
+# 37      PhysL   Line String     7304      9   ETRS89
+# 38      PhysP         Point     3259     12   ETRS89
+# 39     PowerL   Line String    67837      7   ETRS89
+# 40     PowerP         Point    15033     13   ETRS89
+# 41    RailrdC         Point    34973     15   ETRS89
+# 42    RailrdL   Line String   187550     26   ETRS89
+# 43    RapidsC         Point     2452     12   ETRS89
+# 44    RapidsL   Line String       35     12   ETRS89
+# 45      RestC         Point     5344     13   ETRS89
+# 46      RoadL   Line String  2712159     27   ETRS89
+# 47    RunwayL   Line String     1540      7   ETRS89
+# 48       SeaA Multi Polygon       57      6   ETRS89
+# 49   SeastrtL   Line String     5367      7   ETRS89
+# 50     ShoreL   Line String   145929      6   ETRS89
+# 51      SoilA Multi Polygon    13532      7   ETRS89
+# 52    SpringC         Point      452     13   ETRS89
+# 53    SpringP         Point     3391     13   ETRS89
+# 54     SwampA Multi Polygon    90412      7   ETRS89
+# 55     TowerP         Point    23046      7   ETRS89
+# 56     UrbanP         Point    33221     12   ETRS89
+# 57       VegA Multi Polygon   375090     13   ETRS89
+# 58   WatrcrsA Multi Polygon     8041     19   ETRS89
+# 59   WatrcrsL   Line String  1009322     26   ETRS89
+# 60      WellP         Point       89      6   ETRS89
+# 61    ERM_CHR            NA       55      5     <NA>
+# 62    EBM_NAM            NA   122761     12     <NA>
+# 63    EBM_ISN            NA      227      7     <NA>
+```
+
+
+```{r}
+euromap_RoadL <- read_sf("/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/eurogeographics/EuroRegionalMap/data/FullEurope/OpenEuroRegionalMap.gpkg",
+                         layer = "RoadL",
+                         quiet = FALSE)
+
+# Reading layer `RoadL' from data source 
+#   `/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/eurogeographics/EuroRegionalMap/data/FullEurope/OpenEuroRegionalMap.gpkg' 
+#   using driver `GPKG'
+# replacing null geometries with empty geometries
+# Simple feature collection with 2712159 features and 27 fields (with 2 geometries empty)
+# Geometry type: LINESTRING
+# Dimension:     XY
+# Bounding box:  xmin: -63.13636 ymin: -21.38266 xmax: 55.82683 ymax: 71.16929
+# Geodetic CRS:  ETRS89
+```
+
+```{r}
+summary(euromap_RoadL)
+```
+
+```{r}
+euromap_RoadL <- euromap_RoadL[euromap_RoadL$ICC == "ES", ]
+```
+
+```{r}
+euromap_RoadL$COR[euromap_RoadL$COR == -32768] <- NA
+euromap_RoadL$EXS[euromap_RoadL$EXS == -32768] <- NA
+euromap_RoadL$LLE[euromap_RoadL$LLE == -32768] <- NA
+euromap_RoadL$LTN[euromap_RoadL$LTN == -32768] <- NA
+euromap_RoadL$MED[euromap_RoadL$MED == -32768] <- NA
+euromap_RoadL$RST[euromap_RoadL$RST == -32768] <- NA
+euromap_RoadL$RSU[euromap_RoadL$RSU == -32768] <- NA
+euromap_RoadL$RTT[euromap_RoadL$RTT == -32768] <- NA
+euromap_RoadL$TEN[euromap_RoadL$TEN == -32768] <- NA
+euromap_RoadL$TOL[euromap_RoadL$TOL == -32768] <- NA
+euromap_RoadL$TUC[euromap_RoadL$TUC == -32768] <- NA
+
+euromap_RoadL$NAMA1[euromap_RoadL$NAMA1 == "UNK"] <- NA
+euromap_RoadL$NAMA2[euromap_RoadL$NAMA2 == "UNK"] <- NA
+euromap_RoadL$NAMN1[euromap_RoadL$NAMN1 == "UNK"] <- NA
+euromap_RoadL$NAMN2[euromap_RoadL$NAMN2 == "UNK"] <- NA
+euromap_RoadL$NLN1[euromap_RoadL$NLN1 == "UNK"] <- NA
+euromap_RoadL$NLN2[euromap_RoadL$NLN2 == "UNK"] <- NA
+euromap_RoadL$RTE[euromap_RoadL$RTE == "UNK"] <- NA
+euromap_RoadL$TENTEC_ID[euromap_RoadL$TENTEC_ID == "UNK"] <- NA
+euromap_RoadL$RTN[euromap_RoadL$RTN == "UNK"] <- NA
+```
+
+
+```{r}
+summary(euromap_RoadL)
+```
+
+
+
+
+## Info
+
+
+Acabamos con la información de la sesión con `sessionInfo()`. Esto lo incluimos para en caso de error facilitar el seguimiento del mismo.
+
+```{r}
+sessionInfo()
+```
+
+Los siguientes bloques no los ejecuto porque contienen información del sistema que podría ser algo sensible.
+
+```{r}
+#| eval: false
+
+Sys.getenv()
+```
+
+```{r}
+#| eval: false
+
+Sys.info()
+```
+
+```{r}
+#| eval: false
+
+benchmarkme::get_sys_details()
+```
+
+Estas funciones nos permite, por ejemplo, guardar la versíón de R en una variable. 
+
+```{r}
+version_r <- sessionInfo()$R.version$version.string
+version_r
+```
+
+
+
+## Links
+
+- [Paquete giscoR](https://ropengov.github.io/giscoR/)
+
+
+## Licencias de uso
+
+Licencias del material utilizado:
+
+- [Ayuntamiento de Madrid](https://datos.madrid.es/portal/site/egob/menuitem.400a817358ce98c34e937436a8a409a0/?vgnextoid=b4c412b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextchannel=b4c412b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default)
+- [Aviso legal INE](https://www.ine.es/ss/Satellite?L=0&c=Page&cid=1254735849170&p=1254735849170&pagename=Ayuda%2FINELayout)
+
+
+Para [instalar FontAwesome](https://github.com/quarto-ext/fontawesome#readme), abro un terminal en el directorio del proyecto y escribo:
+
+>quarto add quarto-ext/fontawesome
+
+<span style="color:white">{{< fa brands github >}}</span>
