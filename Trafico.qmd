@@ -1256,7 +1256,7 @@ leaflet(intensidad_espacial) %>%
   addProviderTiles("Esri.WorldImagery", group = "Satelite") %>%
   addProviderTiles("Stadia.StamenWatercolor", group = "Watercolor") %>%
   # El controlador interactivo de los mapas base
-  addLayersControl(baseGroups = c("Satelite", "Dark", "OSM", "Esri", "Watercolor")) %>%  
+  addLayersControl(baseGroups = c("Dark", "Satelite", "OSM", "Esri", "Watercolor")) %>%  
   # Los puntos, en lo que incluimos valores al desplegar
   # addCircleMarkers(radius = 5, color = ~paleta(intensidad), opacity = 0.8, 
   #                  popup = ~paste0("Intensidad: ", intensidad, "<br/>", 
