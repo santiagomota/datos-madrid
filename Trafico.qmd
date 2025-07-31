@@ -8,7 +8,7 @@ github:   "santiagomota"
 keywords: "R, Quarto"
 # categories: [r, spatial, quarto, duckDB]
 date:     today
-logo:     "./figs/logo-madrid.png"
+logo:     figs/logo_madrid.png
 title-block-banner: "#27445C"
 license:
   type: "MIT"

@@ -8,7 +8,8 @@ github:   "santiagomota"
 keywords: "R, Quarto"
 # categories: [r, spatial, quarto, duckDB]
 date:     today
-logo:     "./figs/pWvphHHZ_400x400.jpg"
+logo:     figs/logo_madrid.png
+image:    figs/logo_madrid.png
 title-block-banner: "#27445C"
 license:
   type: "MIT"
@@ -57,6 +58,9 @@ format:
 engine: knitr 
 ---
 
+<right> 
+![](figs/logo_madrid.png)
+
 Creamos una variable parametrizada, `p_directorio_externo`, para que sea mas fácil pasar el material de un ordenador a otro.
 
 ```{r}
@@ -95,26 +99,25 @@ La relación numeración se ordena alfabéticamente por denominación de vía y 
 
 Estructura del fichero:
 
-Campo   Descripción.
-COD_VIA: Código único de la vía.
-VIA_CLASE: Clase de vía (calle, plaza, etc.).
-VIA_PAR: Partícula de la denominación.
-VIA_NOMBRE: Denominación de la vía.
-VIA_NOMBRE_ACENTOS: Denominación de la vía con acentos.
-CLASE_APP: Clase de número (número o kilómetro).
-NUMERO: Número de policía.
-TIPO_NDP: Tipo de número (portal, garaje, fachada, etc.).
-COD_NDP: Código del número de policía.
-DISTRITO: Código del distrito en el que se encuentra la dirección.
-BARRIO: Código del barrio en el que se encuentra la dirección.
-COD_POSTAL: Código postal en el que se encuentra la dirección.
-UTMX_ED: Coordenada UTM X en sistema geodésico ED50
-UTMY_ED: Coordenada UTM Y en sistema geodésico ED50
-UTMX_ETRS: Coordenada ETRS89 UTM X en sistema geodésico
-UTMY_ETRS: Coordenada ETRS89 UTM Y en sistema geodésico
-LATITUD: Latitud de cada dirección, datum ETRS89.
-LONGITUD: Longitud de cada dirección, datum ETRS89.
-ANGULO: Ángulo de orientación del rótulo del número de policía, según la orientación de la fachada.
+* COD_VIA: Código único de la vía.
+* VIA_CLASE: Clase de vía (calle, plaza, etc.).
+* VIA_PAR: Partícula de la denominación.
+* VIA_NOMBRE: Denominación de la vía.
+* VIA_NOMBRE_ACENTOS: Denominación de la vía con acentos.
+* CLASE_APP: Clase de número (número o kilómetro).
+* NUMERO: Número de policía.
+* TIPO_NDP: Tipo de número (portal, garaje, fachada, etc.).
+* COD_NDP: Código del número de policía.
+* DISTRITO: Código del distrito en el que se encuentra la dirección.
+* BARRIO: Código del barrio en el que se encuentra la dirección.
+* COD_POSTAL: Código postal en el que se encuentra la dirección.
+* UTMX_ED: Coordenada UTM X en sistema geodésico ED50
+* UTMY_ED: Coordenada UTM Y en sistema geodésico ED50
+* UTMX_ETRS: Coordenada ETRS89 UTM X en sistema geodésico
+* UTMY_ETRS: Coordenada ETRS89 UTM Y en sistema geodésico
+* LATITUD: Latitud de cada dirección, datum ETRS89.
+* LONGITUD: Longitud de cada dirección, datum ETRS89.
+* ANGULO: Ángulo de orientación del rótulo del número de policía, según la orientación de la fachada.
 
 ```{r}
 #| label: direcciones-vigentes-link
@@ -302,6 +305,19 @@ table(direcciones_vigentes$DISTRITO, direcciones_vigentes$BARRIO, useNA = 'ifany
 
 ## Viales vigentes
 
+* COD_VIA Código numérico único de la vía.
+* VIA_CLASE Clase de vía (calle, plaza, etc.).
+* VIA_PAR Partícula de la denominación.
+* VIA_NOMBRE Denominación de la vía.
+* COD_VIA_COMIENZA Código de la vía en la que comienza.
+* CLASE_COMIENZA Clase de vía en la que comienza.
+* PARTICULA_COMIENZA Partícula de la denominación en la que comienza.
+* NOMBRE_COMIENZA Denominación de la vía en la que comienza.
+* COD_VIA_TERMINA Código de la vía en la que termina.
+* CLASE_TERMINA Clase de vía en la que termina.
+* PARTICULA_TERMINA Partícula de la denominación en la que termina.
+* NOMBRE_TERMINA Denominación de la vía en la que termina.
+
 ```{r}
 #| label: viales-vigentes-link
 
@@ -373,7 +389,7 @@ summary(viales_vigentes)
 ```
 
 
-## Viales vigentes distritos y barrios
+## Viales vigentes por distritos y barrios
 
 ```{r}
 #| label: viales-2-vigentes-link
@@ -442,7 +458,144 @@ summary(viales_vigentes_distritos_barrios)
 ```
 
 
+## Viales vigentes por distritos
+
+```{r}
+#| label: pruebas-link-1
+
+link_viales3 <- 'https://datos.madrid.es/egob/catalogo/213605-2-callejero-oficial-madrid.csv'
+
+viales_vigentes_distritos <- read_delim(link_viales3,
+                                        delim = ";", escape_double = FALSE, 
+                                        locale = locale(date_names = "es", 
+                                                        encoding = "ISO-8859-1"), 
+                                        trim_ws = TRUE)
+```
+
+```{r}
+variables_factoriales <- c(# "COD_VIA", 
+                           "VIA_CLASE"  # , 
+                           # "VIA_PAR" , 
+                           # "VIA_NOMBRE", "VIA_NOMBRE_ACENTOS", 
+                           # "COD_VIA_COMIENZA", "CLASE_COMIENZA", 
+                           # "PARTICULA_COMIENZA", "NOMBRE_COMIENZA", 
+                           # "NOMBRE_ACENTOS_COMIENZA", "COD_VIA_TERMINA", 
+                           # "CLASE_TERMINA", "PARTICULA_TERMINA", 
+                           # "NOMBRE_TERMINA", "NOMBRE_ACENTOS_TERMINA"
+                           )
+
+viales_vigentes_distritos[, variables_factoriales] <- lapply(viales_vigentes_distritos[, variables_factoriales], as.factor)
+```
+
+```{r}
+summary(viales_vigentes_distritos)
+#    COD_VIA            VIA_CLASE      VIA_PAR           VIA_NOMBRE       
+# Min.   :     127   CALLE   :8353   Length:11095       Length:11095      
+# 1st Qu.:  122752   PLAZA   : 657   Class :character   Class :character  
+# Median :  435750   AVENIDA : 531   Mode  :character   Mode  :character  
+# Mean   : 4382252   CAMINO  : 347                                        
+# 3rd Qu.:  708075   GLORIETA: 230                                        
+# Max.   :31006279   PASEO   : 183                                        
+#                    (Other) : 794                                        
+# VIA_NOMBRE_ACENTOS    DISTRITO       IMPAR_MIN          IMPAR_MAX       
+# Length:11095       Min.   : 1.00   Min.   :    1.00   Min.   :    1.00  
+# Class :character   1st Qu.: 7.00   1st Qu.:    1.00   1st Qu.:    7.00  
+# Mode  :character   Median :11.00   Median :    1.00   Median :   17.00  
+#                    Mean   :11.18   Mean   :   25.34   Mean   :   56.09  
+#                    3rd Qu.:16.00   3rd Qu.:    1.00   3rd Qu.:   39.00  
+#                    Max.   :21.00   Max.   :48195.00   Max.   :48195.00  
+#                    NA's   :26      NA's   :1979       NA's   :1979      
+#    PAR_MIN           PAR_MAX       
+# Min.   :    0.0   Min.   :    2.0  
+# 1st Qu.:    2.0   1st Qu.:    8.0  
+# Median :    2.0   Median :   18.0  
+# Mean   :  198.3   Mean   :  331.2  
+# 3rd Qu.:    2.0   3rd Qu.:   42.0  
+# Max.   :49000.0   Max.   :61000.0  
+# NA's   :1782      NA's   :1782   
+```
+
+## Viales histórico
+
+* COD_VIA Código único de la vía.
+* VIA_SQC Secuencia de la denominación (no implica orden cronológico)
+* VIA_CLASE Clase de vía (calle, plaza, etc.).
+* VIA_PAR Partícula de la denominación.
+* VIA_NOMBRE Denominación de la vía.
+* VIA_NOMBRE_ACENTOS Denominación de la vía con acentos.
+* FECHA_DE_ALTA Fecha de alta de la denominación.
+* FECHA_DE_BAJA Fecha de baja de la denominación.
+* VIA_ESTADO Indica si la vía está vigente o histórica
+
+```{r}
+#| label: pruebas-link-2
+
+link_viales4 <- 'https://datos.madrid.es/egob/catalogo/213605-4-callejero-oficial-madrid.csv'
+
+viales_historico <- read_delim(link_viales4,
+                               delim = ";", escape_double = FALSE, 
+                               locale = locale(date_names = "es", 
+                                               encoding = "ISO-8859-1"), 
+                               trim_ws = TRUE)
+```
+
+```{r}
+variables_factoriales <- c("VIA_CLASE", "VIA_ESTADO")
+
+viales_historico[, variables_factoriales] <- lapply(viales_historico[, variables_factoriales], as.factor)
+```
+
+```{r}
+viales_historico$FECHA_DE_ALTA <- as.Date(viales_historico$FECHA_DE_ALTA, "%d/%m/%Y")
+viales_historico$FECHA_DE_BAJA <- as.Date(viales_historico$FECHA_DE_BAJA, "%d/%m/%Y")
+```
+
+```{r}
+summary(viales_historico)
+#    COD_VIA            VIA_SQC          VIA_CLASE       VIA_PAR         
+# Min.   :     125   Min.   : 1.000   CALLE   :12760   Length:16502      
+# 1st Qu.:  172825   1st Qu.: 1.000   PLAZA   :  913   Class :character  
+# Median :  471150   Median : 1.000   CAMINO  :  578   Mode  :character  
+# Mean   : 4244119   Mean   : 1.314   AVENIDA :  413                     
+# 3rd Qu.:  734875   3rd Qu.: 1.000   TRAVESÍA:  370                     
+# Max.   :99000000   Max.   :13.000   ACCESO  :  212                     
+#                                     (Other) : 1256                     
+#  VIA_NOMBRE        VIA_NOMBRE_ACENTOS FECHA_DE_ALTA        FECHA_DE_BAJA       
+# Length:16502       Length:16502       Min.   :1812-01-01   Min.   :1812-08-15  
+# Class :character   Class :character   1st Qu.:1949-06-24   1st Qu.:1952-03-12  
+# Mode  :character   Mode  :character   Median :1965-02-20   Median :1984-02-01  
+#                                       Mean   :1959-02-21   Mean   :1968-01-25  
+#                                       3rd Qu.:1986-01-01   3rd Qu.:1992-09-03  
+#                                       Max.   :2025-07-24   Max.   :2024-10-10  
+#                                                            NA's   :9395        
+# VIA_ESTADO
+# H: 3570   
+# V:12932   
+```
+
+
 ## Direcciones histórico
+
+* COD_VIA Código único de la vía.
+* VIA_SQC Secuencia de la denominación.
+* VIA_CLASE Clase de vía (calle, plaza, etc.).
+* VIA_PAR Partícula de la denominación.
+* VIA_NOMBRE Denominación de la vía.
+* VIA_NOMBRE_ACENTOS Denominación de la vía con acentos.
+* COD_NDP Código del número de policía.
+* CLASE_NDP Clase de número (número o kilómetro).
+* NUMERO Número de policía.
+* CALIFICADOR Calificador del número de policía.
+* FECHA_DE_ALTA Fecha de alta de la dirección.
+* FECHA_DE_BAJA Fecha de baja de la dirección.
+* TIPO_NDP Tipo de número (portal, garaje, fachada, etc.).
+* UTMX_ED Coordenada UTM X en sistema geodésico ED50
+* UTMY_ED Coordenada UTM Y en sistema geodésico ED50
+* UTMX_ETRS Coordenada UTM X en sistema geodésico ETRS89
+* UTMY_ETRS Coordenada UTM Y en sistema geodésico ETRS89
+* LATITUD Latitud de cada dirección, datum ETRS89.
+* LONGITUD Longitud de cada dirección, datum ETRS89.
+* ANGULO_ROTULACION Ángulo de orientación del rótulo del número de policía, según la orientación de la fachada.
 
 ```{r}
 #| label: direcciones-historico-link
@@ -469,6 +622,11 @@ variables_factoriales <- c(# "COD_VIA", "VIA_SQC",
                            )
 
 direcciones_historico[, variables_factoriales] <- lapply(direcciones_historico[, variables_factoriales], as.factor)
+```
+
+```{r}
+direcciones_historico$FECHA_DE_ALTA <- as.Date(direcciones_historico$FECHA_DE_ALTA, "%d/%m/%Y")
+direcciones_historico$FECHA_DE_BAJA <- as.Date(direcciones_historico$FECHA_DE_BAJA, "%d/%m/%Y")
 ```
 
 ```{r}
@@ -526,7 +684,7 @@ direcciones_historico_sf <- st_as_sf(direcciones_historico,
 # Transform to EPSG:4326
 direcciones_historico_sf <- st_transform(direcciones_historico_sf, crs = 4326) 
 
-summary(direcciones_historico_sf)
+
 #    COD_VIA         VIA_SQC            VIA_CLASE        VIA_PAR         
 # Min.   :     127   Mode:logical   CALLE    :314216   Length:375301     
 # 1st Qu.:  141550   NA's:375301    AVENIDA  : 23397   Class :character  
@@ -573,37 +731,99 @@ summary(direcciones_historico_sf)
 # +proj=long...:     0  
 ```
 
+Quitamos las direcciones con `UTMX_ETRS` erróneo.
+
+```{r}
+direcciones_historico_sf <- direcciones_historico_sf[direcciones_historico_sf$UTMX_ETRS > 0, ]
+```
+
+```{r}
+summary(direcciones_historico_sf)
+#    COD_VIA         VIA_SQC            VIA_CLASE        VIA_PAR         
+# Min.   :     127   Mode:logical   CALLE    :293782   Length:349050     
+# 1st Qu.:  142625   NA's:349050    AVENIDA  : 21646   Class :character  
+# Median :  398700                  PASEO    :  7721   Mode  :character  
+# Mean   : 2752058                  PLAZA    :  5842                     
+# 3rd Qu.:  639950                  CAMINO   :  3511                     
+# Max.   :31006279                  CARRETERA:  3027                     
+#                                   (Other)  : 13521                     
+#  VIA_NOMBRE        VIA_NOMBRE_ACENTOS    COD_NDP          CLASE_NDP        
+# Length:349050      Length:349050      Min.   :11000001   Length:349050     
+# Class :character   Class :character   1st Qu.:11050451   Class :character  
+# Mode  :character   Mode  :character   Median :11119007   Mode  :character  
+#                                       Mean   :17342235                     
+#                                       3rd Qu.:20163371                     
+#                                       Max.   :31075132                     
+#                                                                            
+#     NÚMERO         CALIFICADOR     FECHA_DE_ALTA        FECHA_DE_BAJA       
+# Min.   :    1.0   B      : 11242   Min.   :1870-01-01   Min.   :197-01-01   
+# 1st Qu.:    9.0   A      :  7564   1st Qu.:1950-07-14   1st Qu.:1948-11-01  
+# Median :   21.0   C      :  3987   Median :1973-01-17   Median :1969-03-10  
+# Mean   :   84.8   D      :  2772   Mean   :1971-02-10   Mean   :1970-05-23  
+# 3rd Qu.:   46.0   E      :  1778   3rd Qu.:1992-07-08   3rd Qu.:1996-03-11  
+# Max.   :61000.0   (Other): 20569   Max.   :2025-07-29   Max.   :2025-07-24  
+#                   NA's   :301138                        NA's   :214518      
+#           TIPO_NDP         UTMX_ED            UTMY_ED            UTMX_ETRS       
+# PORTAL        :263333   Min.   :      -1   Min.   :       -1   Min.   :  429110  
+# FRENTE FACHADA: 38597   1st Qu.:43866938   1st Qu.:447061900   1st Qu.:43858249  
+# PARCELA       : 23646   Median :44108440   Median :447483022   Median :44098246  
+# GARAJE        : 15687   Mean   :40171109   Mean   :406456640   Mean   :40201078  
+# JARDÍN/PARQUE :  3885   3rd Qu.:44420682   3rd Qu.:447860641   3rd Qu.:44410571  
+# (Other)       :  1093   Max.   :45551486   Max.   :449574161   Max.   :45558493  
+# NA's          :  2809                                                            
+#   UTMY_ETRS           LATITUD            LONGITUD         ANGULO_ROTULACION 
+# Min.   :  4464414   Length:349050      Length:349050      Length:349050     
+# 1st Qu.:447039795   Class :character   Class :character   Class :character  
+# Median :447458132   Mode  :character   Mode  :character   Mode  :character  
+# Mean   :406127748                                                           
+# 3rd Qu.:447837938                                                           
+# Max.   :449555404                                                           
+#                                                                             
+#          geometry     
+# POINT        :349050  
+# epsg:4326    :     0  
+# +proj=long...:     0  
+```
+
+
 ```{r}
 table(direcciones_historico$VIA_CLASE, useNA = 'ifany')
-#           ACCESO                ARROYO             AUTOPISTA               AUTOVÍA 
-#               39                     4                     7                   664 
-#          AVENIDA                BARRIO               BULEVAR                 CALLE 
-#            23397                    44                   217                314216 
-#         CALLEJÓN                CAMINO           CAMINO ALTO           CAMINO BAJO 
-#              385                  4025                     3                     5 
-#     CAMINO VIEJO              CAMPILLO                CAÑADA               CARRERA 
-#              237                    21                   658                   214 
-#        CARRETERA                 CERRO               COLONIA            COSTANILLA 
-#             3693                    11                  2788                   180 
-#           CUESTA              EDIFICIO            ESCALINATA ESTACIÓN DE CERCANÍAS 
-#              207                     3                     6                     2 
-#          GALERÍA              GLORIETA    GRUPO DE VIVIENDAS                 LUGAR 
-#               14                   497                     1                   892 
-#           PARQUE            PARTICULAR              PASADIZO                PASAJE 
-#               32                   174                    74                  1323 
-#            PASEO                 PISTA                 PLAZA              PLAZUELA 
-#             8770                     5                  6397                   142 
-#          POBLADO  POBLADO DE ABSORCIÓN      POBLADO DIRIGIDO              POLÍGONO 
-#               51                    28                   120                   422 
-#           PUENTE                 RONDA           TRANSVERSAL              TRAVESÍA 
-#                3                  1611                    41                  2293 
-# TRAVESÍA PRIMERA          URBANIZACIÓN                   VÍA 
-#                5                  1378                     2 
+#       ACCESO                ARROYO             AUTOPISTA 
+#           39                     4                     7 
+#      AUTOVÍA               AVENIDA                BARRIO 
+#          664                 23397                    44 
+#      BULEVAR                 CALLE              CALLEJÓN 
+#          217                314220                   385 
+#       CAMINO           CAMINO ALTO           CAMINO BAJO 
+#         4025                     3                     5 
+# CAMINO VIEJO              CAMPILLO                CAÑADA 
+#          237                    21                   658 
+#      CARRERA             CARRETERA                 CERRO 
+#          214                  3693                    11 
+#      COLONIA            COSTANILLA                CUESTA 
+#         2788                   180                   207 
+#     EDIFICIO            ESCALINATA ESTACIÓN DE CERCANÍAS 
+#            3                     6                     2 
+#      GALERÍA              GLORIETA    GRUPO DE VIVIENDAS 
+#           14                   497                     1 
+#        LUGAR                PARQUE            PARTICULAR 
+#          892                    32                   174 
+#     PASADIZO                PASAJE                 PASEO 
+#           74                  1323                  8770 
+#        PISTA                 PLAZA              PLAZUELA 
+#            5                  6397                   142 
+#      POBLADO  POBLADO DE ABSORCIÓN      POBLADO DIRIGIDO 
+#           51                    28                   120 
+#     POLÍGONO                PUENTE                 RONDA 
+#          422                     3                  1611 
+#  TRANSVERSAL              TRAVESÍA      TRAVESÍA PRIMERA 
+#           41                  2293                     5 
+# URBANIZACIÓN                   VÍA 
+#         1378                     2 
 ```
 
 
 ## Info
-
 
 Acabamos con la información de la sesión con `sessionInfo()`. Esto lo incluimos para en caso de error facilitar el seguimiento del mismo.
 
@@ -644,6 +864,7 @@ version_r
 ## Links
 
 - [Paquete giscoR](https://ropengov.github.io/giscoR/)
+- [Callejero oficial - descripción de ficheros.pdf](https://datos.madrid.es/FWProjects/egob/Catalogo/UrbanismoInfraestructura/Ficheros/Callejero%20oficial%20-%20descripci%C3%B3n%20de%20ficheros.pdf)
 
 
 ## Licencias de uso
@@ -653,6 +874,8 @@ Licencias del material utilizado:
 - [Ayuntamiento de Madrid](https://datos.madrid.es/portal/site/egob/menuitem.400a817358ce98c34e937436a8a409a0/?vgnextoid=b4c412b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextchannel=b4c412b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default)
 - [Aviso legal INE](https://www.ine.es/ss/Satellite?L=0&c=Page&cid=1254735849170&p=1254735849170&pagename=Ayuda%2FINELayout)
 
+
+## Otros
 
 Para [instalar FontAwesome](https://github.com/quarto-ext/fontawesome#readme), abro un terminal en el directorio del proyecto y escribo:
 

@@ -29,6 +29,7 @@ This vignette introduces `mbg`, a package for modern Model-Based Geostatistics. 
 
 In this tutorial, we will run a simple `mbg` model with prepared data to demonstrate core package functions.
 
+
 # Setting up
 
 Load the `mbg` package, as well as the `data.table`, `sf`, and `terra` packages for data processing, and the `ggplot2` package for plotting.
