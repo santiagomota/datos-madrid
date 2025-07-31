@@ -57,6 +57,9 @@ format:
 engine: knitr 
 ---
 
+<right> 
+![](figs/logo_madrid.png)
+
 Creamos una variable parametrizada, `p_directorio_externo`, para que sea mas fácil pasar el material de un ordenador a otro.
 
 ```{r}
