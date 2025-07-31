@@ -74,7 +74,7 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
 
 <right> 
-![](figs/logo-madrid.png)
+![](figs/logo_madrid.png)
 
 
 # Paquetes

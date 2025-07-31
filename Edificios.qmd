@@ -1,0 +1,165 @@
+---
+title:    "Edificios"
+author:   "by [Santiago Mota](https://www.linkedin.com/in/santiagomota/)"
+mail:     "santiago_mota@yahoo.es"
+linkedin: "santiagomota"
+twitter:  "mota_santiago"
+github:   "santiagomota"
+keywords: "R, Quarto"
+# categories: [r, spatial, quarto, duckDB]
+date:     today
+logo:     figs/logo_madrid.png
+image:    figs/logo_madrid.png
+title-block-banner: "#27445C"
+license:
+  type: "MIT"
+  text: "Este proyecto está licenciado bajo la Licencia MIT. Puedes ver los detalles en el siguiente enlace https://opensource.org/licenses/MIT"
+  url:  "https://opensource.org/licenses/MIT"
+urlcolor: blue
+always_allow_html: true
+params:
+  p_directorio_in:  './data/' # ''
+  p_directorio_out: ''
+  p_directorio_externo: '/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/' #  'C:/Varios/R/Archivos/' # 
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-depth: 6
+    theme: 
+        light: cosmo   # flatly, cosmo, sandstone, yeti bootswatch theme
+        dark: solar
+    number-sections: true
+    page-layout: full # article full
+    # max-width: 3000px
+    title-block-banner: true
+    code-fold: false
+    code-copy: true
+    code-summary: "" # Show the code"
+    # code-tools: true
+    # grid:
+    #     body-width: 2600px
+    #     sidebar-width: 200px
+    #     margin-width: 200px
+    include-after-body: footer_V2.html
+    # include-in-header: github-corner.html
+    self-contained: true
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+  docx:
+    toc: true
+    number-sections: true
+    colorlinks: true  
+  pptx: 
+    reference-doc: template.pptx
+    incremental:  true
+engine: knitr 
+---
+
+<right> 
+![](figs/logo_madrid.png)
+
+Creamos una variable parametrizada, `p_directorio_externo`, para que sea mas fácil pasar el material de un ordenador a otro.
+
+```{r}
+#| label: incorporacion-parametros
+
+# https://bookdown.org/yihui/rmarkdown-cookbook/parameterized-reports.html
+directorio_externo <- params$p_directorio_externo
+directorio_externo
+```
+
+```{r}
+#| include: false
+#| echo: false
+
+# Para conseguir que salgan los iconos en documentos Rmarkdown
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+```{r directorios}
+DIRECTORIO_DATA     <- "/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data"
+```
+
+```{r}
+library(sf)
+library(readr)
+```
+
+```{r}
+edificios_3d <- read_sf(paste0(DIRECTORIO_DATA, 
+                       '/ayuntamientoMadrid/MODELADO_3D_MADRID/MADRID_3D_2025_01.slpk'))
+```
+
+>cargo run --release MADRID_3D_2025_01.slpk
+
+```{r}
+edificios_3d <- read_sf(paste0(DIRECTORIO_DATA, 
+                       '/ayuntamientoMadrid/MODELADO_3D_MADRID/MADRID_3D_2025_01/3dSceneLayer.json'))
+```
+
+
+
+
+## Info
+
+Acabamos con la información de la sesión con `sessionInfo()`. Esto lo incluimos para en caso de error facilitar el seguimiento del mismo.
+
+```{r}
+sessionInfo()
+```
+
+Los siguientes bloques no los ejecuto porque contienen información del sistema que podría ser algo sensible.
+
+```{r}
+#| eval: false
+
+Sys.getenv()
+```
+
+```{r}
+#| eval: false
+
+Sys.info()
+```
+
+```{r}
+#| eval: false
+
+benchmarkme::get_sys_details()
+```
+
+Estas funciones nos permite, por ejemplo, guardar la versíón de R en una variable. 
+
+```{r}
+version_r <- sessionInfo()$R.version$version.string
+version_r
+```
+
+
+
+
+## Links
+
+- [Paquete giscoR](https://ropengov.github.io/giscoR/)
+- [Callejero oficial - descripción de ficheros.pdf](https://datos.madrid.es/FWProjects/egob/Catalogo/UrbanismoInfraestructura/Ficheros/Callejero%20oficial%20-%20descripci%C3%B3n%20de%20ficheros.pdf)
+- [Paquete slpkg](https://github.com/safesoftware/slpkg)
+
+
+## Licencias de uso
+
+Licencias del material utilizado:
+
+- [Ayuntamiento de Madrid](https://datos.madrid.es/portal/site/egob/menuitem.400a817358ce98c34e937436a8a409a0/?vgnextoid=b4c412b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextchannel=b4c412b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default)
+- [Aviso legal INE](https://www.ine.es/ss/Satellite?L=0&c=Page&cid=1254735849170&p=1254735849170&pagename=Ayuda%2FINELayout)
+
+
+## Otros
+
+Para [instalar FontAwesome](https://github.com/quarto-ext/fontawesome#readme), abro un terminal en el directorio del proyecto y escribo:
+
+>quarto add quarto-ext/fontawesome
+
+<span style="color:white">{{< fa brands github >}}</span>
