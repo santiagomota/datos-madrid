@@ -40,7 +40,9 @@ Load the `mbg` package, as well as the `data.table`, `sf`, and `terra` packages 
 install.packages("INLA",repos=c(getOption("repos"),INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE) 
 ```
 
-```{r setup}
+```{r}
+#| label: setup
+
 # Load packages
 library(data.table)
 library(ggplot2)
@@ -51,14 +53,19 @@ library(mbg)
 
 For this tutorial, we will estimate stunting rates among children under 5 years of age across Benin. Load point observations of this outcome from the package data and print the first few rows:
 
-```{r load-outcome-data, message = FALSE, warning = FALSE}
+```{r}
+#| label: load-outcome-data
+
 # Outcome: child stunting
 outcomes <- data.table::fread(
   system.file('extdata/child_stunting.csv', package = 'mbg')
 )
 ```
 
-```{r head-outcome-data, asis = TRUE, echo = FALSE}
+```{r, asis = TRUE}
+#| label: head-outcome-data
+#| echo: false
+
 knitr::kable(head(outcomes))
 ```
 
@@ -72,7 +79,12 @@ The outcome data has 505 rows, each representing one surveyed location, and five
 
 Let's map this survey data over a map of Benin.
 
-```{r plot-outcome-data, message = FALSE, warning = FALSE, fig.align = 'center'}
+```{r}
+#| label: plot-outcome-data
+#| fig-align: center
+#| message: false
+#| warning: false
+
 # Administrative boundaries
 communes <- sf::st_read(
   system.file('extdata/Benin_communes.gpkg', package = 'mbg'),
@@ -121,7 +133,12 @@ A Bayesian geostatistical model can accomplish all of these goals. We will fit a
 2.  Enhanced vegetation index (EVI)
 3.  Mean annual temperature
 
-```{r load-covariates, message = FALSE, warning = FALSE, fig.align = 'center'}
+```{r}
+#| label: load-covariates
+#| fig-align: center
+#| message: false
+#| warning: false
+
 # Spatial covariates
 covariates <- list(
   access = terra::rast(system.file('extdata/access.tif', package = 'mbg')),
@@ -133,6 +150,7 @@ covariates <- list(
 plot(terra::rast(covariates), nr = 1)
 ```
 
+
 ## Building MBG model inputs
 
 The geostatistical model takes three more arguments:
@@ -141,7 +159,11 @@ The geostatistical model takes three more arguments:
 2.  `aggregation_table` (`data.table::data.table`, optional): Used to aggregate model estimates from grid cells to commune polygons, preserving uncertainty
 3.  `population_raster` (`terra::SpatRaster`, optional): population-based indicators like child stunting should be aggregated using population weighting, which places greater weight on grid cells with higher populations when summarizing those grid cell results by polygon.
 
-```{r aggregation-prep, message = FALSE, warning = FALSE}
+```{r}
+#| label: aggregation-prep
+#| message: false
+#| warning: false
+
 # Create ID raster
 id_raster <- mbg::build_id_raster(
   polygons = communes,
@@ -184,9 +206,13 @@ summary(population_raster)
 # NA's   :5437  
 ```
 
-```{r plot-under-5-population, fig.align = 'center'}
+```{r}
+#| label: plot-under-5-population
+#| fig-align: center
+
 plot(population_raster)
 ```
+
 
 # Fit the geostatistical model
 
@@ -194,7 +220,9 @@ The entire Bayesian geostatistical regression workflow can be run using the `mbg
 
 The following code block runs the `mbg` model using mainly default settings. A typical workflow can take a few minutes to finish, although intermediate steps will be printed to screen. Because we want a regression intercept in this model, the first line in the code block below creates the intercept as one of the covariate rasters.
 
-```{r fit-mbg-model}
+```{r}
+#| label: fit-mbg-model
+
 # Add an intercept to the model
 covariates$intercept <- covariates[[1]] * 0 + 1
 
@@ -218,6 +246,7 @@ model_runner$run_mbg_pipeline()
 model_runner
 ```
 
+
 ## Plot gridded estimates
 
 The model makes predictions at each grid cell, with some uncertainty associated with each grid cell prediction. We capture that uncertainty by taking many (by default, 250) samples from the range of plausible model estimates and generating summary statistics across those samples.
@@ -232,7 +261,10 @@ Once the geostatistical workflow has finished, we can pull the gridded raster mo
 
 We can plot the mean estimates from the geostatistical model:
 
-```{r plot-pixel-mean-predictions, fig.align = 'center'}
+```{r}
+#| label: plot-pixel-mean-predictions
+#| fig-align: center
+
 # Get predictions by pixel
 grid_cell_predictions <- model_runner$grid_cell_predictions
 
@@ -248,7 +280,10 @@ lines(communes)
 
 We can also show the width of the 95% uncertainty interval by subtracting the "lower" from the "upper" summary raster:
 
-```{r plot-pixel-ui-predictions, fig.align = 'center'}
+```{r}
+#| label: plot-pixel-ui-predictions
+#| fig-align: center
+
 # Plot estimate uncertainty
 plot(
   (grid_cell_predictions$cell_pred_upper - grid_cell_predictions$cell_pred_lower) * 100,
@@ -270,6 +305,7 @@ Compare these gridded estimates to the underlying point data. The results seem t
 
 Many of these observations can be quantified and tested, as demonstrated in later vignettes.
 
+
 ## Plot aggregated estimates
 
 Each sample from the geostatistical model yields a *candidate map*, a single realization of the outcome across each pixel in the study area that is consistent with the fitted model parameters and uncertainty. These samples can be individually aggregated to administrative boundaries, preserving uncertainty, and then summarized.
@@ -281,7 +317,10 @@ Aggregated samples and summaries are available from the `MbgModelRunner$aggregat
 
 We can merge the commune estimate summaries back onto the `communes` sf object to plot the results.
 
-```{r plot-commune-mean-predictions, fig.align = 'center'}
+```{r}
+#| label: plot-commune-mean-predictions
+#| fig-align: center
+
 # Get predictions by commune
 aggregated_predictions <- model_runner$aggregated_predictions
 
@@ -321,7 +360,10 @@ summary(commune_summary)
 
 We can also plot the width of the 95% uncertainty interval by commune.
 
-```{r plot-commune-ui-widths, fig.align = 'center'}
+```{r}
+#| label: plot-commune-ui-widths
+#| fig-align: center
+
 # Plot aggregated uncertainty interval widths by commune
 summary_sf$ui <- summary_sf$upper - summary_sf$lower
 ggplot2::ggplot() +
@@ -339,10 +381,12 @@ ggplot2::ggplot() +
 
 Note that in general, uncertainty intervals tend to be wider at the pixel level than for aggregated polygons. This is because some sources of uncertainty are uncorrelated between pixels, and this uncorrelated uncertainty shrinks when estimates are aggregated across pixels.
 
+
 # Links
 
 -   [mbg Package](https://henryspatialanalysis.github.io/mbg/articles/mbg.html)
 -   [mbg Github](https://github.com/henryspatialanalysis/mbg/)
+
 
 # Licencias
 
