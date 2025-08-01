@@ -358,34 +358,34 @@ viales_vigentes[, variables_factoriales] <- lapply(viales_vigentes[, variables_f
 
 ```{r}
 summary(viales_vigentes)
-#    COD_VIA            VIA_CLASE      VIA_PAR           VIA_NOMBRE       
-# Min.   :     127   CALLE   :7501   Length:9431        Length:9431       
-# 1st Qu.:  119608   PLAZA   : 575   Class :character   Class :character  
-# Median :  432400   CAMINO  : 275   Mode  :character   Mode  :character  
-# Mean   : 4168984   AVENIDA : 262                                        
-# 3rd Qu.:  702350   GLORIETA: 170                                        
-# Max.   :31006279   TRAVESÍA: 150                                        
-#                    (Other) : 498                                        
-# VIA_NOMBRE_ACENTOS COD_VIA_COMIENZA   CLASE_COMIENZA     PARTICULA_COMIENZA
-# Length:9431        Min.   :     127   Length:9431        Length:9431       
-# Class :character   1st Qu.:  139300   Class :character   Class :character  
-# Mode  :character   Median :  420800   Mode  :character   Mode  :character  
-#                    Mean   : 3557304                                        
-#                    3rd Qu.:  669400                                        
-#                    Max.   :99000003                                        
+#    COD_VIA            VIA_CLASE      VIA_PAR           VIA_NOMBRE        VIA_NOMBRE_ACENTOS
+# Min.   :     127   CALLE   :7498   Length:9428        Length:9428        Length:9428       
+# 1st Qu.:  120075   PLAZA   : 575   Class :character   Class :character   Class :character  
+# Median :  432450   CAMINO  : 275   Mode  :character   Mode  :character   Mode  :character  
+# Mean   : 4170310   AVENIDA : 262                                                           
+# 3rd Qu.:  702425   GLORIETA: 170                                                           
+# Max.   :31006279   TRAVESÍA: 150                                                           
+#                    (Other) : 498                                                           
+# COD_VIA_COMIENZA   CLASE_COMIENZA     PARTICULA_COMIENZA NOMBRE_COMIENZA   
+# Min.   :     127   Length:9428        Length:9428        Length:9428       
+# 1st Qu.:  139300   Class :character   Class :character   Class :character  
+# Median :  421050   Mode  :character   Mode  :character   Mode  :character  
+# Mean   : 3558435                                                           
+# 3rd Qu.:  669550                                                           
+# Max.   :99000003                                                           
 #                                                                            
-# NOMBRE_COMIENZA    NOMBRE_ACENTOS_COMIENZA COD_VIA_TERMINA    CLASE_TERMINA     
-# Length:9431        Length:9431             Min.   :     127   Length:9431       
-# Class :character   Class :character        1st Qu.:  141550   Class :character  
-# Mode  :character   Mode  :character        Median :  441200   Mode  :character  
-#                                            Mean   : 8091671                     
-#                                            3rd Qu.:  716500                     
-#                                            Max.   :99000003                     
+# NOMBRE_ACENTOS_COMIENZA COD_VIA_TERMINA    CLASE_TERMINA      PARTICULA_TERMINA 
+# Length:9428             Min.   :     127   Length:9428        Length:9428       
+# Class :character        1st Qu.:  141812   Class :character   Class :character  
+# Mode  :character        Median :  441300   Mode  :character   Mode  :character  
+#                         Mean   : 8094245                                        
+#                         3rd Qu.:  716700                                        
+#                         Max.   :99000003                                        
 #                                                                                 
-# PARTICULA_TERMINA  NOMBRE_TERMINA     NOMBRE_ACENTOS_TERMINA
-# Length:9431        Length:9431        Length:9431           
-# Class :character   Class :character   Class :character      
-# Mode  :character   Mode  :character   Mode  :character          
+# NOMBRE_TERMINA     NOMBRE_ACENTOS_TERMINA
+# Length:9428        Length:9428           
+# Class :character   Class :character      
+# Mode  :character   Mode  :character         
 ```
 
 
@@ -431,30 +431,30 @@ viales_vigentes_distritos_barrios[, variables_factoriales] <- lapply(viales_vige
 
 ```{r}
 summary(viales_vigentes_distritos_barrios)
-#    COD_VIA            VIA_CLASE      VIA_PAR           VIA_NOMBRE       
-# Min.   :     127   CALLE   :8353   Length:11095       Length:11095      
-# 1st Qu.:  122752   PLAZA   : 657   Class :character   Class :character  
-# Median :  435750   AVENIDA : 531   Mode  :character   Mode  :character  
-# Mean   : 4382252   CAMINO  : 347                                        
-# 3rd Qu.:  708075   GLORIETA: 230                                        
-# Max.   :31006279   PASEO   : 183                                        
-#                    (Other) : 794                                        
-# VIA_NOMBRE_ACENTOS    DISTRITO         BARRIO       IMPAR_MIN       
-# Length:11095       Min.   : 1.00   Min.   :0.00   Min.   :    1.00  
-# Class :character   1st Qu.: 7.00   1st Qu.:2.00   1st Qu.:    1.00  
-# Mode  :character   Median :11.00   Median :3.00   Median :    1.00  
-#                    Mean   :11.18   Mean   :3.61   Mean   :   11.64  
-#                    3rd Qu.:16.00   3rd Qu.:5.00   3rd Qu.:    1.00  
-#                    Max.   :21.00   Max.   :9.00   Max.   :48195.00  
-#                    NA's   :26      NA's   :26     NA's   :2628      
-#   IMPAR_MAX           PAR_MIN         PAR_MAX       
-# Min.   :    1.00   Min.   :    0   Min.   :    2.0  
-# 1st Qu.:    7.00   1st Qu.:    2   1st Qu.:    8.0  
-# Median :   17.00   Median :    2   Median :   18.0  
-# Mean   :   36.08   Mean   :  210   Mean   :  262.7  
-# 3rd Qu.:   35.00   3rd Qu.:    2   3rd Qu.:   38.0  
-# Max.   :48195.00   Max.   :60000   Max.   :61000.0  
-# NA's   :2628       NA's   :2471    NA's   :2471  
+#    COD_VIA            VIA_CLASE      VIA_PAR           VIA_NOMBRE        VIA_NOMBRE_ACENTOS
+# Min.   :     127   CALLE   :8350   Length:11092       Length:11092       Length:11092      
+# 1st Qu.:  122925   PLAZA   : 657   Class :character   Class :character   Class :character  
+# Median :  435776   AVENIDA : 531   Mode  :character   Mode  :character   Mode  :character  
+# Mean   : 4383436   CAMINO  : 347                                                           
+# 3rd Qu.:  708125   GLORIETA: 230                                                           
+# Max.   :31006279   PASEO   : 183                                                           
+#                    (Other) : 794                                                           
+#    DISTRITO         BARRIO        IMPAR_MIN          IMPAR_MAX           PAR_MIN     
+# Min.   : 1.00   Min.   :0.000   Min.   :    1.00   Min.   :    1.00   Min.   :    0  
+# 1st Qu.: 7.00   1st Qu.:2.000   1st Qu.:    1.00   1st Qu.:    7.00   1st Qu.:    2  
+# Median :11.00   Median :3.000   Median :    1.00   Median :   17.00   Median :    2  
+# Mean   :11.18   Mean   :3.609   Mean   :   11.64   Mean   :   36.08   Mean   :  210  
+# 3rd Qu.:16.00   3rd Qu.:5.000   3rd Qu.:    1.00   3rd Qu.:   35.00   3rd Qu.:    2  
+# Max.   :21.00   Max.   :9.000   Max.   :48195.00   Max.   :48195.00   Max.   :60000  
+# NA's   :26      NA's   :26      NA's   :2624       NA's   :2624       NA's   :2468   
+#    PAR_MAX       
+# Min.   :    2.0  
+# 1st Qu.:    8.0  
+# Median :   18.0  
+# Mean   :  262.7  
+# 3rd Qu.:   38.0  
+# Max.   :61000.0  
+# NA's   :2468   
 ```
 
 
@@ -489,31 +489,24 @@ viales_vigentes_distritos[, variables_factoriales] <- lapply(viales_vigentes_dis
 
 ```{r}
 summary(viales_vigentes_distritos)
-#    COD_VIA            VIA_CLASE      VIA_PAR           VIA_NOMBRE       
-# Min.   :     127   CALLE   :8353   Length:11095       Length:11095      
-# 1st Qu.:  122752   PLAZA   : 657   Class :character   Class :character  
-# Median :  435750   AVENIDA : 531   Mode  :character   Mode  :character  
-# Mean   : 4382252   CAMINO  : 347                                        
-# 3rd Qu.:  708075   GLORIETA: 230                                        
-# Max.   :31006279   PASEO   : 183                                        
-#                    (Other) : 794                                        
-# VIA_NOMBRE_ACENTOS    DISTRITO       IMPAR_MIN          IMPAR_MAX       
-# Length:11095       Min.   : 1.00   Min.   :    1.00   Min.   :    1.00  
-# Class :character   1st Qu.: 7.00   1st Qu.:    1.00   1st Qu.:    7.00  
-# Mode  :character   Median :11.00   Median :    1.00   Median :   17.00  
-#                    Mean   :11.18   Mean   :   25.34   Mean   :   56.09  
-#                    3rd Qu.:16.00   3rd Qu.:    1.00   3rd Qu.:   39.00  
-#                    Max.   :21.00   Max.   :48195.00   Max.   :48195.00  
-#                    NA's   :26      NA's   :1979       NA's   :1979      
-#    PAR_MIN           PAR_MAX       
-# Min.   :    0.0   Min.   :    2.0  
-# 1st Qu.:    2.0   1st Qu.:    8.0  
-# Median :    2.0   Median :   18.0  
-# Mean   :  198.3   Mean   :  331.2  
-# 3rd Qu.:    2.0   3rd Qu.:   42.0  
-# Max.   :49000.0   Max.   :61000.0  
-# NA's   :1782      NA's   :1782   
+#    COD_VIA            VIA_CLASE      VIA_PAR           VIA_NOMBRE        VIA_NOMBRE_ACENTOS
+# Min.   :     127   CALLE   :8350   Length:11092       Length:11092       Length:11092      
+# 1st Qu.:  122925   PLAZA   : 657   Class :character   Class :character   Class :character  
+# Median :  435776   AVENIDA : 531   Mode  :character   Mode  :character   Mode  :character  
+# Mean   : 4383436   CAMINO  : 347                                                           
+# 3rd Qu.:  708125   GLORIETA: 230                                                           
+# Max.   :31006279   PASEO   : 183                                                           
+#                    (Other) : 794                                                           
+#    DISTRITO       IMPAR_MIN          IMPAR_MAX           PAR_MIN           PAR_MAX       
+# Min.   : 1.00   Min.   :    1.00   Min.   :    1.00   Min.   :    0.0   Min.   :    2.0  
+# 1st Qu.: 7.00   1st Qu.:    1.00   1st Qu.:    7.00   1st Qu.:    2.0   1st Qu.:    8.0  
+# Median :11.00   Median :    1.00   Median :   17.00   Median :    2.0   Median :   18.0  
+# Mean   :11.18   Mean   :   25.34   Mean   :   56.09   Mean   :  198.3   Mean   :  331.2  
+# 3rd Qu.:16.00   3rd Qu.:    1.00   3rd Qu.:   39.00   3rd Qu.:    2.0   3rd Qu.:   42.0  
+# Max.   :21.00   Max.   :48195.00   Max.   :48195.00   Max.   :49000.0   Max.   :61000.0  
+# NA's   :26      NA's   :1975       NA's   :1975       NA's   :1779      NA's   :1779  
 ```
+
 
 ## Viales histórico
 
@@ -552,25 +545,22 @@ viales_historico$FECHA_DE_BAJA <- as.Date(viales_historico$FECHA_DE_BAJA, "%d/%m
 
 ```{r}
 summary(viales_historico)
-#    COD_VIA            VIA_SQC          VIA_CLASE       VIA_PAR         
-# Min.   :     125   Min.   : 1.000   CALLE   :12760   Length:16502      
-# 1st Qu.:  172825   1st Qu.: 1.000   PLAZA   :  913   Class :character  
-# Median :  471150   Median : 1.000   CAMINO  :  578   Mode  :character  
-# Mean   : 4244119   Mean   : 1.314   AVENIDA :  413                     
-# 3rd Qu.:  734875   3rd Qu.: 1.000   TRAVESÍA:  370                     
-# Max.   :99000000   Max.   :13.000   ACCESO  :  212                     
-#                                     (Other) : 1256                     
-#  VIA_NOMBRE        VIA_NOMBRE_ACENTOS FECHA_DE_ALTA        FECHA_DE_BAJA       
-# Length:16502       Length:16502       Min.   :1812-01-01   Min.   :1812-08-15  
-# Class :character   Class :character   1st Qu.:1949-06-24   1st Qu.:1952-03-12  
-# Mode  :character   Mode  :character   Median :1965-02-20   Median :1984-02-01  
-#                                       Mean   :1959-02-21   Mean   :1968-01-25  
-#                                       3rd Qu.:1986-01-01   3rd Qu.:1992-09-03  
-#                                       Max.   :2025-07-24   Max.   :2024-10-10  
-#                                                            NA's   :9395        
-# VIA_ESTADO
-# H: 3570   
-# V:12932   
+#    COD_VIA            VIA_SQC          VIA_CLASE       VIA_PAR           VIA_NOMBRE       
+# Min.   :     125   Min.   : 1.000   CALLE   :12760   Length:16502       Length:16502      
+# 1st Qu.:  172825   1st Qu.: 1.000   PLAZA   :  913   Class :character   Class :character  
+# Median :  471150   Median : 1.000   CAMINO  :  578   Mode  :character   Mode  :character  
+# Mean   : 4244119   Mean   : 1.314   AVENIDA :  413                                        
+# 3rd Qu.:  734875   3rd Qu.: 1.000   TRAVESÍA:  370                                        
+# Max.   :99000000   Max.   :13.000   ACCESO  :  212                                        
+#                                     (Other) : 1256                                        
+# VIA_NOMBRE_ACENTOS FECHA_DE_ALTA        FECHA_DE_BAJA        VIA_ESTADO
+# Length:16502       Min.   :1812-01-01   Min.   :1812-08-15   H: 3573   
+# Class :character   1st Qu.:1949-06-24   1st Qu.:1952-03-12   V:12929   
+# Mode  :character   Median :1965-02-20   Median :1984-02-01             
+#                    Mean   :1959-02-21   Mean   :1968-02-03             
+#                    3rd Qu.:1986-01-01   3rd Qu.:1992-09-30             
+#                    Max.   :2025-07-24   Max.   :2025-07-30             
+#                                         NA's   :9392   
 ```
 
 
@@ -632,44 +622,44 @@ direcciones_historico$FECHA_DE_BAJA <- as.Date(direcciones_historico$FECHA_DE_BA
 ```{r}
 summary(direcciones_historico)
 #    COD_VIA         VIA_SQC            VIA_CLASE        VIA_PAR         
-# Min.   :     127   Mode:logical   CALLE    :314216   Length:375301     
-# 1st Qu.:  141550   NA's:375301    AVENIDA  : 23397   Class :character  
+# Min.   :     127   Mode:logical   CALLE    :314220   Length:375305     
+# 1st Qu.:  141550   NA's:375305    AVENIDA  : 23397   Class :character  
 # Median :  396000                  PASEO    :  8770   Mode  :character  
-# Mean   : 2591531                  PLAZA    :  6397                     
+# Mean   : 2591426                  PLAZA    :  6397                     
 # 3rd Qu.:  634300                  CAMINO   :  4025                     
 # Max.   :31006279                  CARRETERA:  3693                     
 #                                   (Other)  : 14803                     
 #  VIA_NOMBRE        VIA_NOMBRE_ACENTOS    COD_NDP          CLASE_NDP        
-# Length:375301      Length:375301      Min.   :11000001   Length:375301     
-# Class :character   Class :character   1st Qu.:11053610   Class :character  
-# Mode  :character   Mode  :character   Median :11126246   Mode  :character  
-#                                       Mean   :17667973                     
-#                                       3rd Qu.:20171356                     
-#                                       Max.   :31075121                     
+# Length:375305      Length:375305      Min.   :11000001   Length:375305     
+# Class :character   Class :character   1st Qu.:11053611   Class :character  
+# Mode  :character   Mode  :character   Median :11126248   Mode  :character  
+#                                       Mean   :17668116                     
+#                                       3rd Qu.:20171359                     
+#                                       Max.   :31075132                     
 #                                                                            
-#     NÚMERO       CALIFICADOR     FECHA_DE_ALTA      FECHA_DE_BAJA     
-# Min.   :    1   B      : 11700   Length:375301      Length:375301     
-# 1st Qu.:    9   A      :  7834   Class :character   Class :character  
-# Median :   21   C      :  4131   Mode  :character   Mode  :character  
-# Mean   :   83   D      :  2849                                        
-# 3rd Qu.:   48   E      :  1817                                        
-# Max.   :61000   (Other): 21589                                        
-#                 NA's   :325381                                        
+#     NÚMERO       CALIFICADOR     FECHA_DE_ALTA        FECHA_DE_BAJA       
+# Min.   :    1   B      : 11701   Min.   :1870-01-01   Min.   :197-01-01   
+# 1st Qu.:    9   A      :  7835   1st Qu.:1950-07-14   1st Qu.:1949-09-06  
+# Median :   21   C      :  4132   Median :1973-01-01   Median :1973-03-05  
+# Mean   :   83   D      :  2849   Mean   :1970-12-04   Mean   :1972-06-27  
+# 3rd Qu.:   48   E      :  1817   3rd Qu.:1991-03-20   3rd Qu.:1995-05-29  
+# Max.   :61000   (Other): 21590   Max.   :2025-07-29   Max.   :2025-07-24  
+#                 NA's   :325381                        NA's   :214518      
 #           TIPO_NDP         UTMX_ED            UTMY_ED            UTMX_ETRS       
-# PORTAL        :268844   Min.   :      -1   Min.   :       -1   Min.   :       0  
-# FRENTE FACHADA: 39041   1st Qu.:43756436   1st Qu.:446984791   1st Qu.:43747337  
-# PARCELA       : 29175   Median :44080002   Median :447385536   Median :44069686  
-# GARAJE        : 15707   Mean   :37361022   Mean   :378022821   Mean   :37388685  
-# JARDÍN/PARQUE :  3922   3rd Qu.:44389219   3rd Qu.:447830797   3rd Qu.:44378998  
+# PORTAL        :268847   Min.   :      -1   Min.   :       -1   Min.   :       0  
+# FRENTE FACHADA: 39037   1st Qu.:43756435   1st Qu.:446984791   1st Qu.:43747337  
+# PARCELA       : 29177   Median :44080002   Median :447385537   Median :44069689  
+# GARAJE        : 15710   Mean   :37360881   Mean   :378022382   Mean   :37388754  
+# JARDÍN/PARQUE :  3922   3rd Qu.:44389219   3rd Qu.:447830794   3rd Qu.:44378993  
 # (Other)       :  2376   Max.   :45551486   Max.   :449574161   Max.   :45558493  
 # NA's          : 16236                                                            
 #   UTMY_ETRS           LATITUD            LONGITUD         ANGULO_ROTULACION 
-# Min.   :        0   Length:375301      Length:375301      Length:375301     
+# Min.   :        0   Length:375305      Length:375305      Length:375305     
 # 1st Qu.:446961532   Class :character   Class :character   Class :character  
-# Median :447362738   Mode  :character   Mode  :character   Mode  :character  
-# Mean   :377715753                                                           
+# Median :447362746   Mode  :character   Mode  :character   Mode  :character  
+# Mean   :377716498                                                           
 # 3rd Qu.:447808403                                                           
-# Max.   :449555404  
+# Max.   :449555404 
 ```
 
 ```{r}

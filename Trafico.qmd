@@ -1401,13 +1401,15 @@ plot(distritos_madrid)
 distritos_madrid_2 <- distritos_madrid[distritos_madrid$municipalities == "28079", ]
 ```
 
-
+Las secciones censales del INE.
 
 ```{r}
 secciones_censales_shp <- sf::read_sf(paste0(directorio_externo, 
                                              'ine/seccionado_2025/España_Seccionado2025_ETRS89H30/SECC_CE_20250101.shp'),
                                       stringsAsFactors = TRUE)
 ```
+
+Nos quedamos con la ciudad de Madrid.
 
 ```{r}
 secciones_censales <- secciones_censales_shp[secciones_censales_shp$CUMUN == '28079', ]
