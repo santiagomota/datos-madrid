@@ -497,9 +497,6 @@ for (i in 1:length(shp_files)) {
   
   # file.remove(tempdir())
 }
-
-
-
 ```
 
 ```{r}

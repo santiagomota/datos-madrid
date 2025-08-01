@@ -243,6 +243,13 @@ popdens <- get_eurostat("demo_r_d3dens") %>%
 ```
 
 ```{r}
+
+```
+
+
+```{r}
+#| fig-align: center
+
 # Merge data
 nuts3_sf <- nuts3 %>%
   left_join(popdens, by = "geo")
@@ -260,6 +267,7 @@ labs <- prettyNum(br[-1], big.mark = ",")
 labeller_plot <- function(x) {
   ifelse(is.na(x), "No Data", x)
 }
+
 nuts3_sf <- nuts3_sf %>%
   # Cut with labels
   mutate(values_cut = cut(values, br, labels = labs))
@@ -275,9 +283,13 @@ ggplot(nuts3_sf) +
   geom_sf(data = country_lines, col = "black", linewidth = 0.1) +
   # Center in Europe: EPSG 3035
   coord_sf(
-    xlim = c(2377294, 7453440),
-    ylim = c(1313597, 5628510)
+    xlim = c(1547350, 3833006),
+    ylim = c(941696, 2467224)
   ) +
+  # coord_sf(
+  #   xlim = c(2377294, 7453440),
+  #   ylim = c(1313597, 5628510)
+  # ) +    
   # Center in Europe: EPSG 3035
   # coord_sf(
   #   xlim = c(3171940, 3152301),
@@ -323,6 +335,7 @@ ggplot(nuts3_sf) +
     )
   )
 ```
+
 
 
 ## Poblacion
