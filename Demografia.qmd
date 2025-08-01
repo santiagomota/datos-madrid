@@ -57,6 +57,9 @@ format:
 engine: knitr 
 ---
 
+<right> 
+![](figs/logo_madrid.png)
+
 Creamos una variable parametrizada, `p_directorio_externo`, para que sea mas fácil pasar el material de un ordenador a otro.
 
 ```{r}
@@ -80,6 +83,7 @@ library(sf)
 library(terra)
 library(giscoR)
 library(dplyr)
+library(ggplot2)
 ```
 
 
@@ -162,13 +166,25 @@ saveRDS(secciones_municipio, "./data/secciones_municipio.rds")
 ## Gisco
 
 ```{r}
+# madrid <- gisco_get_lau(
+#   country = "ES",
+#   year = "2024"
+# )
+
 madrid <- gisco_get_lau(
   country = "ES",
-  year = "2024"
+  year = "2021"
 )
+```
 
+```{r}
+summary(madrid)
+```
+
+
+```{r}
 # Filtramos la ciudad de Madrid (código LAU 28079)
-madrid_lines <- madrid[madrid$LAU_CODE == "28079", ]
+madrid_lines <- madrid[madrid$LAU_ID == "28079", ]
 ```
 
 ```{r}
@@ -183,9 +199,17 @@ eurodem_terra_crop <- crop(eurodem_terra, vect(madrid_lines))
 eurodem_madrid <- mask(eurodem_terra_crop, vect(madrid_lines))
 ```
 
-
 ```{r}
 # Get shapes
+# nuts3 <- gisco_get_nuts(
+#   year = "2024",
+#   # epsg = "4326",
+#   epsg = "3035",
+#   resolution = "01",
+#   country = "ES",
+#   nuts_level = "3"
+# )
+
 nuts3 <- gisco_get_nuts(
   year = "2024",
   # epsg = "4326",
@@ -377,6 +401,13 @@ madrid_dem <- eurodem_terra %>% crop(vect(madrid_lines))
 ```{r}
 #| eval: false
 
+vect(madrid_lines)
+```
+
+
+```{r}
+#| eval: false
+
 madrid_dem
 # class       : SpatRaster 
 # size        : 85809, 119862, 1  (nrow, ncol, nlyr)
@@ -417,7 +448,8 @@ eurodem_raster <- terra::rast("/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data
 # =============================
 # 3. Descargar geometría (Madrid)
 # =============================
-madrid_sf <- gisco_get_lau(country = "ES", year = "2024")
+# madrid_sf <- gisco_get_lau(country = "ES", year = "2024")
+madrid_sf <- gisco_get_lau(country = "ES", year = "2021")
 madrid_sf <- madrid_sf[madrid_sf$LAU_CODE == "28079", ]  # Municipio de Madrid
 
 # =============================
@@ -596,6 +628,54 @@ euromap_RoadL$RTN[euromap_RoadL$RTN == "UNK"] <- NA
 
 ```{r}
 summary(euromap_RoadL)
+# beginLifespanVersion               COR           EXS            F_CODE         FCsubtype    
+# Min.   :2019-01-10 00:00:00   Min.   :  1   Min.   : 5.00   Min.   : NA      Min.   :1.000  
+# 1st Qu.:2021-03-31 00:00:00   1st Qu.:999   1st Qu.:28.00   1st Qu.: NA      1st Qu.:1.000  
+# Median :2021-03-31 00:00:00   Median :999   Median :28.00   Median : NA      Median :1.000  
+# Mean   :2021-05-09 01:33:48   Mean   :752   Mean   :27.94   Mean   :NaN      Mean   :1.001  
+# 3rd Qu.:2021-03-31 00:00:00   3rd Qu.:999   3rd Qu.:28.00   3rd Qu.: NA      3rd Qu.:1.000  
+# Max.   :2023-03-01 00:00:00   Max.   :999   Max.   :28.00   Max.   : NA      Max.   :2.000  
+#                               NA's   :131   NA's   :145     NA's   :130415                  
+#     ICC             inspireId              LEN              LLE              LTN       
+# Length:130415      Length:130415      Min.   : 0.000   Min.   :-1.000   Min.   :2.000  
+# Class :character   Class :character   1st Qu.: 0.317   1st Qu.: 1.000   1st Qu.:2.000  
+# Mode  :character   Mode  :character   Median : 0.939   Median : 1.000   Median :2.000  
+#                                       Mean   : 1.904   Mean   : 1.002   Mean   :2.214  
+#                                       3rd Qu.: 2.435   3rd Qu.: 1.000   3rd Qu.:2.000  
+#                                       Max.   :39.874   Max.   : 2.000   Max.   :4.000  
+#                                                        NA's   :131      NA's   :131    
+#      MED           NAMA1              NAMA2              NAMN1              NAMN2          
+# Min.   :1.000   Length:130415      Length:130415      Length:130415      Length:130415     
+# 1st Qu.:2.000   Class :character   Class :character   Class :character   Class :character  
+# Median :2.000   Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+# Mean   :1.893                                                                              
+# 3rd Qu.:2.000                                                                              
+# Max.   :2.000                                                                              
+# NA's   :131                                                                                
+#     NLN1               NLN2                RST           RSU          RTE           
+# Length:130415      Length:130415      Min.   :1     Min.   :1     Length:130415     
+# Class :character   Class :character   1st Qu.:1     1st Qu.:1     Class :character  
+# Mode  :character   Mode  :character   Median :1     Median :1     Mode  :character  
+#                                       Mean   :1     Mean   :1                       
+#                                       3rd Qu.:1     3rd Qu.:1                       
+#                                       Max.   :1     Max.   :1                       
+#                                       NA's   :131   NA's   :131                     
+#     RTN                 RTT              SN            TEN         TENTEC_ID        
+# Length:130415      Min.   : 14.0   Min.   :3010   Min.   :1.000   Length:130415     
+# Class :character   1st Qu.: 16.0   1st Qu.:3031   1st Qu.:2.000   Class :character  
+# Mode  :character   Median :984.0   Median :3031   Median :2.000   Mode  :character  
+#                    Mean   :581.9   Mean   :3042   Mean   :1.925                     
+#                    3rd Qu.:984.0   3rd Qu.:3031   3rd Qu.:2.000                     
+#                    Max.   :984.0   Max.   :3200   Max.   :2.000                     
+#                    NA's   :131     NA's   :1      NA's   :16058                     
+#      TOL             TUC                    geom       
+# Min.   :1.000   Min.   : 7.000   LINESTRING   :130415  
+# 1st Qu.:1.000   1st Qu.: 7.000   epsg:4258    :     0  
+# Median :1.000   Median : 7.000   +proj=long...:     0  
+# Mean   :1.019   Mean   : 9.266                         
+# 3rd Qu.:1.000   3rd Qu.: 7.000                         
+# Max.   :2.000   Max.   :36.000                         
+# NA's   :131     NA's   :131    
 ```
 
 
