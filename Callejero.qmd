@@ -220,6 +220,16 @@ direcciones_vigentes_sf <- st_as_sf(direcciones_vigentes,
 # Transform to EPSG:4326
 direcciones_vigentes_sf <- st_transform(direcciones_vigentes_sf, crs = 4326) 
 
+
+```
+
+Quitamos las direcciones con `UTMX_ETRS` erróneo.
+
+```{r}
+direcciones_vigentes_sf <- direcciones_vigentes_sf[direcciones_vigentes_sf$UTMX_ETRS > 0, ]
+```
+
+```{r}
 summary(direcciones_vigentes_sf)
 #    COD_VIA           VIA_CLASE        VIA_PAR           VIA_NOMBRE       
 # Min.   :     127   CALLE  :183580   Length:213538      Length:213538     
@@ -265,7 +275,6 @@ summary(direcciones_vigentes_sf)
 # POINT        :213538  
 # epsg:4326    :     0  
 # +proj=long...:     0  
-#                       
 ```
 
 ```{r}
