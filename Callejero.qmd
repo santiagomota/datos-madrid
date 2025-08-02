@@ -162,45 +162,49 @@ direcciones_vigentes[, variables_factoriales] <- lapply(direcciones_vigentes[, v
 ```
 
 ```{r}
+direcciones_vigentes$COD_POSTAL[direcciones_vigentes$COD_POSTAL == 0] <- NA
+```
+
+```{r}
 summary(direcciones_vigentes)
 #    COD_VIA           VIA_CLASE        VIA_PAR           VIA_NOMBRE       
-# Min.   :     127   CALLE  :183565   Length:213521      Length:213521     
-# 1st Qu.:  122450   AVENIDA: 14747   Class :character   Class :character  
+# Min.   :     127   CALLE  :183580   Length:213538      Length:213538     
+# 1st Qu.:  122450   AVENIDA: 14749   Class :character   Class :character  
 # Median :  391700   PASEO  :  4280   Mode  :character   Mode  :character  
-# Mean   : 2866312   PLAZA  :  3624                                        
+# Mean   : 2866973   PLAZA  :  3624                                        
 # 3rd Qu.:  639680   CAMINO :  1915                                        
 # Max.   :31006279   RONDA  :  1260                                        
 #                    (Other):  4130                                        
 # VIA_NOMBRE_ACENTOS     CLASE_APP          NUMERO          CALIFICADOR    
-# Length:213521      KILÓMETRO:   600   Min.   :    0.00   B      :  9283  
-# Class :character   NUMERO   :212921   1st Qu.:    8.00   A      :  6011  
-# Mode  :character                      Median :   19.00   C      :  3166  
+# Length:213538      KILÓMETRO:   600   Min.   :    0.00   B      :  9285  
+# Class :character   NUMERO   :212938   1st Qu.:    8.00   A      :  6014  
+# Mode  :character                      Median :   19.00   C      :  3167  
 #                                       Mean   :   81.34   D      :  2166  
 #                                       3rd Qu.:   43.00   E      :  1438  
-#                                       Max.   :61000.00   (Other):  6734  
-#                                                          NA's   :184723  
+#                                       Max.   :61000.00   (Other):  6735  
+#                                                          NA's   :184733  
 #           TIPO_NDP         COD_NDP            DISTRITO         BARRIO     
-# FRENTE FACHADA: 25514   Min.   :11000001   Min.   : 0.00   Min.   :1.000  
-# GARAJE        : 12012   1st Qu.:11062138   1st Qu.: 8.00   1st Qu.:2.000  
-# JARDÍN/PARQUE :  3123   Median :11130081   Median :11.00   Median :4.000  
-# PARCELA       : 12788   Mean   :17715101   Mean   :11.37   Mean   :3.732  
-# PORTAL        :160084   3rd Qu.:20172382   3rd Qu.:16.00   3rd Qu.:5.000  
-#                         Max.   :31075121   Max.   :21.00   Max.   :9.000  
+# FRENTE FACHADA: 25513   Min.   :11000001   Min.   : 0.00   Min.   :1.000  
+# GARAJE        : 12019   1st Qu.:11062143   1st Qu.: 8.00   1st Qu.:2.000  
+# JARDÍN/PARQUE :  3123   Median :11130088   Median :11.00   Median :4.000  
+# PARCELA       : 12793   Mean   :17716071   Mean   :11.37   Mean   :3.732  
+# PORTAL        :160090   3rd Qu.:20172446   3rd Qu.:16.00   3rd Qu.:5.000  
+#                         Max.   :31075147   Max.   :21.00   Max.   :9.000  
 #                                                            NA's   :3      
 #   COD_POSTAL       UTMX_ED            UTMY_ED            UTMX_ETRS       
-# Min.   :    0   Min.   :      -1   Min.   :       -1   Min.   :  429110  
-# 1st Qu.:28019   1st Qu.:43834543   1st Qu.:447059939   1st Qu.:43825256  
-# Median :28029   Median :44125901   Median :447433912   Median :44116097  
-# Mean   :28029   Mean   :40187490   Mean   :406233297   Mean   :40199814  
-# 3rd Qu.:28041   3rd Qu.:44485051   3rd Qu.:447874019   3rd Qu.:44474861  
+# Min.   :28001   Min.   :      -1   Min.   :       -1   Min.   :  429110  
+# 1st Qu.:28019   1st Qu.:43834509   1st Qu.:447059917   1st Qu.:43825244  
+# Median :28029   Median :44125904   Median :447433886   Median :44116114  
+# Mean   :28030   Mean   :40187257   Mean   :406232608   Mean   :40199743  
+# 3rd Qu.:28041   3rd Qu.:44485050   3rd Qu.:447873990   3rd Qu.:44474860  
 # Max.   :28925   Max.   :45551486   Max.   :449574161   Max.   :45558493  
-#                                                                          
+# NA's   :3                                                                
 #   UTMY_ETRS           LATITUD            LONGITUD         ANGULO_ROTULACION
-# Min.   :  4464414   Length:213521      Length:213521      Min.   :  0.00   
-# 1st Qu.:447037999   Class :character   Class :character   1st Qu.: 45.16   
-# Median :447409568   Mode  :character   Mode  :character   Median :152.68   
-# Mean   :405835028                                         Mean   :180.84   
-# 3rd Qu.:447851888                                         3rd Qu.:317.67   
+# Min.   :  4464414   Length:213538      Length:213538      Min.   :  0.00   
+# 1st Qu.:447037995   Class :character   Class :character   1st Qu.: 45.16   
+# Median :447409480   Mode  :character   Mode  :character   Median :152.77   
+# Mean   :405832677                                         Mean   :180.85   
+# 3rd Qu.:447851886                                         3rd Qu.:317.67   
 # Max.   :449555404                                         Max.   :360.00  
 ```
 
@@ -218,49 +222,50 @@ direcciones_vigentes_sf <- st_transform(direcciones_vigentes_sf, crs = 4326)
 
 summary(direcciones_vigentes_sf)
 #    COD_VIA           VIA_CLASE        VIA_PAR           VIA_NOMBRE       
-# Min.   :     127   CALLE  :183565   Length:213521      Length:213521     
-# 1st Qu.:  122450   AVENIDA: 14747   Class :character   Class :character  
+# Min.   :     127   CALLE  :183580   Length:213538      Length:213538     
+# 1st Qu.:  122450   AVENIDA: 14749   Class :character   Class :character  
 # Median :  391700   PASEO  :  4280   Mode  :character   Mode  :character  
-# Mean   : 2866312   PLAZA  :  3624                                        
+# Mean   : 2866973   PLAZA  :  3624                                        
 # 3rd Qu.:  639680   CAMINO :  1915                                        
 # Max.   :31006279   RONDA  :  1260                                        
 #                    (Other):  4130                                        
 # VIA_NOMBRE_ACENTOS     CLASE_APP          NUMERO          CALIFICADOR    
-# Length:213521      KILÓMETRO:   600   Min.   :    0.00   B      :  9283  
-# Class :character   NUMERO   :212921   1st Qu.:    8.00   A      :  6011  
-# Mode  :character                      Median :   19.00   C      :  3166  
+# Length:213538      KILÓMETRO:   600   Min.   :    0.00   B      :  9285  
+# Class :character   NUMERO   :212938   1st Qu.:    8.00   A      :  6014  
+# Mode  :character                      Median :   19.00   C      :  3167  
 #                                       Mean   :   81.34   D      :  2166  
 #                                       3rd Qu.:   43.00   E      :  1438  
-#                                       Max.   :61000.00   (Other):  6734  
-#                                                          NA's   :184723  
+#                                       Max.   :61000.00   (Other):  6735  
+#                                                          NA's   :184733  
 #           TIPO_NDP         COD_NDP            DISTRITO         BARRIO     
-# FRENTE FACHADA: 25514   Min.   :11000001   Min.   : 0.00   Min.   :1.000  
-# GARAJE        : 12012   1st Qu.:11062138   1st Qu.: 8.00   1st Qu.:2.000  
-# JARDÍN/PARQUE :  3123   Median :11130081   Median :11.00   Median :4.000  
-# PARCELA       : 12788   Mean   :17715101   Mean   :11.37   Mean   :3.732  
-# PORTAL        :160084   3rd Qu.:20172382   3rd Qu.:16.00   3rd Qu.:5.000  
-#                         Max.   :31075121   Max.   :21.00   Max.   :9.000  
+# FRENTE FACHADA: 25513   Min.   :11000001   Min.   : 0.00   Min.   :1.000  
+# GARAJE        : 12019   1st Qu.:11062143   1st Qu.: 8.00   1st Qu.:2.000  
+# JARDÍN/PARQUE :  3123   Median :11130088   Median :11.00   Median :4.000  
+# PARCELA       : 12793   Mean   :17716071   Mean   :11.37   Mean   :3.732  
+# PORTAL        :160090   3rd Qu.:20172446   3rd Qu.:16.00   3rd Qu.:5.000  
+#                         Max.   :31075147   Max.   :21.00   Max.   :9.000  
 #                                                            NA's   :3      
 #   COD_POSTAL       UTMX_ED            UTMY_ED            UTMX_ETRS       
-# Min.   :    0   Min.   :      -1   Min.   :       -1   Min.   :  429110  
-# 1st Qu.:28019   1st Qu.:43834543   1st Qu.:447059939   1st Qu.:43825256  
-# Median :28029   Median :44125901   Median :447433912   Median :44116097  
-# Mean   :28029   Mean   :40187490   Mean   :406233297   Mean   :40199814  
-# 3rd Qu.:28041   3rd Qu.:44485051   3rd Qu.:447874019   3rd Qu.:44474861  
+# Min.   :28001   Min.   :      -1   Min.   :       -1   Min.   :  429110  
+# 1st Qu.:28019   1st Qu.:43834509   1st Qu.:447059917   1st Qu.:43825244  
+# Median :28029   Median :44125904   Median :447433886   Median :44116114  
+# Mean   :28030   Mean   :40187257   Mean   :406232608   Mean   :40199743  
+# 3rd Qu.:28041   3rd Qu.:44485050   3rd Qu.:447873990   3rd Qu.:44474860  
 # Max.   :28925   Max.   :45551486   Max.   :449574161   Max.   :45558493  
-#                                                                          
+# NA's   :3                                                                
 #   UTMY_ETRS           LATITUD            LONGITUD         ANGULO_ROTULACION
-# Min.   :  4464414   Length:213521      Length:213521      Min.   :  0.00   
-# 1st Qu.:447037999   Class :character   Class :character   1st Qu.: 45.16   
-# Median :447409568   Mode  :character   Mode  :character   Median :152.68   
-# Mean   :405835028                                         Mean   :180.84   
-# 3rd Qu.:447851888                                         3rd Qu.:317.67   
+# Min.   :  4464414   Length:213538      Length:213538      Min.   :  0.00   
+# 1st Qu.:447037995   Class :character   Class :character   1st Qu.: 45.16   
+# Median :447409480   Mode  :character   Mode  :character   Median :152.77   
+# Mean   :405832677                                         Mean   :180.85   
+# 3rd Qu.:447851886                                         3rd Qu.:317.67   
 # Max.   :449555404                                         Max.   :360.00   
 #                                                                            
 #          geometry     
-# POINT        :213521  
+# POINT        :213538  
 # epsg:4326    :     0  
 # +proj=long...:     0  
+#                       
 ```
 
 ```{r}
@@ -431,30 +436,30 @@ viales_vigentes_distritos_barrios[, variables_factoriales] <- lapply(viales_vige
 
 ```{r}
 summary(viales_vigentes_distritos_barrios)
-#    COD_VIA            VIA_CLASE      VIA_PAR           VIA_NOMBRE        VIA_NOMBRE_ACENTOS
-# Min.   :     127   CALLE   :8350   Length:11092       Length:11092       Length:11092      
-# 1st Qu.:  122925   PLAZA   : 657   Class :character   Class :character   Class :character  
-# Median :  435776   AVENIDA : 531   Mode  :character   Mode  :character   Mode  :character  
-# Mean   : 4383436   CAMINO  : 347                                                           
-# 3rd Qu.:  708125   GLORIETA: 230                                                           
-# Max.   :31006279   PASEO   : 183                                                           
-#                    (Other) : 794                                                           
-#    DISTRITO         BARRIO        IMPAR_MIN          IMPAR_MAX           PAR_MIN     
-# Min.   : 1.00   Min.   :0.000   Min.   :    1.00   Min.   :    1.00   Min.   :    0  
-# 1st Qu.: 7.00   1st Qu.:2.000   1st Qu.:    1.00   1st Qu.:    7.00   1st Qu.:    2  
-# Median :11.00   Median :3.000   Median :    1.00   Median :   17.00   Median :    2  
-# Mean   :11.18   Mean   :3.609   Mean   :   11.64   Mean   :   36.08   Mean   :  210  
-# 3rd Qu.:16.00   3rd Qu.:5.000   3rd Qu.:    1.00   3rd Qu.:   35.00   3rd Qu.:    2  
-# Max.   :21.00   Max.   :9.000   Max.   :48195.00   Max.   :48195.00   Max.   :60000  
-# NA's   :26      NA's   :26      NA's   :2624       NA's   :2624       NA's   :2468   
-#    PAR_MAX       
-# Min.   :    2.0  
-# 1st Qu.:    8.0  
-# Median :   18.0  
-# Mean   :  262.7  
-# 3rd Qu.:   38.0  
-# Max.   :61000.0  
-# NA's   :2468   
+#    COD_VIA            VIA_CLASE      VIA_PAR           VIA_NOMBRE       
+# Min.   :     127   CALLE   :8350   Length:11092       Length:11092      
+# 1st Qu.:  122925   PLAZA   : 657   Class :character   Class :character  
+# Median :  435776   AVENIDA : 531   Mode  :character   Mode  :character  
+# Mean   : 4383436   CAMINO  : 347                                        
+# 3rd Qu.:  708125   GLORIETA: 230                                        
+# Max.   :31006279   PASEO   : 183                                        
+#                    (Other) : 794                                        
+# VIA_NOMBRE_ACENTOS    DISTRITO         BARRIO        IMPAR_MIN       
+# Length:11092       Min.   : 1.00   Min.   :0.000   Min.   :    1.00  
+# Class :character   1st Qu.: 7.00   1st Qu.:2.000   1st Qu.:    1.00  
+# Mode  :character   Median :11.00   Median :3.000   Median :    1.00  
+#                    Mean   :11.18   Mean   :3.609   Mean   :   11.64  
+#                    3rd Qu.:16.00   3rd Qu.:5.000   3rd Qu.:    1.00  
+#                    Max.   :21.00   Max.   :9.000   Max.   :48195.00  
+#                    NA's   :26      NA's   :26      NA's   :2624      
+#   IMPAR_MAX           PAR_MIN         PAR_MAX       
+# Min.   :    1.00   Min.   :    0   Min.   :    2.0  
+# 1st Qu.:    7.00   1st Qu.:    2   1st Qu.:    8.0  
+# Median :   17.00   Median :    2   Median :   18.0  
+# Mean   :   36.08   Mean   :  210   Mean   :  262.7  
+# 3rd Qu.:   35.00   3rd Qu.:    2   3rd Qu.:   38.0  
+# Max.   :48195.00   Max.   :60000   Max.   :61000.0  
+# NA's   :2624       NA's   :2468    NA's   :2468   
 ```
 
 
@@ -489,22 +494,30 @@ viales_vigentes_distritos[, variables_factoriales] <- lapply(viales_vigentes_dis
 
 ```{r}
 summary(viales_vigentes_distritos)
-#    COD_VIA            VIA_CLASE      VIA_PAR           VIA_NOMBRE        VIA_NOMBRE_ACENTOS
-# Min.   :     127   CALLE   :8350   Length:11092       Length:11092       Length:11092      
-# 1st Qu.:  122925   PLAZA   : 657   Class :character   Class :character   Class :character  
-# Median :  435776   AVENIDA : 531   Mode  :character   Mode  :character   Mode  :character  
-# Mean   : 4383436   CAMINO  : 347                                                           
-# 3rd Qu.:  708125   GLORIETA: 230                                                           
-# Max.   :31006279   PASEO   : 183                                                           
-#                    (Other) : 794                                                           
-#    DISTRITO       IMPAR_MIN          IMPAR_MAX           PAR_MIN           PAR_MAX       
-# Min.   : 1.00   Min.   :    1.00   Min.   :    1.00   Min.   :    0.0   Min.   :    2.0  
-# 1st Qu.: 7.00   1st Qu.:    1.00   1st Qu.:    7.00   1st Qu.:    2.0   1st Qu.:    8.0  
-# Median :11.00   Median :    1.00   Median :   17.00   Median :    2.0   Median :   18.0  
-# Mean   :11.18   Mean   :   25.34   Mean   :   56.09   Mean   :  198.3   Mean   :  331.2  
-# 3rd Qu.:16.00   3rd Qu.:    1.00   3rd Qu.:   39.00   3rd Qu.:    2.0   3rd Qu.:   42.0  
-# Max.   :21.00   Max.   :48195.00   Max.   :48195.00   Max.   :49000.0   Max.   :61000.0  
-# NA's   :26      NA's   :1975       NA's   :1975       NA's   :1779      NA's   :1779  
+#    COD_VIA            VIA_CLASE      VIA_PAR           VIA_NOMBRE       
+# Min.   :     127   CALLE   :8350   Length:11092       Length:11092      
+# 1st Qu.:  122925   PLAZA   : 657   Class :character   Class :character  
+# Median :  435776   AVENIDA : 531   Mode  :character   Mode  :character  
+# Mean   : 4383436   CAMINO  : 347                                        
+# 3rd Qu.:  708125   GLORIETA: 230                                        
+# Max.   :31006279   PASEO   : 183                                        
+#                    (Other) : 794                                        
+# VIA_NOMBRE_ACENTOS    DISTRITO       IMPAR_MIN          IMPAR_MAX       
+# Length:11092       Min.   : 1.00   Min.   :    1.00   Min.   :    1.00  
+# Class :character   1st Qu.: 7.00   1st Qu.:    1.00   1st Qu.:    7.00  
+# Mode  :character   Median :11.00   Median :    1.00   Median :   17.00  
+#                    Mean   :11.18   Mean   :   25.34   Mean   :   56.09  
+#                    3rd Qu.:16.00   3rd Qu.:    1.00   3rd Qu.:   39.00  
+#                    Max.   :21.00   Max.   :48195.00   Max.   :48195.00  
+#                    NA's   :26      NA's   :1975       NA's   :1975      
+#    PAR_MIN           PAR_MAX       
+# Min.   :    0.0   Min.   :    2.0  
+# 1st Qu.:    2.0   1st Qu.:    8.0  
+# Median :    2.0   Median :   18.0  
+# Mean   :  198.3   Mean   :  331.2  
+# 3rd Qu.:    2.0   3rd Qu.:   42.0  
+# Max.   :49000.0   Max.   :61000.0  
+# NA's   :1779      NA's   :1779   
 ```
 
 
@@ -563,6 +576,11 @@ summary(viales_historico)
 #                                         NA's   :9392   
 ```
 
+```{r}
+max(viales_historico$FECHA_DE_ALTA)
+# [1] "2025-07-24"
+```
+
 
 ## Direcciones histórico
 
@@ -603,7 +621,9 @@ direcciones_historico <- read_delim(link_direcciones2,
 variables_factoriales <- c(# "COD_VIA", "VIA_SQC", 
                            "VIA_CLASE", 
                            # "VIA_PAR", "VIA_NOMBRE", "VIA_NOMBRE_ACENTOS", 
-                           # "COD_NDP", "CLASE_NDP", "NÚMERO", 
+                           # "COD_NDP", 
+                           "CLASE_NDP", 
+                           # "NÚMERO", 
                            "CALIFICADOR", 
                            # "FECHA_DE_ALTA", "FECHA_DE_BAJA", 
                            "TIPO_NDP" 
@@ -620,46 +640,51 @@ direcciones_historico$FECHA_DE_BAJA <- as.Date(direcciones_historico$FECHA_DE_BA
 ```
 
 ```{r}
+max(direcciones_historico$FECHA_DE_ALTA)
+# [1] "2025-07-31"
+```
+
+```{r}
 summary(direcciones_historico)
 #    COD_VIA         VIA_SQC            VIA_CLASE        VIA_PAR         
-# Min.   :     127   Mode:logical   CALLE    :314220   Length:375305     
-# 1st Qu.:  141550   NA's:375305    AVENIDA  : 23397   Class :character  
+# Min.   :     127   Mode:logical   CALLE    :314230   Length:375317     
+# 1st Qu.:  141550   NA's:375317    AVENIDA  : 23399   Class :character  
 # Median :  396000                  PASEO    :  8770   Mode  :character  
-# Mean   : 2591426                  PLAZA    :  6397                     
+# Mean   : 2591925                  PLAZA    :  6397                     
 # 3rd Qu.:  634300                  CAMINO   :  4025                     
 # Max.   :31006279                  CARRETERA:  3693                     
 #                                   (Other)  : 14803                     
-#  VIA_NOMBRE        VIA_NOMBRE_ACENTOS    COD_NDP          CLASE_NDP        
-# Length:375305      Length:375305      Min.   :11000001   Length:375305     
-# Class :character   Class :character   1st Qu.:11053611   Class :character  
-# Mode  :character   Mode  :character   Median :11126248   Mode  :character  
-#                                       Mean   :17668116                     
-#                                       3rd Qu.:20171359                     
-#                                       Max.   :31075132                     
-#                                                                            
+#  VIA_NOMBRE        VIA_NOMBRE_ACENTOS    COD_NDP             CLASE_NDP     
+# Length:375317      Length:375317      Min.   :11000001   NUMERO   :364701  
+# Class :character   Class :character   1st Qu.:11053612   BLOQUE   :  9027  
+# Mode  :character   Mode  :character   Median :11126254   KILÓMETRO:  1239  
+#                                       Mean   :17668545   PARCELA  :    98  
+#                                       3rd Qu.:20171383   CHABOLA  :    85  
+#                                       Max.   :31075147   SANQUI   :    81  
+#                                                          (Other)  :    86  
 #     NÚMERO       CALIFICADOR     FECHA_DE_ALTA        FECHA_DE_BAJA       
-# Min.   :    1   B      : 11701   Min.   :1870-01-01   Min.   :197-01-01   
-# 1st Qu.:    9   A      :  7835   1st Qu.:1950-07-14   1st Qu.:1949-09-06  
+# Min.   :    1   B      : 11702   Min.   :1870-01-01   Min.   :197-01-01   
+# 1st Qu.:    9   A      :  7837   1st Qu.:1950-07-14   1st Qu.:1949-09-06  
 # Median :   21   C      :  4132   Median :1973-01-01   Median :1973-03-05  
 # Mean   :   83   D      :  2849   Mean   :1970-12-04   Mean   :1972-06-27  
 # 3rd Qu.:   48   E      :  1817   3rd Qu.:1991-03-20   3rd Qu.:1995-05-29  
-# Max.   :61000   (Other): 21590   Max.   :2025-07-29   Max.   :2025-07-24  
-#                 NA's   :325381                        NA's   :214518      
+# Max.   :61000   (Other): 21590   Max.   :2025-07-31   Max.   :2025-07-24  
+#                 NA's   :325390                        NA's   :214531      
 #           TIPO_NDP         UTMX_ED            UTMY_ED            UTMX_ETRS       
-# PORTAL        :268847   Min.   :      -1   Min.   :       -1   Min.   :       0  
-# FRENTE FACHADA: 39037   1st Qu.:43756435   1st Qu.:446984791   1st Qu.:43747337  
-# PARCELA       : 29177   Median :44080002   Median :447385537   Median :44069689  
-# GARAJE        : 15710   Mean   :37360881   Mean   :378022382   Mean   :37388754  
-# JARDÍN/PARQUE :  3922   3rd Qu.:44389219   3rd Qu.:447830794   3rd Qu.:44378993  
+# PORTAL        :268852   Min.   :      -1   Min.   :       -1   Min.   :       0  
+# FRENTE FACHADA: 39037   1st Qu.:43756431   1st Qu.:446984781   1st Qu.:43747311  
+# PARCELA       : 29180   Median :44080004   Median :447385505   Median :44069689  
+# GARAJE        : 15714   Mean   :37360999   Mean   :378023523   Mean   :37388755  
+# JARDÍN/PARQUE :  3922   3rd Qu.:44389228   3rd Qu.:447830794   3rd Qu.:44378999  
 # (Other)       :  2376   Max.   :45551486   Max.   :449574161   Max.   :45558493  
 # NA's          : 16236                                                            
 #   UTMY_ETRS           LATITUD            LONGITUD         ANGULO_ROTULACION 
-# Min.   :        0   Length:375305      Length:375305      Length:375305     
-# 1st Qu.:446961532   Class :character   Class :character   Class :character  
-# Median :447362746   Mode  :character   Mode  :character   Mode  :character  
-# Mean   :377716498                                                           
-# 3rd Qu.:447808403                                                           
-# Max.   :449555404 
+# Min.   :        0   Length:375317      Length:375317      Length:375317     
+# 1st Qu.:446961492   Class :character   Class :character   Class :character  
+# Median :447362722   Mode  :character   Mode  :character   Mode  :character  
+# Mean   :377715504                                                           
+# 3rd Qu.:447808395                                                           
+# Max.   :449555404   
 ```
 
 ```{r}
@@ -672,53 +697,7 @@ direcciones_historico_sf <- st_as_sf(direcciones_historico,
                                     crs = crs_direcciones)  # Ensure CRS is numeric
   
 # Transform to EPSG:4326
-direcciones_historico_sf <- st_transform(direcciones_historico_sf, crs = 4326) 
-
-
-#    COD_VIA         VIA_SQC            VIA_CLASE        VIA_PAR         
-# Min.   :     127   Mode:logical   CALLE    :314216   Length:375301     
-# 1st Qu.:  141550   NA's:375301    AVENIDA  : 23397   Class :character  
-# Median :  396000                  PASEO    :  8770   Mode  :character  
-# Mean   : 2591531                  PLAZA    :  6397                     
-# 3rd Qu.:  634300                  CAMINO   :  4025                     
-# Max.   :31006279                  CARRETERA:  3693                     
-#                                   (Other)  : 14803                     
-#  VIA_NOMBRE        VIA_NOMBRE_ACENTOS    COD_NDP          CLASE_NDP        
-# Length:375301      Length:375301      Min.   :11000001   Length:375301     
-# Class :character   Class :character   1st Qu.:11053610   Class :character  
-# Mode  :character   Mode  :character   Median :11126246   Mode  :character  
-#                                       Mean   :17667973                     
-#                                       3rd Qu.:20171356                     
-#                                       Max.   :31075121                     
-#                                                                            
-#     NÚMERO       CALIFICADOR     FECHA_DE_ALTA      FECHA_DE_BAJA     
-# Min.   :    1   B      : 11700   Length:375301      Length:375301     
-# 1st Qu.:    9   A      :  7834   Class :character   Class :character  
-# Median :   21   C      :  4131   Mode  :character   Mode  :character  
-# Mean   :   83   D      :  2849                                        
-# 3rd Qu.:   48   E      :  1817                                        
-# Max.   :61000   (Other): 21589                                        
-#                 NA's   :325381                                        
-#           TIPO_NDP         UTMX_ED            UTMY_ED            UTMX_ETRS       
-# PORTAL        :268844   Min.   :      -1   Min.   :       -1   Min.   :       0  
-# FRENTE FACHADA: 39041   1st Qu.:43756436   1st Qu.:446984791   1st Qu.:43747337  
-# PARCELA       : 29175   Median :44080002   Median :447385536   Median :44069686  
-# GARAJE        : 15707   Mean   :37361022   Mean   :378022821   Mean   :37388685  
-# JARDÍN/PARQUE :  3922   3rd Qu.:44389219   3rd Qu.:447830797   3rd Qu.:44378998  
-# (Other)       :  2376   Max.   :45551486   Max.   :449574161   Max.   :45558493  
-# NA's          : 16236                                                            
-#   UTMY_ETRS           LATITUD            LONGITUD         ANGULO_ROTULACION 
-# Min.   :        0   Length:375301      Length:375301      Length:375301     
-# 1st Qu.:446961532   Class :character   Class :character   Class :character  
-# Median :447362738   Mode  :character   Mode  :character   Mode  :character  
-# Mean   :377715753                                                           
-# 3rd Qu.:447808403                                                           
-# Max.   :449555404                                                           
-#                                                                             
-#          geometry     
-# POINT        :375301  
-# epsg:4326    :     0  
-# +proj=long...:     0  
+direcciones_historico_sf <- st_transform(direcciones_historico_sf, crs = 4326)
 ```
 
 Quitamos las direcciones con `UTMX_ETRS` erróneo.
@@ -730,87 +709,80 @@ direcciones_historico_sf <- direcciones_historico_sf[direcciones_historico_sf$UT
 ```{r}
 summary(direcciones_historico_sf)
 #    COD_VIA         VIA_SQC            VIA_CLASE        VIA_PAR         
-# Min.   :     127   Mode:logical   CALLE    :293782   Length:349050     
-# 1st Qu.:  142625   NA's:349050    AVENIDA  : 21646   Class :character  
+# Min.   :     127   Mode:logical   CALLE    :293792   Length:349062     
+# 1st Qu.:  142625   NA's:349062    AVENIDA  : 21648   Class :character  
 # Median :  398700                  PASEO    :  7721   Mode  :character  
-# Mean   : 2752058                  PLAZA    :  5842                     
+# Mean   : 2752589                  PLAZA    :  5842                     
 # 3rd Qu.:  639950                  CAMINO   :  3511                     
 # Max.   :31006279                  CARRETERA:  3027                     
 #                                   (Other)  : 13521                     
-#  VIA_NOMBRE        VIA_NOMBRE_ACENTOS    COD_NDP          CLASE_NDP        
-# Length:349050      Length:349050      Min.   :11000001   Length:349050     
-# Class :character   Class :character   1st Qu.:11050451   Class :character  
-# Mode  :character   Mode  :character   Median :11119007   Mode  :character  
-#                                       Mean   :17342235                     
-#                                       3rd Qu.:20163371                     
-#                                       Max.   :31075132                     
-#                                                                            
+#  VIA_NOMBRE        VIA_NOMBRE_ACENTOS    COD_NDP             CLASE_NDP     
+# Length:349062      Length:349062      Min.   :11000001   NUMERO   :339104  
+# Class :character   Class :character   1st Qu.:11050454   BLOQUE   :  8578  
+# Mode  :character   Mode  :character   Median :11119008   KILÓMETRO:  1148  
+#                                       Mean   :17342707   PARCELA  :    98  
+#                                       3rd Qu.:20163393   TORRE    :    41  
+#                                       Max.   :31075147   CHABOLA  :    37  
+#                                                          (Other)  :    56  
 #     NÚMERO         CALIFICADOR     FECHA_DE_ALTA        FECHA_DE_BAJA       
-# Min.   :    1.0   B      : 11242   Min.   :1870-01-01   Min.   :197-01-01   
-# 1st Qu.:    9.0   A      :  7564   1st Qu.:1950-07-14   1st Qu.:1948-11-01  
+# Min.   :    1.0   B      : 11243   Min.   :1870-01-01   Min.   :197-01-01   
+# 1st Qu.:    9.0   A      :  7566   1st Qu.:1950-07-14   1st Qu.:1948-11-01  
 # Median :   21.0   C      :  3987   Median :1973-01-17   Median :1969-03-10  
 # Mean   :   84.8   D      :  2772   Mean   :1971-02-10   Mean   :1970-05-23  
 # 3rd Qu.:   46.0   E      :  1778   3rd Qu.:1992-07-08   3rd Qu.:1996-03-11  
-# Max.   :61000.0   (Other): 20569   Max.   :2025-07-29   Max.   :2025-07-24  
-#                   NA's   :301138                        NA's   :214518      
+# Max.   :61000.0   (Other): 20569   Max.   :2025-07-31   Max.   :2025-07-24  
+#                   NA's   :301147                        NA's   :214531      
 #           TIPO_NDP         UTMX_ED            UTMY_ED            UTMX_ETRS       
-# PORTAL        :263333   Min.   :      -1   Min.   :       -1   Min.   :  429110  
-# FRENTE FACHADA: 38597   1st Qu.:43866938   1st Qu.:447061900   1st Qu.:43858249  
-# PARCELA       : 23646   Median :44108440   Median :447483022   Median :44098246  
-# GARAJE        : 15687   Mean   :40171109   Mean   :406456640   Mean   :40201078  
-# JARDÍN/PARQUE :  3885   3rd Qu.:44420682   3rd Qu.:447860641   3rd Qu.:44410571  
+# PORTAL        :263338   Min.   :      -1   Min.   :       -1   Min.   :  429110  
+# FRENTE FACHADA: 38597   1st Qu.:43866937   1st Qu.:447061889   1st Qu.:43858245  
+# PARCELA       : 23649   Median :44108442   Median :447483012   Median :44098252  
+# GARAJE        : 15691   Mean   :40171139   Mean   :406456889   Mean   :40200982  
+# JARDÍN/PARQUE :  3885   3rd Qu.:44420691   3rd Qu.:447860638   3rd Qu.:44410576  
 # (Other)       :  1093   Max.   :45551486   Max.   :449574161   Max.   :45558493  
 # NA's          :  2809                                                            
 #   UTMY_ETRS           LATITUD            LONGITUD         ANGULO_ROTULACION 
-# Min.   :  4464414   Length:349050      Length:349050      Length:349050     
-# 1st Qu.:447039795   Class :character   Class :character   Class :character  
-# Median :447458132   Mode  :character   Mode  :character   Mode  :character  
-# Mean   :406127748                                                           
-# 3rd Qu.:447837938                                                           
+# Min.   :  4464414   Length:349062      Length:349062      Length:349062     
+# 1st Qu.:447039777   Class :character   Class :character   Class :character  
+# Median :447458060   Mode  :character   Mode  :character   Mode  :character  
+# Mean   :406125702                                                           
+# 3rd Qu.:447837933                                                           
 # Max.   :449555404                                                           
 #                                                                             
 #          geometry     
-# POINT        :349050  
+# POINT        :349062  
 # epsg:4326    :     0  
 # +proj=long...:     0  
 ```
 
-
 ```{r}
 table(direcciones_historico$VIA_CLASE, useNA = 'ifany')
-#       ACCESO                ARROYO             AUTOPISTA 
-#           39                     4                     7 
-#      AUTOVÍA               AVENIDA                BARRIO 
-#          664                 23397                    44 
-#      BULEVAR                 CALLE              CALLEJÓN 
-#          217                314220                   385 
-#       CAMINO           CAMINO ALTO           CAMINO BAJO 
-#         4025                     3                     5 
-# CAMINO VIEJO              CAMPILLO                CAÑADA 
-#          237                    21                   658 
-#      CARRERA             CARRETERA                 CERRO 
-#          214                  3693                    11 
-#      COLONIA            COSTANILLA                CUESTA 
-#         2788                   180                   207 
-#     EDIFICIO            ESCALINATA ESTACIÓN DE CERCANÍAS 
-#            3                     6                     2 
-#      GALERÍA              GLORIETA    GRUPO DE VIVIENDAS 
-#           14                   497                     1 
-#        LUGAR                PARQUE            PARTICULAR 
-#          892                    32                   174 
-#     PASADIZO                PASAJE                 PASEO 
-#           74                  1323                  8770 
-#        PISTA                 PLAZA              PLAZUELA 
-#            5                  6397                   142 
-#      POBLADO  POBLADO DE ABSORCIÓN      POBLADO DIRIGIDO 
-#           51                    28                   120 
-#     POLÍGONO                PUENTE                 RONDA 
-#          422                     3                  1611 
-#  TRANSVERSAL              TRAVESÍA      TRAVESÍA PRIMERA 
-#           41                  2293                     5 
-# URBANIZACIÓN                   VÍA 
-#         1378                     2 
+#           ACCESO                ARROYO             AUTOPISTA               AUTOVÍA 
+#               39                     4                     7                   664 
+#          AVENIDA                BARRIO               BULEVAR                 CALLE 
+#            23399                    44                   217                314230 
+#         CALLEJÓN                CAMINO           CAMINO ALTO           CAMINO BAJO 
+#              385                  4025                     3                     5 
+#     CAMINO VIEJO              CAMPILLO                CAÑADA               CARRERA 
+#              237                    21                   658                   214 
+#        CARRETERA                 CERRO               COLONIA            COSTANILLA 
+#             3693                    11                  2788                   180 
+#           CUESTA              EDIFICIO            ESCALINATA ESTACIÓN DE CERCANÍAS 
+#              207                     3                     6                     2 
+#          GALERÍA              GLORIETA    GRUPO DE VIVIENDAS                 LUGAR 
+#               14                   497                     1                   892 
+#           PARQUE            PARTICULAR              PASADIZO                PASAJE 
+#               32                   174                    74                  1323 
+#            PASEO                 PISTA                 PLAZA              PLAZUELA 
+#             8770                     5                  6397                   142 
+#          POBLADO  POBLADO DE ABSORCIÓN      POBLADO DIRIGIDO              POLÍGONO 
+#               51                    28                   120                   422 
+#           PUENTE                 RONDA           TRANSVERSAL              TRAVESÍA 
+#                3                  1611                    41                  2293 
+# TRAVESÍA PRIMERA          URBANIZACIÓN                   VÍA 
+#                5                  1378                     2 
 ```
+
+
 
 
 ## Info
