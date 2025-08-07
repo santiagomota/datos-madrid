@@ -449,13 +449,21 @@ list_models()
 
 ### Una historia
 
-Pedimos una historia.
+Analizamos el [link](https://datos.madrid.es/portal/site/egob/menuitem.3efdb29b813ad8241e830cc2a8a409a0/?vgnextoid=ff7e9b21d6a37910VgnVCM2000001f4a900aRCRD&vgnextchannel=e7a412b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default) del concurso.
 
 ```{r}
 #| eval: false
 
 # Generamos una respuesta basada en un prompt
-respuesta <- generate("llama3.2", "tell me a 10-word story") 
+respuesta <- generate("gpt-oss", "Quiero que analices este link: https://datos.madrid.es/portal/site/egob/menuitem.3efdb29b813ad8241e830cc2a8a409a0/?vgnextoid=ff7e9b21d6a37910VgnVCM2000001f4a900aRCRD&vgnextchannel=e7a412b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default") 
+respuesta
+```
+
+```{r}
+#| eval: false
+
+# Generamos una respuesta basada en un prompt
+respuesta <- generate("gpt-oss", "Quiero que analices este link: https://datos.madrid.es/portal/site/egob/menuitem.3efdb29b813ad8241e830cc2a8a409a0/?vgnextoid=ff7e9b21d6a37910VgnVCM2000001f4a900aRCRD&vgnextchannel=e7a412b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default", stream = TRUE) 
 respuesta
 ```
 
@@ -466,6 +474,34 @@ Vemos la respuesta.
 
 # Usamos resp_process
 resp_process(respuesta, "text")
+```
+
+```{r}
+#| eval: false
+
+
+```
+
+
+```{r}
+#| eval: false
+
+saveRDS(respuesta, file = './data/respuesta_analisis_concurso.rds')
+```
+
+```{r}
+#| eval: false
+
+summary(respuesta)
+#             Length Class         Mode       
+# method          1  -none-        character  
+# url             1  -none-        character  
+# status_code     1  -none-        numeric    
+# headers         3  httr2_headers list       
+# body        26200  -none-        raw        
+# timing          6  -none-        numeric    
+# request         8  httr2_request list       
+# cache           0  -none-        environment
 ```
 
 
