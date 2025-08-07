@@ -61,6 +61,14 @@ engine: knitr
 <right> 
 ![](figs/logo_madrid.png)
 
+```{r}
+#| include: false
+#| echo: false
+
+# Para conseguir que salgan los iconos en documentos Rmarkdown
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
 # LLMs
 
 **El código de esta sección no se ejecuta por defecto.**
@@ -621,140 +629,6 @@ chat$register_tool(tool(
 ```
 
 [OpenAI API error codes](https://platform.openai.com/docs/guides/error-codes/api-errors)
-
-
-## LLM con reticulate
-
-```{r}
-#| eval: false
-
-library(tidyverse)
-library(reticulate)
-
-# Step 1: Create a virtual environment, if you've already created one please move on the step 2. This is a best practice. 
-virtualenv_create(envname = "gemini")
-
-## Step 1.1: Install the appropriate modules
-py_install(c("google-generativeai", "langchain", "langchain-community",
-             "pypdf", "python-dotenv"), pip = TRUE, virtualenv = "gemini")
-
-# Step 2: Use the virtual environment
-use_virtualenv("gemini")
-
-# Step 3: Import installed modules
-dotenv <- import("dotenv")
-genai <- import("google.generativeai")
-langchain_community <- import("langchain_community")
-PyPDFLoader <- langchain_community$document_loaders$PyPDFLoader
-langchain <- import("langchain")
-PromptTemplate <- langchain$prompts$PromptTemplate
-
-# Step 4: Load your API keys onto a .env file - see https://pypi.org/project/python-dotenv/
-dotenv$load_dotenv(dotenv_path = ".env")
-```
-
-```{r}
-#| eval: false
-
-# Step 5: Load PDF of interest
-loader = PyPDFLoader("/media/enero/Disco3ATA/Varios/Gitlab/r_clases/LLM/data/amr-guidance-4.0.pdf")
-documents = loader$load()
-
-# Step 6: Setup Gemini
-genai$configure() #if you're skipping dotenv, insert your API key here
-
-llm <- genai$GenerativeModel(
-  'gemini-1.5-flash', 
-  generation_config=genai$GenerationConfig(
-  max_output_tokens=2000L,
-  temperature=0
-))
-
-# Step 7 (optional): Test
-llm$generate_content(contents = "hello") # you should see a return of text and tokens etc.
-```
-
-```{}
-response:
-GenerateContentResponse(
-    done=True,
-    iterator=None,
-    result=protos.GenerateContentResponse({
-      "candidates": [
-        {
-          "content": {
-            "parts": [
-              {
-                "text": "Hello there! How can I help you today?\n"
-              }
-            ],
-            "role": "model"
-          },
-          "finish_reason": "STOP",
-          "avg_logprobs": -0.0006325314752757549
-        }
-      ],
-      "usage_metadata": {
-        "prompt_token_count": 1,
-        "candidates_token_count": 11,
-        "total_token_count": 12
-      },
-      "model_version": "gemini-1.5-flash"
-    }),
-)
-```
-
-```{r}
-#| eval: false
-
-# Step 8: Prompt
-prompt_text = "
-You are a question and answer assistant. Given the context below, answer the question.
-
-Context: {text}
-
-Question: {question}    
-"
-
-prompt = PromptTemplate(template=prompt_text, input_variables=list("text", "question"))
-
-questions = c(
-  "What is the preferred treatment of CRE?",
-  "What is the preferred treatment of ESBL-E?",
-  "Can we use fosfomycin in ESBL Klebsiella?",
-  "Can we use fosfomycin in ESBL Ecoli?",
-  "What is the preferred treatment of stenotrophomonas?",
-  "What is the preferred treatment of DTR Pseudomonas?",
-  "Which organisms require two active agent when susceptibility is known?",
-  "Can we use gentamicin in pseudomonas infection?",
-  "Can we use tobramycin to treat pseudomonas infection?",
-  "Why is there carbapenemase non-producing organism?",
-  "Can we use oral antibiotics for any of these MDRO?",
-  "What is the preferred treatment of MRSA?",
-  "What is the preferred treatment of CRAB?",
-  "Can fosofmycin be used for pyelonephritis?",
-  "Is IV antibiotics better than oral antibiotics?"
-)
-
-content = prompt$format(
-  text=documents,
-  question=questions
-)
-
-# Step 9: Generate Content / aka Langchain lingo == invoke
-response <- llm$generate_content(contents=content)
-
-# Step 10: Let's simulate a streaming response
-print_keystrokes <- function(text) {
-  for (char in strsplit(text, "")[[1]]) {
-    cat(char) # Print the character
-    Sys.sleep(0.005) # Optional delay for visual effect
-  }
-  cat("\n") # Add a newline at the end
-}
-
-print_keystrokes(response$text)
-```
 
 
 ## Recopilatorio LLMs
