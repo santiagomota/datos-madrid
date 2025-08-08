@@ -96,8 +96,10 @@ Dentro del [Portal de datos abiertos del ayuntamiento de Madrid](http://datos.ma
 El siguiente bloque de código no se ejecuta para no saturar la web del Ayuntamiento de Madrid, pero se puede modificar fácilmente para obtener otro mes.
 
 ```{r}
-fecha_objetivo <- data.frame(mes = '06', anio = '2025')
+fecha_objetivo <- data.frame(mes = '07', anio = '2025')
 ```
+
+**Hacer que descargue los datos si no están en local**
 
 ```{r}
 #| label: descargar-datos-trafico
@@ -132,11 +134,11 @@ fichero
 
 # Vemos el tamaño del fichero
 print(object.size(trafico_mes), units = "Mb")
-# 645.1 Mb
+# 673.2 Mb
 
 # Imprimimos el timestamp
 fs::file_info(fichero)$modification_time
-# [1] "2025-07-14 11:14:15 CEST"
+# [1] "2025-08-08 08:39:15 CEST"
 ```
 
 ::: callout-warning
@@ -175,14 +177,14 @@ trafico_mes <- read.table(unzip(fichero, exdir = tempdir()),
 
 # Vemos el tamaño del fichero
 print(object.size(trafico_mes), units = "Mb")
-# 645.1 Mb
+# 673.2 Mb
 ```
 
 ```{r}
 # Vemos el timestamp
 fs::file_info(paste0(directorio_externo, 'ayuntamientoMadrid/trafico/historico/', 
                   fecha_objetivo$mes[1], '-', fecha_objetivo$anio[1], '.zip'))$modification_time
-# [1] "2025-07-14 11:14:15 CEST"
+# [1] "2025-08-08 08:39:15 CEST"
 ```
 
 
@@ -251,46 +253,49 @@ Porcentaje de tiempo que está un detector de tráfico ocupado (con un vehículo
 ```{r}
 summary(trafico_mes)
 #       id           fecha            tipo_elem           intensidad     
-# Min.   : 1006   Length:13004398    Length:13004398    Min.   :    0.0  
-# 1st Qu.: 4687   Class :character   Class :character   1st Qu.:   55.0  
-# Median : 5971   Mode  :character   Mode  :character   Median :  168.0  
-# Mean   : 6754                                         Mean   :  362.6  
-# 3rd Qu.:10076                                         3rd Qu.:  420.0  
-# Max.   :11435                                         Max.   :12307.0  
+# Min.   : 1006   Length:13571079    Length:13571079    Min.   :    0.0  
+# 1st Qu.: 4691   Class :character   Class :character   1st Qu.:   50.0  
+# Median : 5974   Mode  :character   Mode  :character   Median :  148.0  
+# Mean   : 6765                                         Mean   :  323.7  
+# 3rd Qu.:10085                                         3rd Qu.:  367.0  
+# Max.   :11435                                         Max.   :28639.0  
 #                                                                        
-#   ocupacion           carga             vmed            error          
-# Min.   :  0.000   Min.   :  0.00   Min.   :  0.000   Length:13004398   
-# 1st Qu.:  1.000   1st Qu.:  4.00   1st Qu.:  0.000   Class :character  
-# Median :  2.000   Median : 12.00   Median :  0.000   Mode  :character  
-# Mean   :  5.611   Mean   : 17.64   Mean   :  5.129                     
-# 3rd Qu.:  6.000   3rd Qu.: 26.00   3rd Qu.:  0.000                     
-# Max.   :100.000   Max.   :100.00   Max.   :169.000                     
-#                                    NA's   :11859                       
+#   ocupacion          carga             vmed           error          
+# Min.   :  0.00   Min.   :  0.00   Min.   :  0.00   Length:13571079   
+# 1st Qu.:  0.00   1st Qu.:  4.00   1st Qu.:  0.00   Class :character  
+# Median :  2.00   Median : 11.00   Median :  0.00   Mode  :character  
+# Mean   :  4.73   Mean   : 15.64   Mean   :  5.09                     
+# 3rd Qu.:  5.00   3rd Qu.: 22.00   3rd Qu.:  0.00                     
+# Max.   :100.00   Max.   :100.00   Max.   :204.00                     
+#                                   NA's   :19262                      
 # periodo_integracion
 # Min.   : 1.00      
 # 1st Qu.:15.00      
 # Median :15.00      
-# Mean   :15.96      
+# Mean   :16.36      
 # 3rd Qu.:15.00      
-# Max.   :30.00  
+# Max.   :30.00     
 ```
 
 ```{r}
 str(trafico_mes)
-# 'data.frame':	13004398 obs. of  9 variables:
+# 'data.frame':	13571079 obs. of  9 variables:
 #  $ id                 : int  1006 1006 1006 1006 1006 1006 1006 1006 1006 1006 ...
-#  $ fecha              : chr  "2025-06-01 00:00:00" "2025-06-01 00:15:00" "2025-06-01 00:30:00" "2025-06-01 00:45:00" ...
+#  $ fecha              : chr  "2025-07-01 00:00:00" "2025-07-01 00:15:00" "2025-07-01 00:30:00" "2025-07-01 00:45:00" ...
 #  $ tipo_elem          : chr  "C30" "C30" "C30" "C30" ...
-#  $ intensidad         : int  1260 984 864 924 720 744 648 756 876 552 ...
-#  $ ocupacion          : int  4 3 3 3 2 2 2 2 3 2 ...
+#  $ intensidad         : int  492 492 396 372 456 252 96 192 192 144 ...
+#  $ ocupacion          : int  2 1 1 1 2 1 1 1 1 0 ...
 #  $ carga              : int  0 0 0 0 0 0 0 0 0 0 ...
-#  $ vmed               : num  61 62 62 60 65 67 62 65 67 62 ...
+#  $ vmed               : num  64 69 69 69 63 60 59 75 60 60 ...
 #  $ error              : chr  "N" "N" "N" "N" ...
 #  $ periodo_integracion: int  5 5 5 5 5 5 5 5 5 5 ...
 ```
 
 ```{r}
 names(trafico_mes)
+# [1] "id"                  "fecha"               "tipo_elem"          
+# [4] "intensidad"          "ocupacion"           "carga"              
+# [7] "vmed"                "error"               "periodo_integracion"
 ```
 
 Analizamos la columna periodo de integración
@@ -501,12 +506,12 @@ for (i in 1:length(shp_files)) {
 
 ```{r}
 sort(unique(puntos_medida$fichero))
-#  [1] "2018-12" "2019-01" "2019-02" "2019-03" "2019-06" "2019-12" "2020-06" "2020-09"
-#  [9] "2020-12" "2021-06" "2021-09" "2021-12" "2022-06" "2022-09" "2022-12" "2023-02"
-# [17] "2023-03" "2023-04" "2023-05" "2023-06" "2023-07" "2023-08" "2023-09" "2023-10"
-# [25] "2023-11" "2023-12" "2024-01" "2024-02" "2024-03" "2024-04" "2024-05" "2024-06"
-# [33] "2024-08" "2024-09" "2024-10" "2024-11" "2024-12" "2025-01" "2025-02" "2025-03"
-# [41] "2025-04" "2025-05"
+#  [1] "2018-12" "2019-01" "2019-02" "2019-03" "2019-06" "2019-12" "2020-06"
+#  [8] "2020-09" "2020-12" "2021-06" "2021-09" "2021-12" "2022-06" "2022-09"
+# [15] "2022-12" "2023-02" "2023-03" "2023-04" "2023-05" "2023-06" "2023-07"
+# [22] "2023-08" "2023-09" "2023-10" "2023-11" "2023-12" "2024-01" "2024-02"
+# [29] "2024-03" "2024-04" "2024-05" "2024-06" "2024-08" "2024-09" "2024-10"
+# [36] "2024-11" "2024-12" "2025-01" "2025-02" "2025-03" "2025-04" "2025-05"
 ```
 
 
@@ -1171,7 +1176,7 @@ names(intensidad_espacial) <- gsub('longitud', 'longitude', names(intensidad_esp
 # Y vemos el resultado
 summary(intensidad_espacial)
 #       id         tipo_elem            distrito       cod_cent        
-# Min.   : 3395   Length:6044        Min.   : 1.00   Length:6044       
+# Min.   : 3395   Length:6046        Min.   : 1.00   Length:6046       
 # 1st Qu.: 4853   Class :character   1st Qu.: 8.00   Class :character  
 # Median : 5964   Mode  :character   Median :10.00   Mode  :character  
 # Mean   : 6965                      Mean   :10.49                     
@@ -1179,52 +1184,60 @@ summary(intensidad_espacial)
 # Max.   :11435                      Max.   :21.00                     
 #                                    NA's   :7                         
 #    nombre              utm_x            utm_y           longitude     
-# Length:6044        Min.   :429061   Min.   :4464902   Min.   :-3.837  
-# Class :character   1st Qu.:438872   1st Qu.:4471404   1st Qu.:-3.721  
-# Mode  :character   Median :441041   Median :4475411   Median :-3.695  
-#                    Mean   :441286   Mean   :4475410   Mean   :-3.692  
-#                    3rd Qu.:443777   3rd Qu.:4479097   3rd Qu.:-3.663  
+# Length:6046        Min.   :429061   Min.   :4464902   Min.   :-3.837  
+# Class :character   1st Qu.:438865   1st Qu.:4471403   1st Qu.:-3.721  
+# Mode  :character   Median :441040   Median :4475408   Median :-3.695  
+#                    Mean   :441284   Mean   :4475407   Mean   :-3.692  
+#                    3rd Qu.:443777   3rd Qu.:4479096   3rd Qu.:-3.663  
 #                    Max.   :453195   Max.   :4485213   Max.   :-3.552  
 #                                                                       
 #    latitude       fichero           activo         fichero_date       
-# Min.   :40.33   Length:6044        Mode:logical   Min.   :2025-05-01  
-# 1st Qu.:40.39   Class :character   TRUE:6044      1st Qu.:2025-05-01  
+# Min.   :40.33   Length:6046        Mode:logical   Min.   :2025-05-01  
+# 1st Qu.:40.39   Class :character   TRUE:6046      1st Qu.:2025-05-01  
 # Median :40.43   Mode  :character                  Median :2025-05-01  
 # Mean   :40.43                                     Mean   :2025-05-01  
 # 3rd Qu.:40.46                                     3rd Qu.:2025-05-01  
 # Max.   :40.52                                     Max.   :2025-05-01  
 #                                                                       
-#     minimo               maximo           descripcion        accesoAsociado    
-# Min.   :2018-12-01   Min.   :2025-05-01   Length:6044        Length:6044       
-# 1st Qu.:2018-12-01   1st Qu.:2025-05-01   Class :character   Class :character  
-# Median :2018-12-01   Median :2025-05-01   Mode  :character   Mode  :character  
-# Mean   :2019-07-27   Mean   :2025-05-01                                        
-# 3rd Qu.:2018-12-01   3rd Qu.:2025-05-01                                        
-# Max.   :2025-05-01   Max.   :2025-05-01                                        
-#                                                                                
-#   intensidad        ocupacion           carga        nivelServicio intensidadSat  
-# Min.   :    0.0   Min.   :  0.000   Min.   :  0.00   0   :4205     Min.   :    0  
-# 1st Qu.:   80.0   1st Qu.:  1.000   1st Qu.:  8.00   1   :1496     1st Qu.: 1200  
-# Median :  222.0   Median :  3.000   Median : 18.00   2   : 247     Median : 1500  
-# Mean   :  395.6   Mean   :  7.543   Mean   : 21.96   3   :  67     Mean   : 1998  
-# 3rd Qu.:  480.0   3rd Qu.:  7.000   3rd Qu.: 30.00   NA's:  29     3rd Qu.: 3000  
-# Max.   :13380.0   Max.   :100.000   Max.   :237.00                 Max.   :18830  
-#                                                                    NA's   :292    
-#  error        subarea               st_x             st_y        
-# N   :5230   Length:6044        Min.   :429061   Min.   :4464902  
-# S   : 794   Class :character   1st Qu.:438872   1st Qu.:4471404  
-# NA's:  20   Mode  :character   Median :441041   Median :4475411  
-#                                Mean   :441286   Mean   :4475410  
-#                                3rd Qu.:443777   3rd Qu.:4479097  
-#                                Max.   :453195   Max.   :4485213  
-#                                                                  
-#          geometry       error_x              error_y           error_espacial    
-# POLYGON      :6044   Min.   :-15.301798   Min.   :-12.295397   Min.   : 0.00000  
-# epsg:4326    :   0   1st Qu.:  0.000000   1st Qu.:  0.000000   1st Qu.: 0.00000  
-# +proj=long...:   0   Median :  0.000000   Median :  0.000000   Median : 0.00000  
-#                      Mean   : -0.001732   Mean   : -0.003967   Mean   : 0.02229  
-#                      3rd Qu.:  0.000000   3rd Qu.:  0.000000   3rd Qu.: 0.00000  
-#                      Max.   :  8.199879   Max.   : 11.591304   Max.   :19.62962  
+#     minimo               maximo           descripcion       
+# Min.   :2018-12-01   Min.   :2025-05-01   Length:6046       
+# 1st Qu.:2018-12-01   1st Qu.:2025-05-01   Class :character  
+# Median :2018-12-01   Median :2025-05-01   Mode  :character  
+# Mean   :2019-07-27   Mean   :2025-05-01                     
+# 3rd Qu.:2018-12-01   3rd Qu.:2025-05-01                     
+# Max.   :2025-05-01   Max.   :2025-05-01                     
+#                                                             
+# accesoAsociado       intensidad       ocupacion           carga       
+# Length:6046        Min.   :   0.0   Min.   :  0.000   Min.   :  0.00  
+# Class :character   1st Qu.:  60.0   1st Qu.:  0.000   1st Qu.:  5.00  
+# Mode  :character   Median : 140.0   Median :  2.000   Median : 12.00  
+#                    Mean   : 283.2   Mean   :  5.507   Mean   : 15.68  
+#                    3rd Qu.: 320.0   3rd Qu.:  5.000   3rd Qu.: 21.00  
+#                    Max.   :6060.0   Max.   :100.000   Max.   :216.00  
+#                                                                       
+# nivelServicio intensidadSat    error        subarea         
+# 0   :5096     Min.   :    0   N   :5171   Length:6046       
+# 1   : 782     1st Qu.: 1200   S   : 855   Class :character  
+# 2   : 113     Median : 1500   NA's:  20   Mode  :character  
+# 3   :  28     Mean   : 1998                                 
+# NA's:  27     3rd Qu.: 3000                                 
+#               Max.   :18830                                 
+#               NA's   :294                                   
+#      st_x             st_y                  geometry   
+# Min.   :429061   Min.   :4464902   POLYGON      :6046  
+# 1st Qu.:438865   1st Qu.:4471403   epsg:4326    :   0  
+# Median :441040   Median :4475408   +proj=long...:   0  
+# Mean   :441284   Mean   :4475407                       
+# 3rd Qu.:443777   3rd Qu.:4479096                       
+# Max.   :453195   Max.   :4485213                       
+#                                                        
+#    error_x              error_y          error_espacial    
+# Min.   :-15.301798   Min.   :-12.29540   Min.   : 0.00000  
+# 1st Qu.:  0.000000   1st Qu.:  0.00000   1st Qu.: 0.00000  
+# Median :  0.000000   Median :  0.00000   Median : 0.00000  
+# Mean   : -0.004364   Mean   : -0.00362   Mean   : 0.02537  
+# 3rd Qu.:  0.000000   3rd Qu.:  0.00000   3rd Qu.: 0.00000  
+# Max.   :  8.199879   Max.   : 11.59130   Max.   :19.62962  
 ```
 
 Y representamos.
