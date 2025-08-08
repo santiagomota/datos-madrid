@@ -1386,7 +1386,40 @@ leaflet() %>%
 
 
 
+## DuckDB
 
+```{r}
+#| eval: false
+
+library(DBI)
+library(duckdb)
+
+
+# con <- dbConnect(duckdb::duckdb(), "../data/duckdb/madrid.duckdb")
+
+# Podemos usar una base de datos en memoria (limitado por el tamaño de la misma)
+# driver_duckdb <- duckdb()
+
+# O podemos hacerla persistente, lo que permite a DuckDB ejecutar procesos con
+# mas memoria de la que hay en RAM
+driver_duckdb <- duckdb(tempfile(fileext = ".duckdb"))
+driver_duckdb
+
+con_duck <- dbConnect(driver_duckdb)
+con_duck
+```
+
+```{r}
+#| eval: false
+
+dbWriteTable(con_duck, "trafico_mes", trafico_mes, overwrite = TRUE)
+```
+
+```{r}
+#| eval: false
+
+print(dbGetQuery(con_duck, "SELECT COUNT(*) AS filas FROM trafico_mes"))
+```
 
 
 
