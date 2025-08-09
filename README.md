@@ -16,4 +16,4 @@ Datos Abiertos del Ayuntamiento de Madrid
 - Incorporar códigos de ejemplo en Python y R.
 - Exportar datos a parquet y usar duckDB.
 - Abrir una página de Github.
-- Incorporar datos en Kaggle.
+- Incorporar datos en Kaggle (crear un usuario para el ayuntamiento, con ejemplos).
