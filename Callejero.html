@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="by Santiago Mota">
-<meta name="dcterms.date" content="2025-08-02">
+<meta name="dcterms.date" content="2025-08-18">
 <meta name="keywords" content="R, Quarto">
 
 <title>Callejero</title>
@@ -2398,7 +2398,7 @@ font-size: 2.5em;
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">August 2, 2025</p>
+        <p class="date">August 18, 2025</p>
       </div>
     </div>
     
@@ -2505,7 +2505,7 @@ font-size: 2.5em;
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                                                   <span class="at">encoding =</span> <span class="st">&quot;ISO-8859-1&quot;</span>), </span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">trim_ws =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Rows: 213538 Columns: 20
+<pre><code>Rows: 213582 Columns: 20
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: &quot;;&quot;
 chr (9): VIA_CLASE, VIA_PAR, VIA_NOMBRE, VIA_NOMBRE_ACENTOS, CLASE_APP, CALI...
@@ -2547,84 +2547,84 @@ num (4): UTMX_ED, UTMY_ED, UTMX_ETRS, UTMY_ETRS
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(direcciones_vigentes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    COD_VIA           VIA_CLASE        VIA_PAR           VIA_NOMBRE       
- Min.   :     127   CALLE  :183580   Length:213538      Length:213538     
- 1st Qu.:  122450   AVENIDA: 14749   Class :character   Class :character  
- Median :  391700   PASEO  :  4280   Mode  :character   Mode  :character  
- Mean   : 2866973   PLAZA  :  3624                                        
+ Min.   :     127   CALLE  :183602   Length:213582      Length:213582     
+ 1st Qu.:  122450   AVENIDA: 14760   Class :character   Class :character  
+ Median :  391900   PASEO  :  4283   Mode  :character   Mode  :character  
+ Mean   : 2868041   PLAZA  :  3624                                        
  3rd Qu.:  639680   CAMINO :  1915                                        
- Max.   :31006279   RONDA  :  1260                                        
-                    (Other):  4130                                        
+ Max.   :31006279   RONDA  :  1263                                        
+                    (Other):  4135                                        
  VIA_NOMBRE_ACENTOS     CLASE_APP          NUMERO          CALIFICADOR    
- Length:213538      KILÓMETRO:   600   Min.   :    0.00   B      :  9285  
- Class :character   NUMERO   :212938   1st Qu.:    8.00   A      :  6014  
- Mode  :character                      Median :   19.00   C      :  3167  
-                                       Mean   :   81.34   D      :  2166  
+ Length:213582      KILÓMETRO:   600   Min.   :    0.00   B      :  9291  
+ Class :character   NUMERO   :212982   1st Qu.:    8.00   A      :  6023  
+ Mode  :character                      Median :   19.00   C      :  3170  
+                                       Mean   :   81.33   D      :  2172  
                                        3rd Qu.:   43.00   E      :  1438  
-                                       Max.   :61000.00   (Other):  6735  
-                                                          NA&#39;s   :184733  
+                                       Max.   :61000.00   (Other):  6741  
+                                                          NA&#39;s   :184747  
            TIPO_NDP         COD_NDP            DISTRITO         BARRIO     
- FRENTE FACHADA: 25513   Min.   :11000001   Min.   : 0.00   Min.   :1.000  
- GARAJE        : 12019   1st Qu.:11062143   1st Qu.: 8.00   1st Qu.:2.000  
- JARDÍN/PARQUE :  3123   Median :11130088   Median :11.00   Median :4.000  
- PARCELA       : 12793   Mean   :17716071   Mean   :11.37   Mean   :3.732  
- PORTAL        :160090   3rd Qu.:20172446   3rd Qu.:16.00   3rd Qu.:5.000  
-                         Max.   :31075147   Max.   :21.00   Max.   :9.000  
-                                                            NA&#39;s   :3      
+ FRENTE FACHADA: 25514   Min.   :11000001   Min.   : 1.00   Min.   :1.000  
+ GARAJE        : 12030   1st Qu.:11062154   1st Qu.: 8.00   1st Qu.:2.000  
+ JARDÍN/PARQUE :  3123   Median :11130116   Median :11.00   Median :4.000  
+ PARCELA       : 12823   Mean   :17718926   Mean   :11.37   Mean   :3.732  
+ PORTAL        :160092   3rd Qu.:20172589   3rd Qu.:16.00   3rd Qu.:5.000  
+                         Max.   :31075202   Max.   :21.00   Max.   :9.000  
+                                                                           
    COD_POSTAL       UTMX_ED            UTMY_ED            UTMX_ETRS       
  Min.   :28001   Min.   :      -1   Min.   :       -1   Min.   :  429110  
- 1st Qu.:28019   1st Qu.:43834509   1st Qu.:447059917   1st Qu.:43825244  
- Median :28029   Median :44125904   Median :447433886   Median :44116114  
- Mean   :28030   Mean   :40187257   Mean   :406232608   Mean   :40199743  
- 3rd Qu.:28041   3rd Qu.:44485050   3rd Qu.:447873990   3rd Qu.:44474860  
+ 1st Qu.:28019   1st Qu.:43834667   1st Qu.:447059924   1st Qu.:43825325  
+ Median :28029   Median :44125974   Median :447433875   Median :44116174  
+ Mean   :28030   Mean   :40187565   Mean   :406239231   Mean   :40199734  
+ 3rd Qu.:28041   3rd Qu.:44485136   3rd Qu.:447874014   3rd Qu.:44474955  
  Max.   :28925   Max.   :45551486   Max.   :449574161   Max.   :45558493  
- NA&#39;s   :3                                                                
+                                                                          
    UTMY_ETRS           LATITUD            LONGITUD         ANGULO_ROTULACION
- Min.   :  4464414   Length:213538      Length:213538      Min.   :  0.00   
- 1st Qu.:447037995   Class :character   Class :character   1st Qu.: 45.16   
- Median :447409480   Mode  :character   Mode  :character   Median :152.77   
- Mean   :405832677                                         Mean   :180.85   
- 3rd Qu.:447851886                                         3rd Qu.:317.67   
+ Min.   :  4464414   Length:213582      Length:213582      Min.   :  0.00   
+ 1st Qu.:447037913   Class :character   Class :character   1st Qu.: 45.16   
+ Median :447409288   Mode  :character   Mode  :character   Median :153.09   
+ Mean   :405822207                                         Mean   :180.85   
+ 3rd Qu.:447851888                                         3rd Qu.:317.67   
  Max.   :449555404                                         Max.   :360.00   
                                                                             </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#    COD_VIA           VIA_CLASE        VIA_PAR           VIA_NOMBRE       </span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :     127   CALLE  :183580   Length:213538      Length:213538     </span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:  122450   AVENIDA: 14749   Class :character   Class :character  </span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :  391700   PASEO  :  4280   Mode  :character   Mode  :character  </span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   : 2866973   PLAZA  :  3624                                        </span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :     127   CALLE  :183602   Length:213582      Length:213582     </span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:  122450   AVENIDA: 14760   Class :character   Class :character  </span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :  391900   PASEO  :  4283   Mode  :character   Mode  :character  </span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   : 2868041   PLAZA  :  3624                                        </span></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:  639680   CAMINO :  1915                                        </span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :31006279   RONDA  :  1260                                        </span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                    (Other):  4130                                        </span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :31006279   RONDA  :  1263                                        </span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                    (Other):  4135                                        </span></span>
 <span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># VIA_NOMBRE_ACENTOS     CLASE_APP          NUMERO          CALIFICADOR    </span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Length:213538      KILÓMETRO:   600   Min.   :    0.00   B      :  9285  </span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Class :character   NUMERO   :212938   1st Qu.:    8.00   A      :  6014  </span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode  :character                      Median :   19.00   C      :  3167  </span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Mean   :   81.34   D      :  2166  </span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Length:213582      KILÓMETRO:   600   Min.   :    0.00   B      :  9291  </span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Class :character   NUMERO   :212982   1st Qu.:    8.00   A      :  6023  </span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode  :character                      Median :   19.00   C      :  3170  </span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Mean   :   81.33   D      :  2172  </span></span>
 <span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       3rd Qu.:   43.00   E      :  1438  </span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Max.   :61000.00   (Other):  6735  </span></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                          NA&#39;s   :184733  </span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Max.   :61000.00   (Other):  6741  </span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                          NA&#39;s   :184747  </span></span>
 <span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co">#           TIPO_NDP         COD_NDP            DISTRITO         BARRIO     </span></span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co"># FRENTE FACHADA: 25513   Min.   :11000001   Min.   : 0.00   Min.   :1.000  </span></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co"># GARAJE        : 12019   1st Qu.:11062143   1st Qu.: 8.00   1st Qu.:2.000  </span></span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="co"># JARDÍN/PARQUE :  3123   Median :11130088   Median :11.00   Median :4.000  </span></span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="co"># PARCELA       : 12793   Mean   :17716071   Mean   :11.37   Mean   :3.732  </span></span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="co"># PORTAL        :160090   3rd Qu.:20172446   3rd Qu.:16.00   3rd Qu.:5.000  </span></span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="co">#                         Max.   :31075147   Max.   :21.00   Max.   :9.000  </span></span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                            NA&#39;s   :3      </span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co"># FRENTE FACHADA: 25514   Min.   :11000001   Min.   : 1.00   Min.   :1.000  </span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co"># GARAJE        : 12030   1st Qu.:11062154   1st Qu.: 8.00   1st Qu.:2.000  </span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="co"># JARDÍN/PARQUE :  3123   Median :11130116   Median :11.00   Median :4.000  </span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="co"># PARCELA       : 12823   Mean   :17718926   Mean   :11.37   Mean   :3.732  </span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="co"># PORTAL        :160092   3rd Qu.:20172589   3rd Qu.:16.00   3rd Qu.:5.000  </span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="co">#                         Max.   :31075202   Max.   :21.00   Max.   :9.000  </span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                                           </span></span>
 <span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="co">#   COD_POSTAL       UTMX_ED            UTMY_ED            UTMX_ETRS       </span></span>
 <span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :28001   Min.   :      -1   Min.   :       -1   Min.   :  429110  </span></span>
-<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:28019   1st Qu.:43834509   1st Qu.:447059917   1st Qu.:43825244  </span></span>
-<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :28029   Median :44125904   Median :447433886   Median :44116114  </span></span>
-<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :28030   Mean   :40187257   Mean   :406232608   Mean   :40199743  </span></span>
-<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:28041   3rd Qu.:44485050   3rd Qu.:447873990   3rd Qu.:44474860  </span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:28019   1st Qu.:43834667   1st Qu.:447059924   1st Qu.:43825325  </span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :28029   Median :44125974   Median :447433875   Median :44116174  </span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :28030   Mean   :40187565   Mean   :406239231   Mean   :40199734  </span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:28041   3rd Qu.:44485136   3rd Qu.:447874014   3rd Qu.:44474955  </span></span>
 <span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :28925   Max.   :45551486   Max.   :449574161   Max.   :45558493  </span></span>
-<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="co"># NA&#39;s   :3                                                                </span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                                          </span></span>
 <span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a><span class="co">#   UTMY_ETRS           LATITUD            LONGITUD         ANGULO_ROTULACION</span></span>
-<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :  4464414   Length:213538      Length:213538      Min.   :  0.00   </span></span>
-<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:447037995   Class :character   Class :character   1st Qu.: 45.16   </span></span>
-<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :447409480   Mode  :character   Mode  :character   Median :152.77   </span></span>
-<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :405832677                                         Mean   :180.85   </span></span>
-<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:447851886                                         3rd Qu.:317.67   </span></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :  4464414   Length:213582      Length:213582      Min.   :  0.00   </span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:447037913   Class :character   Class :character   1st Qu.: 45.16   </span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :447409288   Mode  :character   Mode  :character   Median :153.09   </span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :405822207                                         Mean   :180.85   </span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:447851888                                         3rd Qu.:317.67   </span></span>
 <span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :449555404                                         Max.   :360.00  </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
@@ -2647,47 +2647,47 @@ num (4): UTMX_ED, UTMY_ED, UTMX_ETRS, UTMY_ETRS
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(direcciones_vigentes_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    COD_VIA           VIA_CLASE        VIA_PAR           VIA_NOMBRE       
- Min.   :     127   CALLE  :183580   Length:213538      Length:213538     
- 1st Qu.:  122450   AVENIDA: 14749   Class :character   Class :character  
- Median :  391700   PASEO  :  4280   Mode  :character   Mode  :character  
- Mean   : 2866973   PLAZA  :  3624                                        
+ Min.   :     127   CALLE  :183602   Length:213582      Length:213582     
+ 1st Qu.:  122450   AVENIDA: 14760   Class :character   Class :character  
+ Median :  391900   PASEO  :  4283   Mode  :character   Mode  :character  
+ Mean   : 2868041   PLAZA  :  3624                                        
  3rd Qu.:  639680   CAMINO :  1915                                        
- Max.   :31006279   RONDA  :  1260                                        
-                    (Other):  4130                                        
+ Max.   :31006279   RONDA  :  1263                                        
+                    (Other):  4135                                        
  VIA_NOMBRE_ACENTOS     CLASE_APP          NUMERO          CALIFICADOR    
- Length:213538      KILÓMETRO:   600   Min.   :    0.00   B      :  9285  
- Class :character   NUMERO   :212938   1st Qu.:    8.00   A      :  6014  
- Mode  :character                      Median :   19.00   C      :  3167  
-                                       Mean   :   81.34   D      :  2166  
+ Length:213582      KILÓMETRO:   600   Min.   :    0.00   B      :  9291  
+ Class :character   NUMERO   :212982   1st Qu.:    8.00   A      :  6023  
+ Mode  :character                      Median :   19.00   C      :  3170  
+                                       Mean   :   81.33   D      :  2172  
                                        3rd Qu.:   43.00   E      :  1438  
-                                       Max.   :61000.00   (Other):  6735  
-                                                          NA&#39;s   :184733  
+                                       Max.   :61000.00   (Other):  6741  
+                                                          NA&#39;s   :184747  
            TIPO_NDP         COD_NDP            DISTRITO         BARRIO     
- FRENTE FACHADA: 25513   Min.   :11000001   Min.   : 0.00   Min.   :1.000  
- GARAJE        : 12019   1st Qu.:11062143   1st Qu.: 8.00   1st Qu.:2.000  
- JARDÍN/PARQUE :  3123   Median :11130088   Median :11.00   Median :4.000  
- PARCELA       : 12793   Mean   :17716071   Mean   :11.37   Mean   :3.732  
- PORTAL        :160090   3rd Qu.:20172446   3rd Qu.:16.00   3rd Qu.:5.000  
-                         Max.   :31075147   Max.   :21.00   Max.   :9.000  
-                                                            NA&#39;s   :3      
+ FRENTE FACHADA: 25514   Min.   :11000001   Min.   : 1.00   Min.   :1.000  
+ GARAJE        : 12030   1st Qu.:11062154   1st Qu.: 8.00   1st Qu.:2.000  
+ JARDÍN/PARQUE :  3123   Median :11130116   Median :11.00   Median :4.000  
+ PARCELA       : 12823   Mean   :17718926   Mean   :11.37   Mean   :3.732  
+ PORTAL        :160092   3rd Qu.:20172589   3rd Qu.:16.00   3rd Qu.:5.000  
+                         Max.   :31075202   Max.   :21.00   Max.   :9.000  
+                                                                           
    COD_POSTAL       UTMX_ED            UTMY_ED            UTMX_ETRS       
  Min.   :28001   Min.   :      -1   Min.   :       -1   Min.   :  429110  
- 1st Qu.:28019   1st Qu.:43834509   1st Qu.:447059917   1st Qu.:43825244  
- Median :28029   Median :44125904   Median :447433886   Median :44116114  
- Mean   :28030   Mean   :40187257   Mean   :406232608   Mean   :40199743  
- 3rd Qu.:28041   3rd Qu.:44485050   3rd Qu.:447873990   3rd Qu.:44474860  
+ 1st Qu.:28019   1st Qu.:43834667   1st Qu.:447059924   1st Qu.:43825325  
+ Median :28029   Median :44125974   Median :447433875   Median :44116174  
+ Mean   :28030   Mean   :40187565   Mean   :406239231   Mean   :40199734  
+ 3rd Qu.:28041   3rd Qu.:44485136   3rd Qu.:447874014   3rd Qu.:44474955  
  Max.   :28925   Max.   :45551486   Max.   :449574161   Max.   :45558493  
- NA&#39;s   :3                                                                
+                                                                          
    UTMY_ETRS           LATITUD            LONGITUD         ANGULO_ROTULACION
- Min.   :  4464414   Length:213538      Length:213538      Min.   :  0.00   
- 1st Qu.:447037995   Class :character   Class :character   1st Qu.: 45.16   
- Median :447409480   Mode  :character   Mode  :character   Median :152.77   
- Mean   :405832677                                         Mean   :180.85   
- 3rd Qu.:447851886                                         3rd Qu.:317.67   
+ Min.   :  4464414   Length:213582      Length:213582      Min.   :  0.00   
+ 1st Qu.:447037913   Class :character   Class :character   1st Qu.: 45.16   
+ Median :447409288   Mode  :character   Mode  :character   Median :153.09   
+ Mean   :405822207                                         Mean   :180.85   
+ 3rd Qu.:447851888                                         3rd Qu.:317.67   
  Max.   :449555404                                         Max.   :360.00   
                                                                             
           geometry     
- POINT        :213538  
+ POINT        :213582  
  epsg:4326    :     0  
  +proj=long...:     0  
                        
@@ -2696,47 +2696,47 @@ num (4): UTMX_ED, UTMY_ED, UTMX_ETRS, UTMY_ETRS
                        </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#    COD_VIA           VIA_CLASE        VIA_PAR           VIA_NOMBRE       </span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :     127   CALLE  :183580   Length:213538      Length:213538     </span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:  122450   AVENIDA: 14749   Class :character   Class :character  </span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :  391700   PASEO  :  4280   Mode  :character   Mode  :character  </span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   : 2866973   PLAZA  :  3624                                        </span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :     127   CALLE  :183602   Length:213582      Length:213582     </span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:  122450   AVENIDA: 14760   Class :character   Class :character  </span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :  391900   PASEO  :  4283   Mode  :character   Mode  :character  </span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   : 2868041   PLAZA  :  3624                                        </span></span>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:  639680   CAMINO :  1915                                        </span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :31006279   RONDA  :  1260                                        </span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                    (Other):  4130                                        </span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :31006279   RONDA  :  1263                                        </span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                    (Other):  4135                                        </span></span>
 <span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># VIA_NOMBRE_ACENTOS     CLASE_APP          NUMERO          CALIFICADOR    </span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Length:213538      KILÓMETRO:   600   Min.   :    0.00   B      :  9285  </span></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Class :character   NUMERO   :212938   1st Qu.:    8.00   A      :  6014  </span></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode  :character                      Median :   19.00   C      :  3167  </span></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Mean   :   81.34   D      :  2166  </span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Length:213582      KILÓMETRO:   600   Min.   :    0.00   B      :  9291  </span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Class :character   NUMERO   :212982   1st Qu.:    8.00   A      :  6023  </span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode  :character                      Median :   19.00   C      :  3170  </span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Mean   :   81.33   D      :  2172  </span></span>
 <span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       3rd Qu.:   43.00   E      :  1438  </span></span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Max.   :61000.00   (Other):  6735  </span></span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                          NA&#39;s   :184733  </span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Max.   :61000.00   (Other):  6741  </span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                          NA&#39;s   :184747  </span></span>
 <span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="co">#           TIPO_NDP         COD_NDP            DISTRITO         BARRIO     </span></span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="co"># FRENTE FACHADA: 25513   Min.   :11000001   Min.   : 0.00   Min.   :1.000  </span></span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="co"># GARAJE        : 12019   1st Qu.:11062143   1st Qu.: 8.00   1st Qu.:2.000  </span></span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="co"># JARDÍN/PARQUE :  3123   Median :11130088   Median :11.00   Median :4.000  </span></span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="co"># PARCELA       : 12793   Mean   :17716071   Mean   :11.37   Mean   :3.732  </span></span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="co"># PORTAL        :160090   3rd Qu.:20172446   3rd Qu.:16.00   3rd Qu.:5.000  </span></span>
-<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="co">#                         Max.   :31075147   Max.   :21.00   Max.   :9.000  </span></span>
-<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                            NA&#39;s   :3      </span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="co"># FRENTE FACHADA: 25514   Min.   :11000001   Min.   : 1.00   Min.   :1.000  </span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="co"># GARAJE        : 12030   1st Qu.:11062154   1st Qu.: 8.00   1st Qu.:2.000  </span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="co"># JARDÍN/PARQUE :  3123   Median :11130116   Median :11.00   Median :4.000  </span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="co"># PARCELA       : 12823   Mean   :17718926   Mean   :11.37   Mean   :3.732  </span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="co"># PORTAL        :160092   3rd Qu.:20172589   3rd Qu.:16.00   3rd Qu.:5.000  </span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="co">#                         Max.   :31075202   Max.   :21.00   Max.   :9.000  </span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                                           </span></span>
 <span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="co">#   COD_POSTAL       UTMX_ED            UTMY_ED            UTMX_ETRS       </span></span>
 <span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :28001   Min.   :      -1   Min.   :       -1   Min.   :  429110  </span></span>
-<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:28019   1st Qu.:43834509   1st Qu.:447059917   1st Qu.:43825244  </span></span>
-<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :28029   Median :44125904   Median :447433886   Median :44116114  </span></span>
-<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :28030   Mean   :40187257   Mean   :406232608   Mean   :40199743  </span></span>
-<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:28041   3rd Qu.:44485050   3rd Qu.:447873990   3rd Qu.:44474860  </span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:28019   1st Qu.:43834667   1st Qu.:447059924   1st Qu.:43825325  </span></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :28029   Median :44125974   Median :447433875   Median :44116174  </span></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :28030   Mean   :40187565   Mean   :406239231   Mean   :40199734  </span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:28041   3rd Qu.:44485136   3rd Qu.:447874014   3rd Qu.:44474955  </span></span>
 <span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :28925   Max.   :45551486   Max.   :449574161   Max.   :45558493  </span></span>
-<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="co"># NA&#39;s   :3                                                                </span></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                                          </span></span>
 <span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a><span class="co">#   UTMY_ETRS           LATITUD            LONGITUD         ANGULO_ROTULACION</span></span>
-<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :  4464414   Length:213538      Length:213538      Min.   :  0.00   </span></span>
-<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:447037995   Class :character   Class :character   1st Qu.: 45.16   </span></span>
-<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :447409480   Mode  :character   Mode  :character   Median :152.77   </span></span>
-<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :405832677                                         Mean   :180.85   </span></span>
-<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:447851886                                         3rd Qu.:317.67   </span></span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :  4464414   Length:213582      Length:213582      Min.   :  0.00   </span></span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:447037913   Class :character   Class :character   1st Qu.: 45.16   </span></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :447409288   Mode  :character   Mode  :character   Median :153.09   </span></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :405822207                                         Mean   :180.85   </span></span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:447851888                                         3rd Qu.:317.67   </span></span>
 <span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :449555404                                         Max.   :360.00   </span></span>
 <span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                                            </span></span>
 <span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a><span class="co">#          geometry     </span></span>
-<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a><span class="co"># POINT        :213538  </span></span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a><span class="co"># POINT        :213582  </span></span>
 <span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a><span class="co"># epsg:4326    :     0  </span></span>
 <span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a><span class="co"># +proj=long...:     0  </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -2745,74 +2745,72 @@ num (4): UTMX_ED, UTMY_ED, UTMX_ETRS, UTMY_ETRS
 <div class="cell-output cell-output-stdout">
 <pre><code>
     ACCESO  AUTOPISTA    AUTOVÍA    AVENIDA    BULEVAR      CALLE   CALLEJÓN 
-        13          7        507      14749        205     183580        167 
+        13          7        507      14760        205     183602        167 
     CAMINO    CARRERA  CARRETERA COSTANILLA     CUESTA ESCALINATA    GALERÍA 
-      1915         53        910        107        104          2          9 
+      1915         53        916        107        104          2          9 
   GLORIETA PARTICULAR   PASADIZO     PASAJE      PASEO      PISTA      PLAZA 
-       300         21          6        655       4280          5       3624 
+       299         21          6        655       4283          5       3624 
   PLAZUELA     PUENTE      RONDA   TRAVESÍA 
-        17          1       1260       1041 </code></pre>
+        17          1       1263       1041 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#   ACCESO  AUTOPISTA    AUTOVÍA    AVENIDA    BULEVAR      CALLE   CALLEJÓN </span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">#       13          7        507      14747        205     183565        167 </span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">#       13          7        507      14760        205     183602        167 </span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   CAMINO    CARRERA  CARRETERA COSTANILLA     CUESTA ESCALINATA    GALERÍA </span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     1915         53        910        107        104          2          9 </span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     1915         53        916        107        104          2          9 </span></span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># GLORIETA PARTICULAR   PASADIZO     PASAJE      PASEO      PISTA      PLAZA </span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#      300         21          6        655       4280          5       3624 </span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#      299         21          6        655       4283          5       3624 </span></span>
 <span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co"># PLAZUELA     PUENTE      RONDA   TRAVESÍA </span></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co">#       17          1       1260       1041 </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co">#       17          1       1263       1041 </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(direcciones_vigentes<span class="sc">$</span>DISTRITO, direcciones_vigentes<span class="sc">$</span>BARRIO, <span class="at">useNA =</span> <span class="st">&#39;ifany&#39;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    
-        1    2    3    4    5    6    7    8    9 &lt;NA&gt;
-  0     0    0    0    0    0    0    0    0    0    3
-  1  1854 2417 1150 1408 2223 1107    0    0    0    0
-  2   782 1047  562  886  948  931  189    0    0    0
-  3   845  698  564  541  504  598    0    0    0    0
-  4  1000 1070 1430 2260  661  815    0    0    0    0
-  5  2114 1456 1576 1796 1724  829    0    0    0    0
-  6  1876 1577  928 1973 2788 2020    0    0    0    0
-  7   799  782 1152 1022  932  776    0    0    0    0
-  8   772  389 3569  879  622 5377 3553 1454    0    0
-  9  1029 1020 2133 1878 1533 1474 5996    0    0    0
-  10 1438 3297 1741 1999 1189  358 2040    0    0    0
-  11 1035 2039 3297 2425 2141 2963 1135    0    0    0
-  12 1613  775 1345 1387 1676  904 1404    0    0    0
-  13 4407 3788 2530 1240 1694 3184    0    0    0    0
-  14  319  306  688  644  854  503    0    0    0    0
-  15 2303 2851 1694 1529  852  696  580  155  758    0
-  16 1253 2636 3399 3149 1269 5472    0    0    0    0
-  17 4558  616  979 1945 1222    0    0    0    0    0
-  18 4345  479 3327    0    0    0    0    0    0    0
-  19 4719  764  483 2138    0    0    0    0    0    0
-  20 2241  316  491 1216 1573 2600 2531 1676    0    0
-  21 1121  674 1221 1561 1497    0    0    0    0    0</code></pre>
+        1    2    3    4    5    6    7    8    9
+  1  1855 2418 1150 1409 2223 1107    0    0    0
+  2   782 1047  562  886  949  931  189    0    0
+  3   845  698  564  541  504  598    0    0    0
+  4  1002 1070 1430 2260  661  815    0    0    0
+  5  2114 1456 1576 1796 1725  829    0    0    0
+  6  1876 1577  928 1974 2788 2020    0    0    0
+  7   800  782 1152 1023  932  777    0    0    0
+  8   772  389 3564  879  622 5381 3553 1454    0
+  9  1029 1020 2134 1879 1533 1474 5996    0    0
+  10 1438 3298 1742 1999 1189  358 2040    0    0
+  11 1035 2039 3297 2425 2141 2963 1135    0    0
+  12 1613  775 1346 1387 1676  904 1404    0    0
+  13 4407 3788 2530 1240 1694 3184    0    0    0
+  14  319  310  688  644  854  503    0    0    0
+  15 2303 2851 1694 1529  852  697  580  155  758
+  16 1254 2636 3399 3150 1269 5475    0    0    0
+  17 4558  616  979 1945 1222    0    0    0    0
+  18 4355  479 3327    0    0    0    0    0    0
+  19 4724  764  483 2140    0    0    0    0    0
+  20 2241  316  491 1216 1573 2601 2531 1676    0
+  21 1121  674 1221 1561 1501    0    0    0    0</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#       1    2    3    4    5    6    7    8    9 &lt;NA&gt;</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 0     0    0    0    0    0    0    0    0    0    3</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1  1854 2417 1150 1408 2223 1107    0    0    0    0</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2   782 1047  562  886  948  931  188    0    0    0</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 3   845  698  564  541  504  598    0    0    0    0</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 4   998 1070 1430 2260  661  813    0    0    0    0</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 5  2114 1456 1576 1796 1724  829    0    0    0    0</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 6  1876 1577  928 1973 2788 2020    0    0    0    0</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 7   799  782 1152 1022  932  776    0    0    0    0</span></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 8   772  389 3569  879  622 5377 3553 1454    0    0</span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 9  1029 1020 2133 1878 1533 1474 5995    0    0    0</span></span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 10 1438 3297 1741 1996 1189  358 2040    0    0    0</span></span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 11 1035 2039 3296 2425 2141 2963 1135    0    0    0</span></span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 12 1613  775 1345 1387 1676  904 1404    0    0    0</span></span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 13 4407 3788 2529 1240 1694 3184    0    0    0    0</span></span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 14  319  306  688  644  854  503    0    0    0    0</span></span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 15 2303 2851 1694 1529  852  696  580  155  758    0</span></span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 16 1253 2636 3399 3149 1269 5472    0    0    0    0</span></span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 17 4558  616  979 1945 1222    0    0    0    0    0</span></span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 18 4345  479 3327    0    0    0    0    0    0    0</span></span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 19 4715  764  483 2138    0    0    0    0    0    0</span></span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 20 2241  316  491 1216 1573 2600 2531 1676    0    0</span></span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 21 1121  674 1221 1559 1497    0    0    0    0    0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#       1    2    3    4    5    6    7    8    9</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1  1855 2418 1150 1409 2223 1107    0    0    0</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2   782 1047  562  886  949  931  189    0    0</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 3   845  698  564  541  504  598    0    0    0</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 4  1002 1070 1430 2260  661  815    0    0    0</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 5  2114 1456 1576 1796 1725  829    0    0    0</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 6  1876 1577  928 1974 2788 2020    0    0    0</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 7   800  782 1152 1023  932  777    0    0    0</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 8   772  389 3564  879  622 5381 3553 1454    0</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 9  1029 1020 2134 1879 1533 1474 5996    0    0</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 10 1438 3298 1742 1999 1189  358 2040    0    0</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 11 1035 2039 3297 2425 2141 2963 1135    0    0</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 12 1613  775 1346 1387 1676  904 1404    0    0</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 13 4407 3788 2530 1240 1694 3184    0    0    0</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 14  319  310  688  644  854  503    0    0    0</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 15 2303 2851 1694 1529  852  697  580  155  758</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 16 1254 2636 3399 3150 1269 5475    0    0    0</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 17 4558  616  979 1945 1222    0    0    0    0</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 18 4355  479 3327    0    0    0    0    0    0</span></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 19 4724  764  483 2140    0    0    0    0    0</span></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 20 2241  316  491 1216 1573 2601 2531 1676    0</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 21 1121  674 1221 1561 1501    0    0    0    0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="viales-vigentes" class="level2" data-number="2">
@@ -3006,7 +3004,7 @@ dbl (7): COD_VIA, DISTRITO, BARRIO, IMPAR_MIN, IMPAR_MAX, PAR_MIN, PAR_MAX
                     Mean   :11.18   Mean   :3.609   Mean   :   11.64  
                     3rd Qu.:16.00   3rd Qu.:5.000   3rd Qu.:    1.00  
                     Max.   :21.00   Max.   :9.000   Max.   :48195.00  
-                    NA&#39;s   :26      NA&#39;s   :26      NA&#39;s   :2624      
+                    NA&#39;s   :26      NA&#39;s   :26      NA&#39;s   :2625      
    IMPAR_MAX           PAR_MIN         PAR_MAX       
  Min.   :    1.00   Min.   :    0   Min.   :    2.0  
  1st Qu.:    7.00   1st Qu.:    2   1st Qu.:    8.0  
@@ -3014,7 +3012,7 @@ dbl (7): COD_VIA, DISTRITO, BARRIO, IMPAR_MIN, IMPAR_MAX, PAR_MIN, PAR_MAX
  Mean   :   36.08   Mean   :  210   Mean   :  262.7  
  3rd Qu.:   35.00   3rd Qu.:    2   3rd Qu.:   38.0  
  Max.   :48195.00   Max.   :60000   Max.   :61000.0  
- NA&#39;s   :2624       NA&#39;s   :2468    NA&#39;s   :2468     </code></pre>
+ NA&#39;s   :2625       NA&#39;s   :2468    NA&#39;s   :2468     </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">#    COD_VIA            VIA_CLASE      VIA_PAR           VIA_NOMBRE       </span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :     127   CALLE   :8350   Length:11092       Length:11092      </span></span>
@@ -3095,7 +3093,7 @@ dbl (6): COD_VIA, DISTRITO, IMPAR_MIN, IMPAR_MAX, PAR_MIN, PAR_MAX
                     Mean   :11.18   Mean   :   25.34   Mean   :   56.09  
                     3rd Qu.:16.00   3rd Qu.:    1.00   3rd Qu.:   39.00  
                     Max.   :21.00   Max.   :48195.00   Max.   :48195.00  
-                    NA&#39;s   :26      NA&#39;s   :1975       NA&#39;s   :1975      
+                    NA&#39;s   :26      NA&#39;s   :1976       NA&#39;s   :1976      
     PAR_MIN           PAR_MAX       
  Min.   :    0.0   Min.   :    2.0  
  1st Qu.:    2.0   1st Qu.:    8.0  
@@ -3187,7 +3185,7 @@ dbl (2): COD_VIA, VIA_SQC
  Length:16502       Length:16502       Min.   :1812-01-01  
  Class :character   Class :character   1st Qu.:1949-06-24  
  Mode  :character   Mode  :character   Median :1965-02-20  
-                                       Mean   :1959-02-21  
+                                       Mean   :1959-02-20  
                                        3rd Qu.:1986-01-01  
                                        Max.   :2025-07-24  
                                                            
@@ -3258,7 +3256,7 @@ dbl (2): COD_VIA, VIA_SQC
 <span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>                                                    <span class="at">encoding =</span> <span class="st">&quot;ISO-8859-1&quot;</span>), </span>
 <span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">trim_ws =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Rows: 375317 Columns: 20
+<pre><code>Rows: 375389 Columns: 20
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: &quot;;&quot;
 chr (12): VIA_CLASE, VIA_PAR, VIA_NOMBRE, VIA_NOMBRE_ACENTOS, CLASE_NDP, CAL...
@@ -3293,55 +3291,55 @@ lgl  (1): VIA_SQC
 <div class="cell">
 <div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(direcciones_historico<span class="sc">$</span>FECHA_DE_ALTA)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;2025-07-31&quot;</code></pre>
+<pre><code>[1] &quot;2025-08-14&quot;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] &quot;2025-07-31&quot;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] &quot;2025-08-14&quot;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(direcciones_historico)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    COD_VIA         VIA_SQC            VIA_CLASE        VIA_PAR         
- Min.   :     127   Mode:logical   CALLE    :314230   Length:375317     
- 1st Qu.:  141550   NA&#39;s:375317    AVENIDA  : 23399   Class :character  
- Median :  396000                  PASEO    :  8770   Mode  :character  
- Mean   : 2591925                  PLAZA    :  6397                     
- 3rd Qu.:  634300                  CAMINO   :  4025                     
- Max.   :31006279                  CARRETERA:  3693                     
-                                   (Other)  : 14803                     
+ Min.   :     127   Mode:logical   CALLE    :314273   Length:375389     
+ 1st Qu.:  141550   NA&#39;s:375389    AVENIDA  : 23411   Class :character  
+ Median :  396000                  PASEO    :  8773   Mode  :character  
+ Mean   : 2592882                  PLAZA    :  6397                     
+ 3rd Qu.:  634600                  CAMINO   :  4025                     
+ Max.   :31006279                  CARRETERA:  3704                     
+                                   (Other)  : 14806                     
   VIA_NOMBRE        VIA_NOMBRE_ACENTOS    COD_NDP             CLASE_NDP     
- Length:375317      Length:375317      Min.   :11000001   NUMERO   :364701  
- Class :character   Class :character   1st Qu.:11053612   BLOQUE   :  9027  
- Mode  :character   Mode  :character   Median :11126254   KILÓMETRO:  1239  
-                                       Mean   :17668545   PARCELA  :    98  
-                                       3rd Qu.:20171383   CHABOLA  :    85  
-                                       Max.   :31075147   SANQUI   :    81  
+ Length:375389      Length:375389      Min.   :11000001   NUMERO   :364773  
+ Class :character   Class :character   1st Qu.:11053618   BLOQUE   :  9027  
+ Mode  :character   Mode  :character   Median :11126276   KILÓMETRO:  1239  
+                                       Mean   :17670225   PARCELA  :    98  
+                                       3rd Qu.:20171465   CHABOLA  :    85  
+                                       Max.   :31075202   SANQUI   :    81  
                                                           (Other)  :    86  
-     NÚMERO       CALIFICADOR     FECHA_DE_ALTA        FECHA_DE_BAJA       
- Min.   :    1   B      : 11702   Min.   :1870-01-01   Min.   :197-01-01   
- 1st Qu.:    9   A      :  7837   1st Qu.:1950-07-14   1st Qu.:1949-09-06  
- Median :   21   C      :  4132   Median :1973-01-01   Median :1973-03-05  
- Mean   :   83   D      :  2849   Mean   :1970-12-04   Mean   :1972-06-27  
- 3rd Qu.:   48   E      :  1817   3rd Qu.:1991-03-20   3rd Qu.:1995-05-29  
- Max.   :61000   (Other): 21590   Max.   :2025-07-31   Max.   :2025-07-24  
-                 NA&#39;s   :325390                        NA&#39;s   :214531      
+     NÚMERO          CALIFICADOR     FECHA_DE_ALTA        FECHA_DE_BAJA       
+ Min.   :    1.00   B      : 11710   Min.   :1870-01-01   Min.   :197-01-01   
+ 1st Qu.:    9.00   A      :  7847   1st Qu.:1950-07-14   1st Qu.:1949-09-06  
+ Median :   21.00   C      :  4135   Median :1973-01-01   Median :1973-03-05  
+ Mean   :   82.99   D      :  2855   Mean   :1970-12-07   Mean   :1972-06-29  
+ 3rd Qu.:   48.00   E      :  1817   3rd Qu.:1991-03-20   3rd Qu.:1995-05-29  
+ Max.   :61000.00   (Other): 21596   Max.   :2025-08-14   Max.   :2025-08-13  
+                    NA&#39;s   :325429                        NA&#39;s   :214575      
            TIPO_NDP         UTMX_ED            UTMY_ED         
- PORTAL        :268852   Min.   :      -1   Min.   :       -1  
- FRENTE FACHADA: 39037   1st Qu.:43756431   1st Qu.:446984781  
- PARCELA       : 29180   Median :44080004   Median :447385505  
- GARAJE        : 15714   Mean   :37360999   Mean   :378023523  
- JARDÍN/PARQUE :  3922   3rd Qu.:44389228   3rd Qu.:447830794  
+ PORTAL        :268871   Min.   :      -1   Min.   :       -1  
+ FRENTE FACHADA: 39047   1st Qu.:43756507   1st Qu.:446984749  
+ PARCELA       : 29210   Median :44080027   Median :447385496  
+ GARAJE        : 15727   Mean   :37361578   Mean   :378032544  
+ JARDÍN/PARQUE :  3922   3rd Qu.:44389254   3rd Qu.:447830797  
  (Other)       :  2376   Max.   :45551486   Max.   :449574161  
  NA&#39;s          : 16236                                         
    UTMX_ETRS          UTMY_ETRS           LATITUD            LONGITUD        
- Min.   :       0   Min.   :        0   Length:375317      Length:375317     
- 1st Qu.:43747311   1st Qu.:446961492   Class :character   Class :character  
- Median :44069689   Median :447362722   Mode  :character   Mode  :character  
- Mean   :37388755   Mean   :377715504                                        
- 3rd Qu.:44378999   3rd Qu.:447808395                                        
+ Min.   :       0   Min.   :        0   Length:375389      Length:375389     
+ 1st Qu.:43747481   1st Qu.:446961448   Class :character   Class :character  
+ Median :44069701   Median :447362676   Mode  :character   Mode  :character  
+ Mean   :37389476   Mean   :377725549                                        
+ 3rd Qu.:44379043   3rd Qu.:447808409                                        
  Max.   :45558493   Max.   :449555404                                        
                                                                              
  ANGULO_ROTULACION 
- Length:375317     
+ Length:375389     
  Class :character  
  Mode  :character  
                    
@@ -3350,44 +3348,49 @@ lgl  (1): VIA_SQC
                    </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co">#    COD_VIA         VIA_SQC            VIA_CLASE        VIA_PAR         </span></span>
-<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :     127   Mode:logical   CALLE    :314230   Length:375317     </span></span>
-<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:  141550   NA&#39;s:375317    AVENIDA  : 23399   Class :character  </span></span>
-<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :  396000                  PASEO    :  8770   Mode  :character  </span></span>
-<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   : 2591925                  PLAZA    :  6397                     </span></span>
-<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:  634300                  CAMINO   :  4025                     </span></span>
-<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :31006279                  CARRETERA:  3693                     </span></span>
-<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   (Other)  : 14803                     </span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :     127   Mode:logical   CALLE    :314273   Length:375389     </span></span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:  141550   NA&#39;s:375389    AVENIDA  : 23411   Class :character  </span></span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :  396000                  PASEO    :  8773   Mode  :character  </span></span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   : 2592882                  PLAZA    :  6397                     </span></span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:  634600                  CAMINO   :  4025                     </span></span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :31006279                  CARRETERA:  3704                     </span></span>
+<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   (Other)  : 14806                     </span></span>
 <span id="cb68-9"><a href="#cb68-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  VIA_NOMBRE        VIA_NOMBRE_ACENTOS    COD_NDP             CLASE_NDP     </span></span>
-<span id="cb68-10"><a href="#cb68-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Length:375317      Length:375317      Min.   :11000001   NUMERO   :364701  </span></span>
-<span id="cb68-11"><a href="#cb68-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Class :character   Class :character   1st Qu.:11053612   BLOQUE   :  9027  </span></span>
-<span id="cb68-12"><a href="#cb68-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode  :character   Mode  :character   Median :11126254   KILÓMETRO:  1239  </span></span>
-<span id="cb68-13"><a href="#cb68-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Mean   :17668545   PARCELA  :    98  </span></span>
-<span id="cb68-14"><a href="#cb68-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       3rd Qu.:20171383   CHABOLA  :    85  </span></span>
-<span id="cb68-15"><a href="#cb68-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Max.   :31075147   SANQUI   :    81  </span></span>
+<span id="cb68-10"><a href="#cb68-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Length:375389      Length:375389      Min.   :11000001   NUMERO   :364773  </span></span>
+<span id="cb68-11"><a href="#cb68-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Class :character   Class :character   1st Qu.:11053618   BLOQUE   :  9027  </span></span>
+<span id="cb68-12"><a href="#cb68-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode  :character   Mode  :character   Median :11126276   KILÓMETRO:  1239  </span></span>
+<span id="cb68-13"><a href="#cb68-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Mean   :17670225   PARCELA  :    98  </span></span>
+<span id="cb68-14"><a href="#cb68-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       3rd Qu.:20171465   CHABOLA  :    85  </span></span>
+<span id="cb68-15"><a href="#cb68-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Max.   :31075202   SANQUI   :    81  </span></span>
 <span id="cb68-16"><a href="#cb68-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                          (Other)  :    86  </span></span>
-<span id="cb68-17"><a href="#cb68-17" aria-hidden="true" tabindex="-1"></a><span class="co">#     NÚMERO       CALIFICADOR     FECHA_DE_ALTA        FECHA_DE_BAJA       </span></span>
-<span id="cb68-18"><a href="#cb68-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :    1   B      : 11702   Min.   :1870-01-01   Min.   :197-01-01   </span></span>
-<span id="cb68-19"><a href="#cb68-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:    9   A      :  7837   1st Qu.:1950-07-14   1st Qu.:1949-09-06  </span></span>
-<span id="cb68-20"><a href="#cb68-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :   21   C      :  4132   Median :1973-01-01   Median :1973-03-05  </span></span>
-<span id="cb68-21"><a href="#cb68-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :   83   D      :  2849   Mean   :1970-12-04   Mean   :1972-06-27  </span></span>
-<span id="cb68-22"><a href="#cb68-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:   48   E      :  1817   3rd Qu.:1991-03-20   3rd Qu.:1995-05-29  </span></span>
-<span id="cb68-23"><a href="#cb68-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :61000   (Other): 21590   Max.   :2025-07-31   Max.   :2025-07-24  </span></span>
-<span id="cb68-24"><a href="#cb68-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                 NA&#39;s   :325390                        NA&#39;s   :214531      </span></span>
-<span id="cb68-25"><a href="#cb68-25" aria-hidden="true" tabindex="-1"></a><span class="co">#           TIPO_NDP         UTMX_ED            UTMY_ED            UTMX_ETRS       </span></span>
-<span id="cb68-26"><a href="#cb68-26" aria-hidden="true" tabindex="-1"></a><span class="co"># PORTAL        :268852   Min.   :      -1   Min.   :       -1   Min.   :       0  </span></span>
-<span id="cb68-27"><a href="#cb68-27" aria-hidden="true" tabindex="-1"></a><span class="co"># FRENTE FACHADA: 39037   1st Qu.:43756431   1st Qu.:446984781   1st Qu.:43747311  </span></span>
-<span id="cb68-28"><a href="#cb68-28" aria-hidden="true" tabindex="-1"></a><span class="co"># PARCELA       : 29180   Median :44080004   Median :447385505   Median :44069689  </span></span>
-<span id="cb68-29"><a href="#cb68-29" aria-hidden="true" tabindex="-1"></a><span class="co"># GARAJE        : 15714   Mean   :37360999   Mean   :378023523   Mean   :37388755  </span></span>
-<span id="cb68-30"><a href="#cb68-30" aria-hidden="true" tabindex="-1"></a><span class="co"># JARDÍN/PARQUE :  3922   3rd Qu.:44389228   3rd Qu.:447830794   3rd Qu.:44378999  </span></span>
-<span id="cb68-31"><a href="#cb68-31" aria-hidden="true" tabindex="-1"></a><span class="co"># (Other)       :  2376   Max.   :45551486   Max.   :449574161   Max.   :45558493  </span></span>
-<span id="cb68-32"><a href="#cb68-32" aria-hidden="true" tabindex="-1"></a><span class="co"># NA&#39;s          : 16236                                                            </span></span>
-<span id="cb68-33"><a href="#cb68-33" aria-hidden="true" tabindex="-1"></a><span class="co">#   UTMY_ETRS           LATITUD            LONGITUD         ANGULO_ROTULACION </span></span>
-<span id="cb68-34"><a href="#cb68-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :        0   Length:375317      Length:375317      Length:375317     </span></span>
-<span id="cb68-35"><a href="#cb68-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:446961492   Class :character   Class :character   Class :character  </span></span>
-<span id="cb68-36"><a href="#cb68-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :447362722   Mode  :character   Mode  :character   Mode  :character  </span></span>
-<span id="cb68-37"><a href="#cb68-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :377715504                                                           </span></span>
-<span id="cb68-38"><a href="#cb68-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:447808395                                                           </span></span>
-<span id="cb68-39"><a href="#cb68-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :449555404   </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb68-17"><a href="#cb68-17" aria-hidden="true" tabindex="-1"></a><span class="co">#     NÚMERO          CALIFICADOR     FECHA_DE_ALTA       </span></span>
+<span id="cb68-18"><a href="#cb68-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :    1.00   B      : 11710   Min.   :1870-01-01  </span></span>
+<span id="cb68-19"><a href="#cb68-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:    9.00   A      :  7847   1st Qu.:1950-07-14  </span></span>
+<span id="cb68-20"><a href="#cb68-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :   21.00   C      :  4135   Median :1973-01-01  </span></span>
+<span id="cb68-21"><a href="#cb68-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :   82.99   D      :  2855   Mean   :1970-12-07  </span></span>
+<span id="cb68-22"><a href="#cb68-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:   48.00   E      :  1817   3rd Qu.:1991-03-20  </span></span>
+<span id="cb68-23"><a href="#cb68-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :61000.00   (Other): 21596   Max.   :2025-08-14  </span></span>
+<span id="cb68-24"><a href="#cb68-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                    NA&#39;s   :325429                       </span></span>
+<span id="cb68-25"><a href="#cb68-25" aria-hidden="true" tabindex="-1"></a><span class="co"># FECHA_DE_BAJA                  TIPO_NDP         UTMX_ED        </span></span>
+<span id="cb68-26"><a href="#cb68-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :197-01-01    PORTAL        :268871   Min.   :      -1  </span></span>
+<span id="cb68-27"><a href="#cb68-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:1949-09-06   FRENTE FACHADA: 39047   1st Qu.:43756507  </span></span>
+<span id="cb68-28"><a href="#cb68-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :1973-03-05   PARCELA       : 29210   Median :44080027  </span></span>
+<span id="cb68-29"><a href="#cb68-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :1972-06-29   GARAJE        : 15727   Mean   :37361578  </span></span>
+<span id="cb68-30"><a href="#cb68-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:1995-05-29   JARDÍN/PARQUE :  3922   3rd Qu.:44389254  </span></span>
+<span id="cb68-31"><a href="#cb68-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :2025-08-13   (Other)       :  2376   Max.   :45551486  </span></span>
+<span id="cb68-32"><a href="#cb68-32" aria-hidden="true" tabindex="-1"></a><span class="co"># NA&#39;s   :214575       NA&#39;s          : 16236                     </span></span>
+<span id="cb68-33"><a href="#cb68-33" aria-hidden="true" tabindex="-1"></a><span class="co">#    UTMY_ED            UTMX_ETRS          UTMY_ETRS        </span></span>
+<span id="cb68-34"><a href="#cb68-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :       -1   Min.   :       0   Min.   :        0  </span></span>
+<span id="cb68-35"><a href="#cb68-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:446984749   1st Qu.:43747481   1st Qu.:446961448  </span></span>
+<span id="cb68-36"><a href="#cb68-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :447385496   Median :44069701   Median :447362676  </span></span>
+<span id="cb68-37"><a href="#cb68-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :378032544   Mean   :37389476   Mean   :377725549  </span></span>
+<span id="cb68-38"><a href="#cb68-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:447830797   3rd Qu.:44379043   3rd Qu.:447808409  </span></span>
+<span id="cb68-39"><a href="#cb68-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :449574161   Max.   :45558493   Max.   :449555404  </span></span>
+<span id="cb68-40"><a href="#cb68-40" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                           </span></span>
+<span id="cb68-41"><a href="#cb68-41" aria-hidden="true" tabindex="-1"></a><span class="co">#   LATITUD            LONGITUD         ANGULO_ROTULACION </span></span>
+<span id="cb68-42"><a href="#cb68-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Length:375389      Length:375389      Length:375389     </span></span>
+<span id="cb68-43"><a href="#cb68-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Class :character   Class :character   Class :character  </span></span>
+<span id="cb68-44"><a href="#cb68-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode  :character   Mode  :character   Mode  :character </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Incluimos el CRS25830</span></span>
@@ -3409,47 +3412,47 @@ lgl  (1): VIA_SQC
 <div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(direcciones_historico_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    COD_VIA         VIA_SQC            VIA_CLASE        VIA_PAR         
- Min.   :     127   Mode:logical   CALLE    :293792   Length:349062     
- 1st Qu.:  142625   NA&#39;s:349062    AVENIDA  : 21648   Class :character  
- Median :  398700                  PASEO    :  7721   Mode  :character  
- Mean   : 2752589                  PLAZA    :  5842                     
+ Min.   :     127   Mode:logical   CALLE    :293835   Length:349134     
+ 1st Qu.:  142625   NA&#39;s:349134    AVENIDA  : 21660   Class :character  
+ Median :  398700                  PASEO    :  7724   Mode  :character  
+ Mean   : 2753585                  PLAZA    :  5842                     
  3rd Qu.:  639950                  CAMINO   :  3511                     
- Max.   :31006279                  CARRETERA:  3027                     
-                                   (Other)  : 13521                     
+ Max.   :31006279                  CARRETERA:  3038                     
+                                   (Other)  : 13524                     
   VIA_NOMBRE        VIA_NOMBRE_ACENTOS    COD_NDP             CLASE_NDP     
- Length:349062      Length:349062      Min.   :11000001   NUMERO   :339104  
- Class :character   Class :character   1st Qu.:11050454   BLOQUE   :  8578  
- Mode  :character   Mode  :character   Median :11119008   KILÓMETRO:  1148  
-                                       Mean   :17342707   PARCELA  :    98  
-                                       3rd Qu.:20163393   TORRE    :    41  
-                                       Max.   :31075147   CHABOLA  :    37  
+ Length:349134      Length:349134      Min.   :11000001   NUMERO   :339176  
+ Class :character   Class :character   1st Qu.:11050469   BLOQUE   :  8578  
+ Mode  :character   Mode  :character   Median :11119033   KILÓMETRO:  1148  
+                                       Mean   :17344581   PARCELA  :    98  
+                                       3rd Qu.:20163466   TORRE    :    41  
+                                       Max.   :31075202   CHABOLA  :    37  
                                                           (Other)  :    56  
-     NÚMERO         CALIFICADOR     FECHA_DE_ALTA        FECHA_DE_BAJA       
- Min.   :    1.0   B      : 11243   Min.   :1870-01-01   Min.   :197-01-01   
- 1st Qu.:    9.0   A      :  7566   1st Qu.:1950-07-14   1st Qu.:1948-11-01  
- Median :   21.0   C      :  3987   Median :1973-01-17   Median :1969-03-10  
- Mean   :   84.8   D      :  2772   Mean   :1971-02-10   Mean   :1970-05-23  
- 3rd Qu.:   46.0   E      :  1778   3rd Qu.:1992-07-08   3rd Qu.:1996-03-11  
- Max.   :61000.0   (Other): 20569   Max.   :2025-07-31   Max.   :2025-07-24  
-                   NA&#39;s   :301147                        NA&#39;s   :214531      
+     NÚMERO          CALIFICADOR     FECHA_DE_ALTA        FECHA_DE_BAJA       
+ Min.   :    1.00   B      : 11251   Min.   :1870-01-01   Min.   :197-01-01   
+ 1st Qu.:    9.00   A      :  7576   1st Qu.:1950-07-14   1st Qu.:1948-11-01  
+ Median :   21.00   C      :  3990   Median :1973-01-17   Median :1969-03-10  
+ Mean   :   84.79   D      :  2778   Mean   :1971-02-13   Mean   :1970-05-25  
+ 3rd Qu.:   46.00   E      :  1778   3rd Qu.:1992-07-08   3rd Qu.:1996-03-11  
+ Max.   :61000.00   (Other): 20575   Max.   :2025-08-14   Max.   :2025-08-13  
+                    NA&#39;s   :301186                        NA&#39;s   :214575      
            TIPO_NDP         UTMX_ED            UTMY_ED         
- PORTAL        :263338   Min.   :      -1   Min.   :       -1  
- FRENTE FACHADA: 38597   1st Qu.:43866937   1st Qu.:447061889  
- PARCELA       : 23649   Median :44108442   Median :447483012  
- GARAJE        : 15691   Mean   :40171139   Mean   :406456889  
- JARDÍN/PARQUE :  3885   3rd Qu.:44420691   3rd Qu.:447860638  
+ PORTAL        :263357   Min.   :      -1   Min.   :       -1  
+ FRENTE FACHADA: 38607   1st Qu.:43866957   1st Qu.:447061876  
+ PARCELA       : 23679   Median :44108448   Median :447482906  
+ GARAJE        : 15704   Mean   :40171182   Mean   :406460724  
+ JARDÍN/PARQUE :  3885   3rd Qu.:44420760   3rd Qu.:447860641  
  (Other)       :  1093   Max.   :45551486   Max.   :449574161  
  NA&#39;s          :  2809                                         
    UTMX_ETRS          UTMY_ETRS           LATITUD            LONGITUD        
- Min.   :  429110   Min.   :  4464414   Length:349062      Length:349062     
- 1st Qu.:43858245   1st Qu.:447039777   Class :character   Class :character  
- Median :44098252   Median :447458060   Mode  :character   Mode  :character  
- Mean   :40200982   Mean   :406125702                                        
- 3rd Qu.:44410576   3rd Qu.:447837933                                        
+ Min.   :  429110   Min.   :  4464414   Length:349134      Length:349134     
+ 1st Qu.:43858321   1st Qu.:447039754   Class :character   Class :character  
+ Median :44098265   Median :447457998   Mode  :character   Mode  :character  
+ Mean   :40201178   Mean   :406130643                                        
+ 3rd Qu.:44410622   3rd Qu.:447837946                                        
  Max.   :45558493   Max.   :449555404                                        
                                                                              
  ANGULO_ROTULACION           geometry     
- Length:349062      POINT        :349062  
+ Length:349134      POINT        :349134  
  Class :character   epsg:4326    :     0  
  Mode  :character   +proj=long...:     0  
                                           
@@ -3458,49 +3461,57 @@ lgl  (1): VIA_SQC
                                           </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co">#    COD_VIA         VIA_SQC            VIA_CLASE        VIA_PAR         </span></span>
-<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :     127   Mode:logical   CALLE    :293792   Length:349062     </span></span>
-<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:  142625   NA&#39;s:349062    AVENIDA  : 21648   Class :character  </span></span>
-<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :  398700                  PASEO    :  7721   Mode  :character  </span></span>
-<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   : 2752589                  PLAZA    :  5842                     </span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :     127   Mode:logical   CALLE    :293835   Length:349134     </span></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:  142625   NA&#39;s:349134    AVENIDA  : 21660   Class :character  </span></span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :  398700                  PASEO    :  7724   Mode  :character  </span></span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   : 2753585                  PLAZA    :  5842                     </span></span>
 <span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:  639950                  CAMINO   :  3511                     </span></span>
-<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :31006279                  CARRETERA:  3027                     </span></span>
-<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   (Other)  : 13521                     </span></span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :31006279                  CARRETERA:  3038                     </span></span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   (Other)  : 13524                     </span></span>
 <span id="cb73-9"><a href="#cb73-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  VIA_NOMBRE        VIA_NOMBRE_ACENTOS    COD_NDP             CLASE_NDP     </span></span>
-<span id="cb73-10"><a href="#cb73-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Length:349062      Length:349062      Min.   :11000001   NUMERO   :339104  </span></span>
-<span id="cb73-11"><a href="#cb73-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Class :character   Class :character   1st Qu.:11050454   BLOQUE   :  8578  </span></span>
-<span id="cb73-12"><a href="#cb73-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode  :character   Mode  :character   Median :11119008   KILÓMETRO:  1148  </span></span>
-<span id="cb73-13"><a href="#cb73-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Mean   :17342707   PARCELA  :    98  </span></span>
-<span id="cb73-14"><a href="#cb73-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       3rd Qu.:20163393   TORRE    :    41  </span></span>
-<span id="cb73-15"><a href="#cb73-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Max.   :31075147   CHABOLA  :    37  </span></span>
+<span id="cb73-10"><a href="#cb73-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Length:349134      Length:349134      Min.   :11000001   NUMERO   :339176  </span></span>
+<span id="cb73-11"><a href="#cb73-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Class :character   Class :character   1st Qu.:11050469   BLOQUE   :  8578  </span></span>
+<span id="cb73-12"><a href="#cb73-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode  :character   Mode  :character   Median :11119033   KILÓMETRO:  1148  </span></span>
+<span id="cb73-13"><a href="#cb73-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Mean   :17344581   PARCELA  :    98  </span></span>
+<span id="cb73-14"><a href="#cb73-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       3rd Qu.:20163466   TORRE    :    41  </span></span>
+<span id="cb73-15"><a href="#cb73-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       Max.   :31075202   CHABOLA  :    37  </span></span>
 <span id="cb73-16"><a href="#cb73-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                          (Other)  :    56  </span></span>
-<span id="cb73-17"><a href="#cb73-17" aria-hidden="true" tabindex="-1"></a><span class="co">#     NÚMERO         CALIFICADOR     FECHA_DE_ALTA        FECHA_DE_BAJA       </span></span>
-<span id="cb73-18"><a href="#cb73-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :    1.0   B      : 11243   Min.   :1870-01-01   Min.   :197-01-01   </span></span>
-<span id="cb73-19"><a href="#cb73-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:    9.0   A      :  7566   1st Qu.:1950-07-14   1st Qu.:1948-11-01  </span></span>
-<span id="cb73-20"><a href="#cb73-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :   21.0   C      :  3987   Median :1973-01-17   Median :1969-03-10  </span></span>
-<span id="cb73-21"><a href="#cb73-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :   84.8   D      :  2772   Mean   :1971-02-10   Mean   :1970-05-23  </span></span>
-<span id="cb73-22"><a href="#cb73-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:   46.0   E      :  1778   3rd Qu.:1992-07-08   3rd Qu.:1996-03-11  </span></span>
-<span id="cb73-23"><a href="#cb73-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :61000.0   (Other): 20569   Max.   :2025-07-31   Max.   :2025-07-24  </span></span>
-<span id="cb73-24"><a href="#cb73-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                   NA&#39;s   :301147                        NA&#39;s   :214531      </span></span>
-<span id="cb73-25"><a href="#cb73-25" aria-hidden="true" tabindex="-1"></a><span class="co">#           TIPO_NDP         UTMX_ED            UTMY_ED            UTMX_ETRS       </span></span>
-<span id="cb73-26"><a href="#cb73-26" aria-hidden="true" tabindex="-1"></a><span class="co"># PORTAL        :263338   Min.   :      -1   Min.   :       -1   Min.   :  429110  </span></span>
-<span id="cb73-27"><a href="#cb73-27" aria-hidden="true" tabindex="-1"></a><span class="co"># FRENTE FACHADA: 38597   1st Qu.:43866937   1st Qu.:447061889   1st Qu.:43858245  </span></span>
-<span id="cb73-28"><a href="#cb73-28" aria-hidden="true" tabindex="-1"></a><span class="co"># PARCELA       : 23649   Median :44108442   Median :447483012   Median :44098252  </span></span>
-<span id="cb73-29"><a href="#cb73-29" aria-hidden="true" tabindex="-1"></a><span class="co"># GARAJE        : 15691   Mean   :40171139   Mean   :406456889   Mean   :40200982  </span></span>
-<span id="cb73-30"><a href="#cb73-30" aria-hidden="true" tabindex="-1"></a><span class="co"># JARDÍN/PARQUE :  3885   3rd Qu.:44420691   3rd Qu.:447860638   3rd Qu.:44410576  </span></span>
-<span id="cb73-31"><a href="#cb73-31" aria-hidden="true" tabindex="-1"></a><span class="co"># (Other)       :  1093   Max.   :45551486   Max.   :449574161   Max.   :45558493  </span></span>
-<span id="cb73-32"><a href="#cb73-32" aria-hidden="true" tabindex="-1"></a><span class="co"># NA&#39;s          :  2809                                                            </span></span>
-<span id="cb73-33"><a href="#cb73-33" aria-hidden="true" tabindex="-1"></a><span class="co">#   UTMY_ETRS           LATITUD            LONGITUD         ANGULO_ROTULACION </span></span>
-<span id="cb73-34"><a href="#cb73-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :  4464414   Length:349062      Length:349062      Length:349062     </span></span>
-<span id="cb73-35"><a href="#cb73-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:447039777   Class :character   Class :character   Class :character  </span></span>
-<span id="cb73-36"><a href="#cb73-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :447458060   Mode  :character   Mode  :character   Mode  :character  </span></span>
-<span id="cb73-37"><a href="#cb73-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :406125702                                                           </span></span>
-<span id="cb73-38"><a href="#cb73-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:447837933                                                           </span></span>
-<span id="cb73-39"><a href="#cb73-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :449555404                                                           </span></span>
-<span id="cb73-40"><a href="#cb73-40" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                                             </span></span>
-<span id="cb73-41"><a href="#cb73-41" aria-hidden="true" tabindex="-1"></a><span class="co">#          geometry     </span></span>
-<span id="cb73-42"><a href="#cb73-42" aria-hidden="true" tabindex="-1"></a><span class="co"># POINT        :349062  </span></span>
-<span id="cb73-43"><a href="#cb73-43" aria-hidden="true" tabindex="-1"></a><span class="co"># epsg:4326    :     0  </span></span>
-<span id="cb73-44"><a href="#cb73-44" aria-hidden="true" tabindex="-1"></a><span class="co"># +proj=long...:     0  </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb73-17"><a href="#cb73-17" aria-hidden="true" tabindex="-1"></a><span class="co">#     NÚMERO          CALIFICADOR     FECHA_DE_ALTA       </span></span>
+<span id="cb73-18"><a href="#cb73-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :    1.00   B      : 11251   Min.   :1870-01-01  </span></span>
+<span id="cb73-19"><a href="#cb73-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:    9.00   A      :  7576   1st Qu.:1950-07-14  </span></span>
+<span id="cb73-20"><a href="#cb73-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :   21.00   C      :  3990   Median :1973-01-17  </span></span>
+<span id="cb73-21"><a href="#cb73-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :   84.79   D      :  2778   Mean   :1971-02-13  </span></span>
+<span id="cb73-22"><a href="#cb73-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:   46.00   E      :  1778   3rd Qu.:1992-07-08  </span></span>
+<span id="cb73-23"><a href="#cb73-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :61000.00   (Other): 20575   Max.   :2025-08-14  </span></span>
+<span id="cb73-24"><a href="#cb73-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                    NA&#39;s   :301186                       </span></span>
+<span id="cb73-25"><a href="#cb73-25" aria-hidden="true" tabindex="-1"></a><span class="co"># FECHA_DE_BAJA                  TIPO_NDP         UTMX_ED        </span></span>
+<span id="cb73-26"><a href="#cb73-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :197-01-01    PORTAL        :263357   Min.   :      -1  </span></span>
+<span id="cb73-27"><a href="#cb73-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:1948-11-01   FRENTE FACHADA: 38607   1st Qu.:43866957  </span></span>
+<span id="cb73-28"><a href="#cb73-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :1969-03-10   PARCELA       : 23679   Median :44108448  </span></span>
+<span id="cb73-29"><a href="#cb73-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :1970-05-25   GARAJE        : 15704   Mean   :40171182  </span></span>
+<span id="cb73-30"><a href="#cb73-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:1996-03-11   JARDÍN/PARQUE :  3885   3rd Qu.:44420760  </span></span>
+<span id="cb73-31"><a href="#cb73-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :2025-08-13   (Other)       :  1093   Max.   :45551486  </span></span>
+<span id="cb73-32"><a href="#cb73-32" aria-hidden="true" tabindex="-1"></a><span class="co"># NA&#39;s   :214575       NA&#39;s          :  2809                     </span></span>
+<span id="cb73-33"><a href="#cb73-33" aria-hidden="true" tabindex="-1"></a><span class="co">#    UTMY_ED            UTMX_ETRS          UTMY_ETRS        </span></span>
+<span id="cb73-34"><a href="#cb73-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Min.   :       -1   Min.   :  429110   Min.   :  4464414  </span></span>
+<span id="cb73-35"><a href="#cb73-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 1st Qu.:447061876   1st Qu.:43858321   1st Qu.:447039754  </span></span>
+<span id="cb73-36"><a href="#cb73-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Median :447482906   Median :44098265   Median :447457998  </span></span>
+<span id="cb73-37"><a href="#cb73-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean   :406460724   Mean   :40201178   Mean   :406130643  </span></span>
+<span id="cb73-38"><a href="#cb73-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 3rd Qu.:447860641   3rd Qu.:44410622   3rd Qu.:447837946  </span></span>
+<span id="cb73-39"><a href="#cb73-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.   :449574161   Max.   :45558493   Max.   :449555404  </span></span>
+<span id="cb73-40"><a href="#cb73-40" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                           </span></span>
+<span id="cb73-41"><a href="#cb73-41" aria-hidden="true" tabindex="-1"></a><span class="co">#   LATITUD            LONGITUD         ANGULO_ROTULACION </span></span>
+<span id="cb73-42"><a href="#cb73-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Length:349134      Length:349134      Length:349134     </span></span>
+<span id="cb73-43"><a href="#cb73-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Class :character   Class :character   Class :character  </span></span>
+<span id="cb73-44"><a href="#cb73-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode  :character   Mode  :character   Mode  :character  </span></span>
+<span id="cb73-45"><a href="#cb73-45" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         </span></span>
+<span id="cb73-46"><a href="#cb73-46" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         </span></span>
+<span id="cb73-47"><a href="#cb73-47" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         </span></span>
+<span id="cb73-48"><a href="#cb73-48" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         </span></span>
+<span id="cb73-49"><a href="#cb73-49" aria-hidden="true" tabindex="-1"></a><span class="co">#          geometry     </span></span>
+<span id="cb73-50"><a href="#cb73-50" aria-hidden="true" tabindex="-1"></a><span class="co"># POINT        :349134  </span></span>
+<span id="cb73-51"><a href="#cb73-51" aria-hidden="true" tabindex="-1"></a><span class="co"># epsg:4326    :     0  </span></span>
+<span id="cb73-52"><a href="#cb73-52" aria-hidden="true" tabindex="-1"></a><span class="co"># +proj=long...:     0  </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(direcciones_historico<span class="sc">$</span>VIA_CLASE, <span class="at">useNA =</span> <span class="st">&#39;ifany&#39;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -3509,15 +3520,15 @@ lgl  (1): VIA_SQC
                ACCESO                ARROYO             AUTOPISTA 
                    39                     4                     7 
               AUTOVÍA               AVENIDA                BARRIO 
-                  664                 23399                    44 
+                  664                 23411                    44 
               BULEVAR                 CALLE              CALLEJÓN 
-                  217                314230                   385 
+                  217                314273                   385 
                CAMINO           CAMINO ALTO           CAMINO BAJO 
                  4025                     3                     5 
          CAMINO VIEJO              CAMPILLO                CAÑADA 
                   237                    21                   658 
               CARRERA             CARRETERA                 CERRO 
-                  214                  3693                    11 
+                  214                  3704                    11 
               COLONIA            COSTANILLA                CUESTA 
                  2788                   180                   207 
              EDIFICIO            ESCALINATA ESTACIÓN DE CERCANÍAS 
@@ -3527,42 +3538,50 @@ lgl  (1): VIA_SQC
                 LUGAR                PARQUE            PARTICULAR 
                   892                    32                   174 
              PASADIZO                PASAJE                 PASEO 
-                   74                  1323                  8770 
+                   74                  1323                  8773 
                 PISTA                 PLAZA              PLAZUELA 
                     5                  6397                   142 
               POBLADO  POBLADO DE ABSORCIÓN      POBLADO DIRIGIDO 
                    51                    28                   120 
              POLÍGONO                PUENTE                 RONDA 
-                  422                     3                  1611 
+                  422                     3                  1614 
           TRANSVERSAL              TRAVESÍA      TRAVESÍA PRIMERA 
                    41                  2293                     5 
          URBANIZACIÓN                   VÍA 
                  1378                     2 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co">#           ACCESO                ARROYO             AUTOPISTA               AUTOVÍA </span></span>
-<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="co">#               39                     4                     7                   664 </span></span>
-<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="co">#          AVENIDA                BARRIO               BULEVAR                 CALLE </span></span>
-<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a><span class="co">#            23399                    44                   217                314230 </span></span>
-<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a><span class="co">#         CALLEJÓN                CAMINO           CAMINO ALTO           CAMINO BAJO </span></span>
-<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a><span class="co">#              385                  4025                     3                     5 </span></span>
-<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a><span class="co">#     CAMINO VIEJO              CAMPILLO                CAÑADA               CARRERA </span></span>
-<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a><span class="co">#              237                    21                   658                   214 </span></span>
-<span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a><span class="co">#        CARRETERA                 CERRO               COLONIA            COSTANILLA </span></span>
-<span id="cb76-10"><a href="#cb76-10" aria-hidden="true" tabindex="-1"></a><span class="co">#             3693                    11                  2788                   180 </span></span>
-<span id="cb76-11"><a href="#cb76-11" aria-hidden="true" tabindex="-1"></a><span class="co">#           CUESTA              EDIFICIO            ESCALINATA ESTACIÓN DE CERCANÍAS </span></span>
-<span id="cb76-12"><a href="#cb76-12" aria-hidden="true" tabindex="-1"></a><span class="co">#              207                     3                     6                     2 </span></span>
-<span id="cb76-13"><a href="#cb76-13" aria-hidden="true" tabindex="-1"></a><span class="co">#          GALERÍA              GLORIETA    GRUPO DE VIVIENDAS                 LUGAR </span></span>
-<span id="cb76-14"><a href="#cb76-14" aria-hidden="true" tabindex="-1"></a><span class="co">#               14                   497                     1                   892 </span></span>
-<span id="cb76-15"><a href="#cb76-15" aria-hidden="true" tabindex="-1"></a><span class="co">#           PARQUE            PARTICULAR              PASADIZO                PASAJE </span></span>
-<span id="cb76-16"><a href="#cb76-16" aria-hidden="true" tabindex="-1"></a><span class="co">#               32                   174                    74                  1323 </span></span>
-<span id="cb76-17"><a href="#cb76-17" aria-hidden="true" tabindex="-1"></a><span class="co">#            PASEO                 PISTA                 PLAZA              PLAZUELA </span></span>
-<span id="cb76-18"><a href="#cb76-18" aria-hidden="true" tabindex="-1"></a><span class="co">#             8770                     5                  6397                   142 </span></span>
-<span id="cb76-19"><a href="#cb76-19" aria-hidden="true" tabindex="-1"></a><span class="co">#          POBLADO  POBLADO DE ABSORCIÓN      POBLADO DIRIGIDO              POLÍGONO </span></span>
-<span id="cb76-20"><a href="#cb76-20" aria-hidden="true" tabindex="-1"></a><span class="co">#               51                    28                   120                   422 </span></span>
-<span id="cb76-21"><a href="#cb76-21" aria-hidden="true" tabindex="-1"></a><span class="co">#           PUENTE                 RONDA           TRANSVERSAL              TRAVESÍA </span></span>
-<span id="cb76-22"><a href="#cb76-22" aria-hidden="true" tabindex="-1"></a><span class="co">#                3                  1611                    41                  2293 </span></span>
-<span id="cb76-23"><a href="#cb76-23" aria-hidden="true" tabindex="-1"></a><span class="co"># TRAVESÍA PRIMERA          URBANIZACIÓN                   VÍA </span></span>
-<span id="cb76-24"><a href="#cb76-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                5                  1378                     2 </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co">#       ACCESO                ARROYO             AUTOPISTA </span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="co">#           39                     4                     7 </span></span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="co">#      AUTOVÍA               AVENIDA                BARRIO </span></span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a><span class="co">#          664                 23411                    44 </span></span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a><span class="co">#      BULEVAR                 CALLE              CALLEJÓN </span></span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a><span class="co">#          217                314273                   385 </span></span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a><span class="co">#       CAMINO           CAMINO ALTO           CAMINO BAJO </span></span>
+<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a><span class="co">#         4025                     3                     5 </span></span>
+<span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a><span class="co"># CAMINO VIEJO              CAMPILLO                CAÑADA </span></span>
+<span id="cb76-10"><a href="#cb76-10" aria-hidden="true" tabindex="-1"></a><span class="co">#          237                    21                   658 </span></span>
+<span id="cb76-11"><a href="#cb76-11" aria-hidden="true" tabindex="-1"></a><span class="co">#      CARRERA             CARRETERA                 CERRO </span></span>
+<span id="cb76-12"><a href="#cb76-12" aria-hidden="true" tabindex="-1"></a><span class="co">#          214                  3704                    11 </span></span>
+<span id="cb76-13"><a href="#cb76-13" aria-hidden="true" tabindex="-1"></a><span class="co">#      COLONIA            COSTANILLA                CUESTA </span></span>
+<span id="cb76-14"><a href="#cb76-14" aria-hidden="true" tabindex="-1"></a><span class="co">#         2788                   180                   207 </span></span>
+<span id="cb76-15"><a href="#cb76-15" aria-hidden="true" tabindex="-1"></a><span class="co">#     EDIFICIO            ESCALINATA ESTACIÓN DE CERCANÍAS </span></span>
+<span id="cb76-16"><a href="#cb76-16" aria-hidden="true" tabindex="-1"></a><span class="co">#            3                     6                     2 </span></span>
+<span id="cb76-17"><a href="#cb76-17" aria-hidden="true" tabindex="-1"></a><span class="co">#      GALERÍA              GLORIETA    GRUPO DE VIVIENDAS </span></span>
+<span id="cb76-18"><a href="#cb76-18" aria-hidden="true" tabindex="-1"></a><span class="co">#           14                   497                     1 </span></span>
+<span id="cb76-19"><a href="#cb76-19" aria-hidden="true" tabindex="-1"></a><span class="co">#        LUGAR                PARQUE            PARTICULAR </span></span>
+<span id="cb76-20"><a href="#cb76-20" aria-hidden="true" tabindex="-1"></a><span class="co">#          892                    32                   174 </span></span>
+<span id="cb76-21"><a href="#cb76-21" aria-hidden="true" tabindex="-1"></a><span class="co">#     PASADIZO                PASAJE                 PASEO </span></span>
+<span id="cb76-22"><a href="#cb76-22" aria-hidden="true" tabindex="-1"></a><span class="co">#           74                  1323                  8773 </span></span>
+<span id="cb76-23"><a href="#cb76-23" aria-hidden="true" tabindex="-1"></a><span class="co">#        PISTA                 PLAZA              PLAZUELA </span></span>
+<span id="cb76-24"><a href="#cb76-24" aria-hidden="true" tabindex="-1"></a><span class="co">#            5                  6397                   142 </span></span>
+<span id="cb76-25"><a href="#cb76-25" aria-hidden="true" tabindex="-1"></a><span class="co">#      POBLADO  POBLADO DE ABSORCIÓN      POBLADO DIRIGIDO </span></span>
+<span id="cb76-26"><a href="#cb76-26" aria-hidden="true" tabindex="-1"></a><span class="co">#           51                    28                   120 </span></span>
+<span id="cb76-27"><a href="#cb76-27" aria-hidden="true" tabindex="-1"></a><span class="co">#     POLÍGONO                PUENTE                 RONDA </span></span>
+<span id="cb76-28"><a href="#cb76-28" aria-hidden="true" tabindex="-1"></a><span class="co">#          422                     3                  1614 </span></span>
+<span id="cb76-29"><a href="#cb76-29" aria-hidden="true" tabindex="-1"></a><span class="co">#  TRANSVERSAL              TRAVESÍA      TRAVESÍA PRIMERA </span></span>
+<span id="cb76-30"><a href="#cb76-30" aria-hidden="true" tabindex="-1"></a><span class="co">#           41                  2293                     5 </span></span>
+<span id="cb76-31"><a href="#cb76-31" aria-hidden="true" tabindex="-1"></a><span class="co"># URBANIZACIÓN                   VÍA </span></span>
+<span id="cb76-32"><a href="#cb76-32" aria-hidden="true" tabindex="-1"></a><span class="co">#         1378                     2 </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="info" class="level2" data-number="7">
@@ -3573,7 +3592,7 @@ lgl  (1): VIA_SQC
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.5.1 (2025-06-13)
 Platform: x86_64-pc-linux-gnu
-Running under: Ubuntu 24.04.2 LTS
+Running under: Ubuntu 24.04.3 LTS
 
 Matrix products: default
 BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.0 
