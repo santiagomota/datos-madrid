@@ -18,3 +18,5 @@ Datos Abiertos del Ayuntamiento de Madrid
 - Exportar datos a parquet y usar duckDB.
 - Abrir una página de Github.
 - Incorporar datos en Kaggle (crear un usuario para el ayuntamiento, con ejemplos).
+
+Las dos primeras son internas y las dos segundas son externas.
