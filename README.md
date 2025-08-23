@@ -20,3 +20,5 @@ Datos Abiertos del Ayuntamiento de Madrid
 - Incorporar datos en Kaggle (crear un usuario para el ayuntamiento, con ejemplos).
 
 Las dos primeras son internas y las dos segundas son externas.
+
+**[madrid_csv_to_parquet.py](/media/enero/Disco3ATA/Varios/R/Archivos/datos_madrid/madrid_csv_to_parquet.py) para convertir todos los csv a parquet**
