@@ -91,12 +91,12 @@ library(spanishoddata)
 
 En este caso, vamos a utilizar un código algo mas extenso para acceder a un fichero zip a partir de una url, bajarlo y descomprimirlo. 
 
-Dentro del [Portal de datos abiertos del ayuntamiento de Madrid](http://datos.madrid.es/portal/site/egob) se puede extraer gran cantidad de información. Bajaremos los datos de [intensidad de tráfico](http://datos.madrid.es/sites/v/index.jsp?vgnextoid=33cb30c367e78410VgnVCM1000000b205a0aRCRD&vgnextchannel=20d612b9ace9f310VgnVCM100000171f5a0aRCRD). Estos datos ocupan unos 700 Mb, así que descargaremos un único mes [abril de 2025](https://datos.madrid.es/egobfiles/MANUAL/208627/06-2025.zip).
+Dentro del [Portal de datos abiertos del ayuntamiento de Madrid](http://datos.madrid.es/portal/site/egob) se puede extraer gran cantidad de información. Bajaremos los datos de [intensidad de tráfico](http://datos.madrid.es/sites/v/index.jsp?vgnextoid=33cb30c367e78410VgnVCM1000000b205a0aRCRD&vgnextchannel=20d612b9ace9f310VgnVCM100000171f5a0aRCRD). Estos datos ocupan unos 700 Mb, así que descargaremos un único mes [agosto de 2025](https://datos.madrid.es/egobfiles/MANUAL/208627/07-2025.zip).
 
 El siguiente bloque de código no se ejecuta para no saturar la web del Ayuntamiento de Madrid, pero se puede modificar fácilmente para obtener otro mes.
 
 ```{r}
-fecha_objetivo <- data.frame(mes = '07', anio = '2025')
+fecha_objetivo <- data.frame(mes = '08', anio = '2025')
 ```
 
 **Hacer que descargue los datos si no están en local**
@@ -105,7 +105,7 @@ fecha_objetivo <- data.frame(mes = '07', anio = '2025')
 #| label: descargar-datos-trafico
 #| eval: false
 
-# Incluimos la url (este fichero corresponde a junio 2025)
+# Incluimos la url (este fichero corresponde a agosto 2025)
 url <- paste0('https://datos.madrid.es/egobfiles/MANUAL/208627/', 
               fecha_objetivo$mes[1], '-', fecha_objetivo$anio[1], '.zip')
 
@@ -134,11 +134,11 @@ fichero
 
 # Vemos el tamaño del fichero
 print(object.size(trafico_mes), units = "Mb")
-# 673.2 Mb
+# 667.3 Mb
 
 # Imprimimos el timestamp
 fs::file_info(fichero)$modification_time
-# [1] "2025-08-08 08:39:15 CEST"
+# [1] "2025-09-04 23:35:33 CEST"
 ```
 
 ::: callout-warning
@@ -177,14 +177,14 @@ trafico_mes <- read.table(unzip(fichero, exdir = tempdir()),
 
 # Vemos el tamaño del fichero
 print(object.size(trafico_mes), units = "Mb")
-# 673.2 Mb
+# 667.3 Mb
 ```
 
 ```{r}
 # Vemos el timestamp
 fs::file_info(paste0(directorio_externo, 'ayuntamientoMadrid/trafico/historico/', 
                   fecha_objetivo$mes[1], '-', fecha_objetivo$anio[1], '.zip'))$modification_time
-# [1] "2025-08-08 08:39:15 CEST"
+# [1] "2025-09-04 23:35:33 CEST"
 ```
 
 
@@ -253,42 +253,42 @@ Porcentaje de tiempo que está un detector de tráfico ocupado (con un vehículo
 ```{r}
 summary(trafico_mes)
 #       id           fecha            tipo_elem           intensidad     
-# Min.   : 1006   Length:13571079    Length:13571079    Min.   :    0.0  
-# 1st Qu.: 4691   Class :character   Class :character   1st Qu.:   50.0  
-# Median : 5974   Mode  :character   Mode  :character   Median :  148.0  
-# Mean   : 6765                                         Mean   :  323.7  
-# 3rd Qu.:10085                                         3rd Qu.:  367.0  
-# Max.   :11435                                         Max.   :28639.0  
+# Min.   : 1006   Length:13451998    Length:13451998    Min.   :    0.0  
+# 1st Qu.: 4692   Class :character   Class :character   1st Qu.:   40.0  
+# Median : 5978   Mode  :character   Mode  :character   Median :  115.0  
+# Mean   : 6768                                         Mean   :  249.1  
+# 3rd Qu.:10085                                         3rd Qu.:  279.0  
+# Max.   :11454                                         Max.   :65334.0  
 #                                                                        
-#   ocupacion          carga             vmed           error          
-# Min.   :  0.00   Min.   :  0.00   Min.   :  0.00   Length:13571079   
-# 1st Qu.:  0.00   1st Qu.:  4.00   1st Qu.:  0.00   Class :character  
-# Median :  2.00   Median : 11.00   Median :  0.00   Mode  :character  
-# Mean   :  4.73   Mean   : 15.64   Mean   :  5.09                     
-# 3rd Qu.:  5.00   3rd Qu.: 22.00   3rd Qu.:  0.00                     
-# Max.   :100.00   Max.   :100.00   Max.   :204.00                     
-#                                   NA's   :19262                      
+#   ocupacion           carga             vmed            error          
+# Min.   :  0.000   Min.   :  0.00   Min.   :  0.000   Length:13451998   
+# 1st Qu.:  0.000   1st Qu.:  3.00   1st Qu.:  0.000   Class :character  
+# Median :  1.000   Median :  8.00   Median :  0.000   Mode  :character  
+# Mean   :  3.544   Mean   : 12.04   Mean   :  5.146                     
+# 3rd Qu.:  4.000   3rd Qu.: 17.00   3rd Qu.:  0.000                     
+# Max.   :100.000   Max.   :100.00   Max.   :206.000                     
+#                                    NA's   :22283                       
 # periodo_integracion
 # Min.   : 1.00      
 # 1st Qu.:15.00      
 # Median :15.00      
-# Mean   :16.36      
+# Mean   :16.05      
 # 3rd Qu.:15.00      
-# Max.   :30.00     
+# Max.   :30.00       
 ```
 
 ```{r}
 str(trafico_mes)
-# 'data.frame':	13571079 obs. of  9 variables:
+# 'data.frame':	13451998 obs. of  9 variables:
 #  $ id                 : int  1006 1006 1006 1006 1006 1006 1006 1006 1006 1006 ...
-#  $ fecha              : chr  "2025-07-01 00:00:00" "2025-07-01 00:15:00" "2025-07-01 00:30:00" "2025-07-01 00:45:00" ...
+#  $ fecha              : chr  "2025-08-08 00:15:00" "2025-08-08 00:30:00" "2025-08-08 00:45:00" "2025-08-08 01:00:00" ...
 #  $ tipo_elem          : chr  "C30" "C30" "C30" "C30" ...
-#  $ intensidad         : int  492 492 396 372 456 252 96 192 192 144 ...
-#  $ ocupacion          : int  2 1 1 1 2 1 1 1 1 0 ...
+#  $ intensidad         : int  40 0 0 0 0 0 0 0 0 0 ...
+#  $ ocupacion          : int  1 0 0 0 0 0 0 0 0 0 ...
 #  $ carga              : int  0 0 0 0 0 0 0 0 0 0 ...
-#  $ vmed               : num  64 69 69 69 63 60 59 75 60 60 ...
+#  $ vmed               : num  5 0 0 0 0 0 0 0 0 0 ...
 #  $ error              : chr  "N" "N" "N" "N" ...
-#  $ periodo_integracion: int  5 5 5 5 5 5 5 5 5 5 ...
+#  $ periodo_integracion: int  4 5 5 5 5 5 5 5 5 5 ...
 ```
 
 ```{r}
