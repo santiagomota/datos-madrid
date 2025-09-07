@@ -2,6 +2,7 @@
 
 Datos Abiertos del Ayuntamiento de Madrid
 
+
 ## Ideas
 
 - Población.
@@ -21,4 +22,12 @@ Datos Abiertos del Ayuntamiento de Madrid
 
 Las dos primeras son internas y las dos segundas son externas.
 
-**[madrid_csv_to_parquet.py](/media/enero/Disco3ATA/Varios/R/Archivos/datos_madrid/madrid_csv_to_parquet.py) para convertir todos los csv a parquet**
+
+## Proyectos de este repo.
+
+SE han incluido ideas en fase WIP y otras mas avanzadas.
+
+El este momento las mas desarrolladas son:
+
+- `Trafico.qmd`: Con un análisis histórico y en tiempo real del tráfico, incluyendo una visualización interactiva.
+- `Callejero.qmd`: Un análisis del último callejero de Madrid.
