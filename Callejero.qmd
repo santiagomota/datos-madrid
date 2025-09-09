@@ -602,7 +602,7 @@ summary(viales_historico)
 
 ```{r}
 max(viales_historico$FECHA_DE_ALTA)
-# [1] "2025-07-24"
+# [1] "2025-08-19"
 ```
 
 
@@ -665,53 +665,53 @@ direcciones_historico$FECHA_DE_BAJA <- as.Date(direcciones_historico$FECHA_DE_BA
 
 ```{r}
 max(direcciones_historico$FECHA_DE_ALTA)
-# [1] "2025-08-14"
+# [1] "2025-09-02"
 ```
 
 ```{r}
 summary(direcciones_historico)
 #    COD_VIA         VIA_SQC            VIA_CLASE        VIA_PAR         
-# Min.   :     127   Mode:logical   CALLE    :314312   Length:375441     
-# 1st Qu.:  141550   NA's:375441    AVENIDA  : 23416   Class :character  
+# Min.   :     127   Mode:logical   CALLE    :314314   Length:375443     
+# 1st Qu.:  141550   NA's:375443    AVENIDA  : 23416   Class :character  
 # Median :  396000                  PASEO    :  8779   Mode  :character  
-# Mean   : 2593388                  PLAZA    :  6397                     
+# Mean   : 2593457                  PLAZA    :  6397                     
 # 3rd Qu.:  634600                  CAMINO   :  4026                     
 # Max.   :31006280                  CARRETERA:  3704                     
 #                                   (Other)  : 14807                     
 #  VIA_NOMBRE        VIA_NOMBRE_ACENTOS    COD_NDP             CLASE_NDP     
-# Length:375441      Length:375441      Min.   :11000001   NUMERO   :364824  
+# Length:375443      Length:375443      Min.   :11000001   NUMERO   :364826  
 # Class :character   Class :character   1st Qu.:11053629   BLOQUE   :  9027  
-# Mode  :character   Mode  :character   Median :11126297   KILÓMETRO:  1240  
-#                                       Mean   :17671709   PARCELA  :    98  
-#                                       3rd Qu.:20171535   CHABOLA  :    85  
-#                                       Max.   :31075250   SANQUI   :    81  
+# Mode  :character   Mode  :character   Median :11126298   KILÓMETRO:  1240  
+#                                       Mean   :17671781   PARCELA  :    98  
+#                                       3rd Qu.:20171540   CHABOLA  :    85  
+#                                       Max.   :31075253   SANQUI   :    81  
 #                                                          (Other)  :    86  
 #     NÚMERO          CALIFICADOR     FECHA_DE_ALTA       
-# Min.   :    1.00   B      : 11721   Min.   :1870-01-01  
+# Min.   :    1.00   B      : 11722   Min.   :1870-01-01  
 # 1st Qu.:    9.00   A      :  7850   1st Qu.:1950-07-14  
 # Median :   21.00   C      :  4140   Median :1973-01-01  
 # Mean   :   83.02   D      :  2855   Mean   :1970-12-09  
 # 3rd Qu.:   48.00   E      :  1817   3rd Qu.:1991-03-21  
-# Max.   :61000.00   (Other): 21599   Max.   :2025-09-02  
-#                    NA's   :325459                       
+# Max.   :61000.00   (Other): 21599   Max.   :2025-09-05  
+#                    NA's   :325460                       
 # FECHA_DE_BAJA                  TIPO_NDP         UTMX_ED        
-# Min.   :197-01-01    PORTAL        :268895   Min.   :      -1  
-# 1st Qu.:1949-09-06   FRENTE FACHADA: 39047   1st Qu.:43756545  
-# Median :1973-03-05   PARCELA       : 29229   Median :44080054  
-# Mean   :1972-07-01   GARAJE        : 15738   Mean   :37362326  
-# 3rd Qu.:1995-05-29   JARDÍN/PARQUE :  3924   3rd Qu.:44389256  
-# Max.   :2025-09-02   (Other)       :  2376   Max.   :45551486  
+# Min.   :197-01-01    PORTAL        :268900   Min.   :      -1  
+# 1st Qu.:1949-09-06   FRENTE FACHADA: 39046   1st Qu.:43756514  
+# Median :1973-03-05   PARCELA       : 29227   Median :44080054  
+# Mean   :1972-07-01   GARAJE        : 15738   Mean   :37361908  
+# 3rd Qu.:1995-05-29   JARDÍN/PARQUE :  3924   3rd Qu.:44389255  
+# Max.   :2025-09-05   (Other)       :  2376   Max.   :45551486  
 # NA's   :214608       NA's          : 16232                     
 #    UTMY_ED            UTMX_ETRS          UTMY_ETRS        
 # Min.   :       -1   Min.   :       0   Min.   :        0  
-# 1st Qu.:446984781   1st Qu.:43747497   1st Qu.:446961488  
-# Median :447385549   Median :44069709   Median :447362746  
-# Mean   :378037903   Mean   :37389676   Mean   :377727727  
-# 3rd Qu.:447830806   3rd Qu.:44379043   3rd Qu.:447808425  
+# 1st Qu.:446984801   1st Qu.:43747501   1st Qu.:446961482  
+# Median :447385545   Median :44069713   Median :447362746  
+# Mean   :378041488   Mean   :37389824   Mean   :377727027  
+# 3rd Qu.:447830800   3rd Qu.:44379045   3rd Qu.:447808426  
 # Max.   :449574161   Max.   :45558493   Max.   :449555404  
 #                                                           
 #   LATITUD            LONGITUD         ANGULO_ROTULACION 
-# Length:375441      Length:375441      Length:375441     
+# Length:375443      Length:375443      Length:375443     
 # Class :character   Class :character   Class :character  
 # Mode  :character   Mode  :character   Mode  :character  
 ```
@@ -738,47 +738,47 @@ direcciones_historico_sf <- direcciones_historico_sf[direcciones_historico_sf$UT
 ```{r}
 summary(direcciones_historico_sf)
 #    COD_VIA         VIA_SQC            VIA_CLASE        VIA_PAR         
-# Min.   :     127   Mode:logical   CALLE    :293874   Length:349186     
-# 1st Qu.:  142700   NA's:349186    AVENIDA  : 21665   Class :character  
+# Min.   :     127   Mode:logical   CALLE    :293876   Length:349188     
+# 1st Qu.:  142700   NA's:349188    AVENIDA  : 21665   Class :character  
 # Median :  398700                  PASEO    :  7730   Mode  :character  
-# Mean   : 2754104                  PLAZA    :  5842                     
+# Mean   : 2754178                  PLAZA    :  5842                     
 # 3rd Qu.:  639950                  CAMINO   :  3512                     
 # Max.   :31006280                  CARRETERA:  3038                     
 #                                   (Other)  : 13525                     
 #  VIA_NOMBRE        VIA_NOMBRE_ACENTOS    COD_NDP             CLASE_NDP     
-# Length:349186      Length:349186      Min.   :11000001   NUMERO   :339227  
+# Length:349188      Length:349188      Min.   :11000001   NUMERO   :339229  
 # Class :character   Class :character   1st Qu.:11050476   BLOQUE   :  8578  
 # Mode  :character   Mode  :character   Median :11119054   KILÓMETRO:  1149  
-#                                       Mean   :17346225   PARCELA  :    98  
-#                                       3rd Qu.:20163523   TORRE    :    41  
-#                                       Max.   :31075250   CHABOLA  :    37  
+#                                       Mean   :17346304   PARCELA  :    98  
+#                                       3rd Qu.:20163526   TORRE    :    41  
+#                                       Max.   :31075253   CHABOLA  :    37  
 #                                                          (Other)  :    56  
 #     NÚMERO          CALIFICADOR     FECHA_DE_ALTA       
-# Min.   :    1.00   B      : 11262   Min.   :1870-01-01  
+# Min.   :    1.00   B      : 11263   Min.   :1870-01-01  
 # 1st Qu.:    9.00   A      :  7579   1st Qu.:1950-07-14  
 # Median :   21.00   C      :  3995   Median :1973-01-17  
 # Mean   :   84.82   D      :  2778   Mean   :1971-02-16  
 # 3rd Qu.:   46.00   E      :  1778   3rd Qu.:1992-07-08  
-# Max.   :61000.00   (Other): 20578   Max.   :2025-09-02  
-#                    NA's   :301216                       
+# Max.   :61000.00   (Other): 20578   Max.   :2025-09-05  
+#                    NA's   :301217                       
 # FECHA_DE_BAJA                  TIPO_NDP         UTMX_ED        
-# Min.   :197-01-01    PORTAL        :263381   Min.   :      -1  
-# 1st Qu.:1948-11-01   FRENTE FACHADA: 38607   1st Qu.:43866967  
-# Median :1969-03-10   PARCELA       : 23698   Median :44108476  
-# Mean   :1970-05-27   GARAJE        : 15715   Mean   :40171568  
-# 3rd Qu.:1996-03-11   JARDÍN/PARQUE :  3887   3rd Qu.:44420788  
-# Max.   :2025-09-02   (Other)       :  1093   Max.   :45551486  
+# Min.   :197-01-01    PORTAL        :263386   Min.   :      -1  
+# 1st Qu.:1948-11-01   FRENTE FACHADA: 38606   1st Qu.:43866957  
+# Median :1969-03-10   PARCELA       : 23696   Median :44108474  
+# Mean   :1970-05-28   GARAJE        : 15715   Mean   :40171102  
+# 3rd Qu.:1996-03-11   JARDÍN/PARQUE :  3887   3rd Qu.:44420787  
+# Max.   :2025-09-05   (Other)       :  1093   Max.   :45551486  
 # NA's   :214608       NA's          :  2805                     
 #    UTMY_ED            UTMX_ETRS          UTMY_ETRS        
 # Min.   :       -1   Min.   :  429110   Min.   :  4464414  
-# 1st Qu.:447061896   1st Qu.:43858321   1st Qu.:447039766  
-# Median :447483021   Median :44098284   Median :447458060  
-# Mean   :406462254   Mean   :40200974   Mean   :406128755  
-# 3rd Qu.:447860651   3rd Qu.:44410622   3rd Qu.:447837975  
+# 1st Qu.:447061912   1st Qu.:43858334   1st Qu.:447039762  
+# Median :447483012   Median :44098290   Median :447458060  
+# Mean   :406465945   Mean   :40201118   Mean   :406127840  
+# 3rd Qu.:447860643   3rd Qu.:44410632   3rd Qu.:447837975  
 # Max.   :449574161   Max.   :45558493   Max.   :449555404  
 #                                                           
 #   LATITUD            LONGITUD         ANGULO_ROTULACION 
-# Length:349186      Length:349186      Length:349186     
+# Length:349188      Length:349188      Length:349188     
 # Class :character   Class :character   Class :character  
 # Mode  :character   Mode  :character   Mode  :character  
 #                                                         
@@ -786,7 +786,7 @@ summary(direcciones_historico_sf)
 #                                                         
 #                                                         
 #          geometry     
-# POINT        :349186  
+# POINT        :349188  
 # epsg:4326    :     0  
 # +proj=long...:     0  
 ```
@@ -798,7 +798,7 @@ table(direcciones_historico$VIA_CLASE, useNA = 'ifany')
 #      AUTOVÍA               AVENIDA                BARRIO 
 #          665                 23416                    44 
 #      BULEVAR                 CALLE              CALLEJÓN 
-#          217                314312                   385 
+#          217                314314                   385 
 #       CAMINO           CAMINO ALTO           CAMINO BAJO 
 #         4026                     3                     5 
 # CAMINO VIEJO              CAMPILLO                CAÑADA 
