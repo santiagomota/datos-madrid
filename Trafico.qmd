@@ -534,9 +534,6 @@ diag(tabla_id_cod) <- 0
 colSums(tabla_id_cod)
 ```
 
-
-
-
 ```{r}
 puntos_medida$activo <- FALSE
 puntos_medida$activo[puntos_medida$fichero == "2025-05"] <- TRUE
@@ -584,15 +581,10 @@ length(unique(puntos_medida$cod_cent))
 # [1] 5215
 ```
 
-
-
 ```{r}
 saveRDS(puntos_medida, paste0(directorio_externo, 
                               'ayuntamientoMadrid/trafico/puntos_medida/puntos_medida.rds'))
 ```
-
-
-
 
 Lo hacemos por `id` pero se podría hacer por `cod_cent`. El problema es que este último no aparece en el fichero de intensidad.
 
@@ -629,17 +621,11 @@ summary(agrupado)
 # Max.   :11435   Max.   :2025-05-01   Max.   :2025-05-01  
 ```
 
-
 ```{r}
 dim(puntos_medida)
 puntos_medida <- left_join(puntos_medida, agrupado)
 dim(puntos_medida)
 ```
-
-
-
-
-
 
 ```{r}
 #| eval: false
@@ -729,7 +715,6 @@ summary(puntos_medida_no_activo)
 puntos_medida <- rbind(puntos_medida_ultimo, puntos_medida_no_activo)
 ```
 
-
 ```{r}
 puntos_medida$fichero   <- as.factor(puntos_medida$fichero)
 puntos_medida$tipo_elem <- as.factor(puntos_medida$tipo_elem)
@@ -772,8 +757,6 @@ summary(puntos_medida)
 # Max.   :2025-05-01  
 ```
 
-
-
 ```{r}
 #| eval: false
 
@@ -793,10 +776,6 @@ puntos_medida_final <- puntos_medida_completo %>%
 print(head(puntos_medida_final))
 ```
 
-
-
-
-
 ```{r}
 #| eval: true
 
@@ -810,7 +789,6 @@ saveRDS(puntos_medida, paste0(directorio_externo,
 puntos_medida <- readRDS(paste0(directorio_externo, 
                                 'ayuntamientoMadrid/trafico/puntos_medida/puntos_medida.rds'))
 ```
-
 
 ```{r}
 #| eval: false
@@ -831,7 +809,6 @@ sum(puntos_por_igualdad)
 n_distintos <- nrow(puntos_medida) - puntos_por_igualdad
 print(n_distintos)
 ```
-
 
 ```{r}
 #| eval: true
@@ -880,29 +857,6 @@ puntos_puntos_distintos <- puntos_medida %>%
 print(length(puntos_puntos_distintos))
 # [1] 5170
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ```{r}
 #| label: identificar-puntos-medida
@@ -955,8 +909,6 @@ plot(puntos_medida_ultimo,  max.plot = 1)
 
 plot(puntos_medida_no_activo,  max.plot = 1)
 ```
-
-
 
 Comprobamos el sistema de coordenadas de los puntos de medida.
 
@@ -1422,10 +1374,7 @@ print(dbGetQuery(con_duck, "SELECT COUNT(*) AS filas FROM trafico_mes"))
 ```
 
 
-
-
 ## Info
-
 
 Acabamos con la información de la sesión con `sessionInfo()`. Esto lo incluimos para en caso de error facilitar el seguimiento del mismo.
 
@@ -1433,27 +1382,6 @@ Acabamos con la información de la sesión con `sessionInfo()`. Esto lo incluimo
 sessionInfo()
 ```
 
-Los siguientes bloques no los ejecuto porque contienen información del sistema que podría ser algo sensible.
-
-```{r}
-#| eval: false
-
-Sys.getenv()
-```
-
-```{r}
-#| eval: false
-
-Sys.info()
-```
-
-```{r}
-#| eval: false
-
-benchmarkme::get_sys_details()
-```
-
-Estas funciones nos permite, por ejemplo, guardar la versíón de R en una variable. 
 
 ```{r}
 version_r <- sessionInfo()$R.version$version.string
@@ -1461,91 +1389,9 @@ version_r
 ```
 
 
-
-## Links
-
-- [Libro Advanced R](https://adv-r.hadley.nz/index.html)
-- [Open data, libros y cursos (mio)](https://github.com/santiagomota/Open_Data)
-- [Super Fast Crash Course in R (for developers)](https://machinelearningmastery.com/r-crash-course-for-developers/)
-- [Ejemplo con Leaflet](https://github.com/walkerke/teaching-with-datavis/blob/master/wdi-leaflet/wdi_leaflet.R)
-- [Visual Vocabulary](https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary)\
-- [Datavizcatalogue](https://datavizcatalogue.com)\
-- [Data to viz](https://www.data-to-viz.com)
-- [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)
-- [Hands-On Data Visualization](https://handsondataviz.org/)
-- [Introduction to Probability for Data Science](https://probability4datascience.com/)
-- [Common Statistical Tests in R - Part I](https://martinctc.github.io/blog/common-statistical-tests-in-r-part-i/)
-- [Introducción a la Estadística para Científicos de Datos con R](https://analisisydecision.es/estadistica-data-scientist/)
-- [Learning Statistics with R](https://learningstatisticswithr.com/)
-- [Data Cleaning for Data Sharing Using R](https://cghlewis.github.io/ncme-data-cleaning-workshop/slides.html)
-- [R Highcharts: How to Make Animated and Interactive Data Visualizations in R](https://www.appsilon.com/post/r-highcharts)
-- [Tidymodels Machine Learning: Diabetes Classification](https://boiled-data.github.io/ClassificationDiabetes.html#)
-- [A Gentle Introduction to Tidy Statistics in R](https://posit.co/resources/videos/a-gentle-introduction-to-tidy-statistics-in-r/)
-- [Posit Recipes. Some tasty R code snippets](https://posit.cloud/learn/recipes)
-- [Mastering R presentations](https://codingclubuc3m.rbind.io/post/2019-09-24/)
-- [htmlwidgets.qmd](https://github.com/quarto-dev/quarto-web/blob/main/docs/interactive/widgets/htmlwidgets.qmd)
-- [R for the Rest of Us: A Statistics-Free Introduction](https://book.rfortherestofus.com/)
-- [Visualizing {dplyr}’s mutate(), summarize(), group_by(), and ungroup() with animations](https://www.andrewheiss.com/blog/2024/04/04/group_by-summarize-ungroup-animations/)
-- [What They Forgot to Teach You About R](https://rstats.wtf/)
-- [Tidyverse Skills for Data Science](https://jhudatascience.org/tidyversecourse/)
-- [Modern Data Visualization with R](https://rkabacoff.github.io/datavis/)
-- [Analysis of ecological data](https://github.com/Ludwigm6/analysis_of_ecological_data)
-- [Taxi and Limousine Commission (TLC)](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
-- [Machine Learning con R y tidymodels](https://www.cienciadedatos.net/documentos/59_machine_learning_con_r_y_tidymodels#)
-- [The 6 Most Fundamental Functions for Data Cleaning with R](https://albert-rapp.de/posts/24_data_cleaning_fundamentals/24_data_cleaning_fundamentals.html)
-- [UC Irvine 2024 Hackathon Workshop: Arrow & DuckDB](https://github.com/javorraca/UCI-2024-Hackathon-Workshop-Arrow-DuckDB/)
-- [Quarto](https://quarto.org/docs/get-started/hello/rstudio.html)
-- Una presentación sobre mapas en Quarto: [DataViz: Técnicas de optimización para visualización en mapas](https://github.com/hhkaos/spatial-dataviz-optimization-techniques) y el [vídeo](https://www.youtube.com/watch?v=3uhMCt1HS98).
-- [Quarto presentations with Python](https://www.meyerperin.com/using-quarto/#powerpoint-templates)
-- [Get started with Quarto - 05 Presentations](https://rstudio-conf-2022.github.io/get-started-quarto/materials/05-presentations.html#/presentations)
-- [quarto_sample.qmd](https://github.com/Shuntaro-Ono/quarto/blob/main/)
-- [Awesome Quarto](https://github.com/mcanouil/awesome-quarto#presentations-formats)
-- [Quarto for the Python user](https://www.jumpingrivers.com/blog/quarto-for-python-users/)
-- [Welcome to Shiny](https://shiny.posit.co/r/getstarted/shiny-basics/lesson1/index.html)
-- [Mastering Shiny](https://mastering-shiny.org/) muy recomendable para cuando sepas que quieres meter shiny en tu día a día.
-- [Cómo alojar en un servidor](https://posit.co/products/open-source/shinyserver/) tu app para que otros accedan.
-- [Data Visualization with R](https://datavizs23.classes.andrewheiss.com/example/)
-- [Introduction to MySQL with R](https://programminghistorian.org/en/lessons/getting-started-with-mysql-using-r)
-- [Creating R tutorial worksheets (with and without solutions) using Quarto](https://nrennie.rbind.io/blog/r-tutorial-worksheets-quarto/)
-- [Paquete tidyBdE](https://github.com/dieghernan/tidyBdE)
-- [H2O Database-like ops benchmark](https://h2oai.github.io/db-benchmark/)
-- [Uso de memoria en duckDB](https://duckdb.org/2024/03/29/external-aggregation.html)
-- [Study finds 94% of business spreadsheets have critical errors](https://phys.org/news/2024-08-business-spreadsheets-critical-errors.html)
-- [Mastering Date and Time Data in R with lubridate](https://mfatihtuzen.netlify.app/posts/2024-09-30_lubridate/)
-- [How to work with remote Parquet files with the duckdb R package?](https://francoismichonneau.net/2023/06/duckdb-r-remote-data/)
-- [Bounding Box Tools](https://boundingbox.klokantech.com/)
-- [R Universe search](https://r-universe.dev/search)
-- [R in Visual Studio Code](https://code.visualstudio.com/docs/languages/r)
-- [Elmer - Gitub](https://github.com/hadley/elmer/)
-- [The Ultimate Guide to Creating Lists in R: From Basics to Advanced Examples](https://www.spsanderson.com/steveondata/posts/2024-10-29/)
-- [always_plot_data.R](https://gist.github.com/battenr/93f02acf0044a546073639c8aab22e80#file-always_plot_data-r)
-- [Gemini 1.5 Flash Better Than RAG? Let's Check It Out In R!](https://www.kenkoonwong.com/blog/gemini/)
-- [Usando el paquete fs](https://albert-rapp.de/posts/36_fs_package/)
-
-
 ## Licencias de uso
 
-En caso de usar datos externos, **siempre** se debe revisar la licencia de uso de los mismos. En caso de ser internos es igual o de importante o mas. La UE está siendo cada vez mas dura con el mas uso de los datos. 
-
-- [Multas por GDPR](https://www.xataka.com/pro/15-multas-cuantiosas-que-se-han-puesto-gdpr-ahora)
-- [Elegir una licencia](https://choosealicense.com/)
-- [Licencias CC](https://creativecommons.org/licenses/?lang=en)
-- [Elegir una licencia CC interactivamente](https://chooser-beta.creativecommons.org/)
-
-Licencias del material utilizado en esta clase:
-
 - [Ayuntamiento de Madrid](https://datos.madrid.es/portal/site/egob/menuitem.400a817358ce98c34e937436a8a409a0/?vgnextoid=b4c412b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextchannel=b4c412b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default)
-- [Guardia Civil](https://www.guardiacivil.es/es/institucional/directorio/)
-- [Aviso legal INE](https://www.ine.es/ss/Satellite?L=0&c=Page&cid=1254735849170&p=1254735849170&pagename=Ayuda%2FINELayout)
-- [Office for National Statistics UK](https://www.ons.gov.uk/methodology/geography/licences)
-- [New York City - Taxi and Limousine Commission (TLC)](https://www.nyc.gov/home/terms-of-use.page)
-- [Creating R tutorial worksheets (with and without solutions) using Quarto](https://nrennie.rbind.io/blog/r-tutorial-worksheets-quarto/)
-
-
-## Datos personales
-
-- [Microsoft Presidio - Data Protection and De-identification SDK](https://microsoft.github.io/presidio/)
-
 
 
 Para [instalar FontAwesome](https://github.com/quarto-ext/fontawesome#readme), abro un terminal en el directorio del proyecto y escribo:
