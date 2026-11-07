@@ -1,44 +1,30 @@
 ---
-title:    "Análisis DANA 2024"
-author:   "by [Santiago Mota](https://www.linkedin.com/in/santiagomota/)"
-mail:     "santiago_mota@yahoo.es"
+title: "Análisis DANA 2024"
+author: "Santiago Mota"
+mail: "santiago_mota@yahoo.es"
 linkedin: "santiagomota"
-twitter:  "mota_santiago"
-github:   "santiagomota"
-date:     "`r Sys.Date()`"
-image:    figs/logo_madrid.png 
+twitter: "mota_santiago"
+github: "santiagomota"
+date: today
+image: "figs/logo_madrid.png"
 license:
   type: "MIT"
-  text: "Este proyecto está licenciado bajo la Licencia MIT. Puedes ver los detalles en el siguiente enlace https://opensource.org/licenses/MIT"
-  url:  "https://opensource.org/licenses/MIT"
+  text: "Este proyecto está licenciado bajo la Licencia MIT. https://opensource.org/licenses/MIT"
+  url: "https://opensource.org/licenses/MIT"
 urlcolor: blue
-always_allow_html: true
 format:
   html:
     toc: true
     toc-location: left
     toc-depth: 6
     theme:
-        light: cosmo
-        dark: solar
-        # light: styles/bde-custom.scss
-    # css: styles/custom.css
+      light: cosmo
+      dark: solar
     number-sections: true
-    # page-layout: full # article full
-    # max-width: 3000px
-    title-block-banner: true
     code-fold: false
     code-copy: true
-    code-summary: "" # Show the code"
-    # code-tools: true
-    # grid:
-    #     body-width: 2600px
-    #     sidebar-width: 200px
-    #     margin-width: 200px
+    embed-resources: true
     include-after-body: footer_V2.html
-    # include-before-body: auth0-protect.html
-    # include-in-header: github-corner.html
-    self-contained: true
   pdf:
     toc: true
     number-sections: true
@@ -51,17 +37,9 @@ format:
     toc: true
     number-sections: true
     colorlinks: true
-  revealjs:
-    # theme: [dark, custom.scss]
-    slide-number: c/t
-    show-slide-number: all
-    # logo: styles/logo_web.png
-    footer: "Premios a la reutilización Ayuntamiento de Madrid"
-    preview-links: auto
-    chalkboard: true
-  pptx:
-    reference-doc: template.pptx    
-    incremental:  true
+execute:
+  warning: false
+  message: false
 ---
 
 
@@ -86,10 +64,39 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```{r}
 #| eval: false
 
-if (!require("pak")) install.packages("pak")
-options(repos = c(rOpenSpain = "https://ropenspain.r-universe.dev", CRAN = "https://cloud.r-project.org"))
-packages <- c("sf", "tidyverse", "spanishoddata", "mapSpain", "ggimage", "rostemplate", "ggtext", "resmush", "svglite", "flowmapblue", "flowmapper", "patchwork", "arcpullr", "fs", "ggnewscale", "tabulapdf", "rJavaEnv", "e-kotov/cartogram@cdec44b", "Cairo", "RcppSimdJson", "mapview",  "htmlwidgets", "base64enc", "mapgl", "ineAtlas")
-pak::pkg_install(packages, upgrade = TRUE, ask = FALSE)
+# if (!require("pak")) install.packages("pak")
+# options(repos = c(rOpenSpain = "https://ropenspain.r-universe.dev", CRAN = "https://cloud.r-project.org"))
+# packages <- c("sf", "tidyverse", "spanishoddata", "mapSpain", "ggimage", "rostemplate", "ggtext", "resmush", "svglite", "flowmapblue", "flowmapper", "patchwork", "arcpullr", "fs", "ggnewscale", "tabulapdf", "rJavaEnv", "e-kotov/cartogram@cdec44b", "Cairo", "RcppSimdJson", "mapview",  "htmlwidgets", "base64enc", "mapgl", "ineAtlas")
+# pak::pkg_install(packages, upgrade = TRUE, ask = FALSE)
+
+# Carga limpia y automática de paquetes
+# if (!require("pacman")) install.packages("pacman")
+# pacman::p_load(
+#   sf, tidyverse, spanishoddata, mapSpain, ggimage, rostemplate, 
+#   ggtext, resmush, svglite, flowmapblue, flowmapper, patchwork, 
+#   arcpullr, fs, ggnewscale, tabulapdf, rJavaEnv, cartogram, 
+#   Cairo, RcppSimdJson, mapview, htmlwidgets, base64enc, mapgl, ineAtlas
+# )
+
+# 1. Instalar BiocManager si no está disponible (para resolver dependencias de ggimage)
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
+
+# 2. Instalar paquetes desde GitHub / R-universe que no están en CRAN
+if (!requireNamespace("rostemplate", quietly = TRUE)) {
+  install.packages("rostemplate", repos = c("https://ropenspain.r-universe.dev", "https://cloud.r-project.org"))
+}
+
+# 3. Carga e instalación automática del resto con pacman
+if (!require("pacman")) install.packages("pacman")
+
+pacman::p_load(
+  sf, tidyverse, spanishoddata, mapSpain, ggimage, rostemplate, 
+  ggtext, resmush, svglite, flowmapblue, flowmapper, patchwork, 
+  arcpullr, fs, ggnewscale, tabulapdf, rJavaEnv, cartogram, 
+  Cairo, RcppSimdJson, mapview, htmlwidgets, base64enc, mapgl, ineAtlas, here
+)
 
 extract_pkg_name <- function(pkg) {
   if (grepl("/", pkg) && grepl("@", pkg)) {
@@ -109,6 +116,8 @@ suppressPackageStartupMessages(invisible(lapply(clean_packages, library, charact
 ```
 
 ```{r}
+#| eval: true
+
 clean_packages <- c("sf", "tidyverse", "spanishoddata", "mapSpain", "ggimage", "rostemplate", "ggtext", "resmush", "svglite", "flowmapblue", "flowmapper", "patchwork", "arcpullr", "fs", "ggnewscale", "tabulapdf", "rJavaEnv",  "cartogram", "Cairo", "RcppSimdJson", "mapview",  "htmlwidgets", "base64enc", "mapgl", "ineAtlas")
 lapply(clean_packages, library, character.only = TRUE)
 ```
@@ -117,16 +126,26 @@ lapply(clean_packages, library, character.only = TRUE)
 # Datos Origen Destino
 
 
-## Municipios3
+## municipios2026
 
 **Explicar de donde sale esto**
 
 ```{r}
-municipios3 <- readRDS("/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/municipios3.rds")
+municipios2026 <- readRDS("/media/enero/Disco3ATA/Varios/R/Archivos/GIS/data/municipios2026.rds")
+
+# Uso del paquete `here` para garantizar reproducibilidad en cualquier equipo
+# ruta_municipios <- here("data", "GIS", "municipios2026.rds")
+# 
+# if (file.exists(ruta_municipios)) {
+#   municipios2026 <- readRDS(ruta_municipios)
+#   glimpse(municipios2026)
+# } else {
+#   warning("El archivo municipios2026.rds no se encuentra en la ruta especificada.")
+# }
 ```
 
 ```{r}
-glimpse(municipios3)
+glimpse(municipios2026)
 ```
 
 The columns for v2 (2022 onwards) data include:
@@ -296,7 +315,13 @@ agrupaciones_municipios <- flujos_municipios$municipalities
 Incluimos una variable, `numero_municipios` con el número de municipios de esa agrupación.
 
 ```{r}
-flujos_municipios$numero_municipios <- sapply(agrupaciones_municipios, function(x) length(unlist(strsplit(x, ";"))))
+# flujos_municipios$numero_municipios <- sapply(agrupaciones_municipios, function(x) length(unlist(strsplit(x, ";"))))
+
+flujos_municipios <- flujos_municipios %>%
+  mutate(
+    agregado = nchar(substr(id, 6, 8)) > 0,
+    numero_municipios = str_count(municipalities, ";") + 1
+  )
 ```
 
 Vemos los elementos en cada provincia.
@@ -306,13 +331,13 @@ table(flujos_municipios$codigo_provincia, useNA = 'ifany')
 ```
 
 ```{r}
-table(municipios3$codigo_provincia, useNA = 'ifany')
+table(municipios2026$codigo_provincia, useNA = 'ifany')
 ```
 
 ```{r}
 #| eval: false
 
-table(municipios3$codigo_provincia, flujos_municipios$codigo_provincia)
+table(municipios2026$codigo_provincia, flujos_municipios$codigo_provincia)
 ```
 
 El total de población en `flujos_municipios`.
@@ -321,10 +346,10 @@ El total de población en `flujos_municipios`.
 sum(flujos_municipios$population, na.rm = TRUE)
 ```
 
-El total de población en `municipios3`.
+El total de población en `municipios2026`.
 
 ```{r}
-sum(municipios3$total_población, na.rm = TRUE)
+sum(municipios2026$total_población, na.rm = TRUE)
 ```
 
 Cuantos municipios hay en `flujos_municipios`:
@@ -333,7 +358,7 @@ Cuantos municipios hay en `flujos_municipios`:
 sum(flujos_municipios$numero_municipios, na.rm = TRUE)
 ```
 
-Hay algunos que no están en `municipios3`.
+Hay algunos que no están en `municipios2026`.
 
 ```{r}
 listado_municipios <- unique(trimws(unlist(strsplit(agrupaciones_municipios, ";"))))
@@ -1568,13 +1593,27 @@ summary(valencia_fua_coords)
 
 
 ```{r}
+# origen_destino_distritos_intervalo_valencia <- origen_destino_distritos_intervalo |>
+#   filter(id_origin %in% valencia_fua_coords$id | id_destination %in% valencia_fua_coords$id) |> 
+#   # filter(date == as.Date("2024-10-29")) |> 
+#   mutate(time = as.POSIXct(paste0(date, "T", time_slot, ":00:00"))) |>
+#   group_by(origin = id_origin, dest = id_destination, time, date, time_slot) |>
+#   summarise(count = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
+#   collect() |> 
+#   as_tibble()
+
 origen_destino_distritos_intervalo_valencia <- origen_destino_distritos_intervalo |>
   filter(id_origin %in% valencia_fua_coords$id | id_destination %in% valencia_fua_coords$id) |> 
-  # filter(date == as.Date("2024-10-29")) |> 
-  mutate(time = as.POSIXct(paste0(date, "T", time_slot, ":00:00"))) |>
-  group_by(origin = id_origin, dest = id_destination, time, date, time_slot) |>
+  # Mapeamos 'hour' a la variable 'time_slot'
+  group_by(origin = id_origin, dest = id_destination, date, time_slot = hour) |> 
   summarise(count = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
+  # Descargamos los datos desde DuckDB a R
   collect() |> 
+  # Construimos el objeto POSIXct de tiempo en R
+  mutate(
+    time_slot = as.integer(as.character(time_slot)),
+    time = as.POSIXct(paste0(date, " ", sprintf("%02d", time_slot), ":00:00"))
+  ) |> 
   as_tibble()
 ```
 
@@ -1760,7 +1799,35 @@ glimpse(flujos_distritos_grafico)
 ```
 
 ```{r}
-flowmap_28 <- base_plot |> add_flowmap(od = flowmapper_od |> filter(date == "2024-10-28"), nodes = flowmapper_nodes, node_radius_factor = 0.5, edge_width_factor = 0.5, arrow_point_angle = 35) + theme_void() + labs(title = "13:00 - 14:00 28 Oct 2024")+ theme(legend.position = c(0.9, 0.5), plot.title = element_text(family = "Roboto")) + scale_fill_viridis_c(limits = c(0,500), name = "Viajes")
+# flowmap_28 <- base_plot |> add_flowmap(od = flowmapper_od |> filter(date == "2024-10-28"), nodes = flowmapper_nodes, node_radius_factor = 0.5, edge_width_factor = 0.5, arrow_point_angle = 35) + theme_void() + labs(title = "13:00 - 14:00 28 Oct 2024")+ theme(legend.position = c(0.9, 0.5), plot.title = element_text(family = "Roboto")) + scale_fill_viridis_c(limits = c(0,500), name = "Viajes")
+
+# Definir los nodos según la estructura de flowmapper
+flowmapper_nodes <- valencia_fua_coords |> 
+  select(-name) |> 
+  rename(x = lon, y = lat, name = id)
+
+# Definir la tabla OD
+flowmapper_od_28 <- origen_destino_46186 |>
+  filter(time_slot == 13 & date == "2024-10-28") |> 
+  filter(origin %in% flowmapper_nodes$name & dest %in% flowmapper_nodes$name) |>
+  rename(o = origin, d = dest, value = count)
+
+# Construir la capa agregando base_plot como primer argumento posicional
+flowmap_28 <- flowmapper::add_flowmap(
+  base_plot,
+  od = flowmapper_od_28,
+  nodes = flowmapper_nodes,
+  node_radius_factor = 0.5,
+  edge_width_factor = 0.5,
+  arrow_point_angle = 35
+) + 
+  theme_void() + 
+  labs(title = "13:00 - 14:00 28 Oct 2024") + 
+  theme(
+    legend.position = c(0.9, 0.5), 
+    plot.title = element_text(family = "Roboto")
+  ) + 
+  scale_fill_viridis_c(limits = c(0, 500), name = "Viajes")
 ```
 
 ```{r}
@@ -1775,12 +1842,37 @@ area_afectada$area_type <- "Impacted Area"
 ```
   
 ```{r}
-flowmap_30 <- ( base_plot +
-  geom_sf(data = area_afectada, aes(fill = area_type), alpha = 0.3) +
-  coord_sf(xlim = c(-0.7, -0.2), ylim = c(39.3, 39.6)) +
-  scale_fill_manual(values = c("Impacted Area" = "pink"), name = "", labels = "Delimitación\nCartográfica\nde la DANA") + new_scale_fill() )|>
-  add_flowmap(od = flowmapper_od |> filter(date == "2024-10-30"), nodes = flowmapper_nodes, node_radius_factor = 0.5, edge_width_factor = 0.5, arrow_point_angle = 35) + theme_void() + labs(title = "13:00 - 14:00 30 Oct 2024") + theme(legend.position = c(0.9, 0.5), plot.title = element_text(family = "Roboto")) + scale_fill_viridis_c(limits = c(0,500), guide = 'none')
+# flowmap_30 <- ( base_plot +
+#   geom_sf(data = area_afectada, aes(fill = area_type), alpha = 0.3) +
+#   coord_sf(xlim = c(-0.7, -0.2), ylim = c(39.3, 39.6)) +
+#   scale_fill_manual(values = c("Impacted Area" = "pink"), name = "", labels = "Delimitación\nCartográfica\nde la DANA") + new_scale_fill() )|>
+#   add_flowmap(od = flowmapper_od |> filter(date == "2024-10-30"), nodes = flowmapper_nodes, node_radius_factor = 0.5, edge_width_factor = 0.5, arrow_point_angle = 35) + theme_void() + labs(title = "13:00 - 14:00 30 Oct 2024") + theme(legend.position = c(0.9, 0.5), plot.title = element_text(family = "Roboto")) + scale_fill_viridis_c(limits = c(0,500), guide = 'none')
 
+area_afectada$area_type <- "Impacted Area"
+
+flowmap_30 <- flowmapper::add_flowmap(
+  base_plot +
+    geom_sf(data = area_afectada, aes(fill = area_type), alpha = 0.3) +
+    coord_sf(xlim = c(-0.7, -0.2), ylim = c(39.3, 39.6)) +
+    scale_fill_manual(
+      values = c("Impacted Area" = "pink"), 
+      name = "", 
+      labels = "Delimitación\nCartográfica\nde la DANA"
+    ) + 
+    new_scale_fill(),
+  od = flowmapper_od |> filter(date == "2024-10-30"), 
+  nodes = flowmapper_nodes, 
+  node_radius_factor = 0.5, 
+  edge_width_factor = 0.5, 
+  arrow_point_angle = 35
+) + 
+  theme_void() + 
+  labs(title = "13:00 - 14:00 30 Oct 2024") + 
+  theme(
+    legend.position = c(0.9, 0.5), 
+    plot.title = element_text(family = "Roboto")
+  ) + 
+  scale_fill_viridis_c(limits = c(0, 500), guide = 'none')
 ```
 
 ```{r}
