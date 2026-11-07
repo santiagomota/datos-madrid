@@ -206,6 +206,46 @@ summary(direcciones_vigentes)
 # Mean   :405817558                                         Mean   :180.84   
 # 3rd Qu.:447851887                                         3rd Qu.:317.67   
 # Max.   :449555404                                         Max.   :360.00   
+
+#    COD_VIA           VIA_CLASE           VIA_PAR           VIA_NOMBRE    
+# Min.   :     127   CALLE  :184167   Length   :214291   Length   :214291  
+# 1st Qu.:  122450   AVENIDA: 14953   N.unique :     7   N.unique :  8265  
+# Median :  394800   PASEO  :  4302   N.blank  :     0   N.blank  :     0  
+# Mean   : 2955800   PLAZA  :  3626   Min.nchar:     2   Min.nchar:     1  
+# 3rd Qu.:  641600   CAMINO :  1828   Max.nchar:     6   Max.nchar:    45  
+# Max.   :31006368   RONDA  :  1269   NAs      :  3543                     
+#                    (Other):  4146                                        
+# VIA_NOMBRE_ACENTOS     CLASE_APP          NUMERO          CALIFICADOR    
+# Length   :214291   KILÓMETRO:   593   Min.   :    0.00   B      :  9507  
+# N.unique :  8266   NUMERO   :213698   1st Qu.:    8.00   A      :  6239  
+# N.blank  :     0                      Median :   19.00   C      :  3260  
+# Min.nchar:     1                      Mean   :   80.88   D      :  2226  
+# Max.nchar:    45                      3rd Qu.:   43.00   E      :  1468  
+#                                       Max.   :61000.00   (Other):  6848  
+#                                                          NAs    :184743  
+#           TIPO_NDP         COD_NDP            DISTRITO         BARRIO     
+# FRENTE FACHADA: 25629   Min.   :11000001   Min.   : 1.00   Min.   :1.000  
+# GARAJE        : 12443   1st Qu.:11062519   1st Qu.: 8.00   1st Qu.:2.000  
+# JARDÍN/PARQUE :  3097   Median :11130822   Median :11.00   Median :4.000  
+# PARCELA       : 12815   Mean   :17811798   Mean   :11.38   Mean   :3.725  
+# PORTAL        :160307   3rd Qu.:20176362   3rd Qu.:16.00   3rd Qu.:5.000  
+#                         Max.   :31077403   Max.   :21.00   Max.   :9.000  
+#                                                                           
+#   COD_POSTAL       UTMX_ED            UTMY_ED            UTMX_ETRS       
+# Min.   :28001   Min.   :      -1   Min.   :       -1   Min.   :  429110  
+# 1st Qu.:28019   1st Qu.:43835326   1st Qu.:447059673   1st Qu.:43825580  
+# Median :28030   Median :44126762   Median :447427345   Median :44116756  
+# Mean   :28030   Mean   :40194039   Mean   :406277111   Mean   :40195346  
+# 3rd Qu.:28042   3rd Qu.:44485982   3rd Qu.:447873515   3rd Qu.:44475952  
+# Max.   :28925   Max.   :45546931   Max.   :449956202   Max.   :45535983  
+#                                                                          
+#   UTMY_ETRS              LATITUD            LONGITUD      ANGULO_ROTULACION
+# Min.   :  4464414   Length   :214291   Length   :214291   Min.   :  0.00   
+# 1st Qu.:447037552   N.unique : 57330   N.unique : 71536   1st Qu.: 45.27   
+# Median :447402921   N.blank  :     0   N.blank  :     0   Median :156.87   
+# Mean   :405814976   Min.nchar:    11   Min.nchar:    10   Mean   :180.98   
+# 3rd Qu.:447851363   Max.nchar:    15   Max.nchar:    14   3rd Qu.:317.76   
+# Max.   :449935458                                         Max.   :360.00   
 ```
 
 ```{r}
@@ -275,6 +315,51 @@ summary(direcciones_vigentes_sf)
 # POINT        :213616  
 # epsg:4326    :     0  
 # +proj=long...:     0  
+
+#    COD_VIA           VIA_CLASE           VIA_PAR           VIA_NOMBRE    
+# Min.   :     127   CALLE  :184167   Length   :214291   Length   :214291  
+# 1st Qu.:  122450   AVENIDA: 14953   N.unique :     7   N.unique :  8265  
+# Median :  394800   PASEO  :  4302   N.blank  :     0   N.blank  :     0  
+# Mean   : 2955800   PLAZA  :  3626   Min.nchar:     2   Min.nchar:     1  
+# 3rd Qu.:  641600   CAMINO :  1828   Max.nchar:     6   Max.nchar:    45  
+# Max.   :31006368   RONDA  :  1269   NAs      :  3543                     
+#                    (Other):  4146                                        
+# VIA_NOMBRE_ACENTOS     CLASE_APP          NUMERO          CALIFICADOR    
+# Length   :214291   KILÓMETRO:   593   Min.   :    0.00   B      :  9507  
+# N.unique :  8266   NUMERO   :213698   1st Qu.:    8.00   A      :  6239  
+# N.blank  :     0                      Median :   19.00   C      :  3260  
+# Min.nchar:     1                      Mean   :   80.88   D      :  2226  
+# Max.nchar:    45                      3rd Qu.:   43.00   E      :  1468  
+#                                       Max.   :61000.00   (Other):  6848  
+#                                                          NAs    :184743  
+#           TIPO_NDP         COD_NDP            DISTRITO         BARRIO     
+# FRENTE FACHADA: 25629   Min.   :11000001   Min.   : 1.00   Min.   :1.000  
+# GARAJE        : 12443   1st Qu.:11062519   1st Qu.: 8.00   1st Qu.:2.000  
+# JARDÍN/PARQUE :  3097   Median :11130822   Median :11.00   Median :4.000  
+# PARCELA       : 12815   Mean   :17811798   Mean   :11.38   Mean   :3.725  
+# PORTAL        :160307   3rd Qu.:20176362   3rd Qu.:16.00   3rd Qu.:5.000  
+#                         Max.   :31077403   Max.   :21.00   Max.   :9.000  
+#                                                                           
+#   COD_POSTAL       UTMX_ED            UTMY_ED            UTMX_ETRS       
+# Min.   :28001   Min.   :      -1   Min.   :       -1   Min.   :  429110  
+# 1st Qu.:28019   1st Qu.:43835326   1st Qu.:447059673   1st Qu.:43825580  
+# Median :28030   Median :44126762   Median :447427345   Median :44116756  
+# Mean   :28030   Mean   :40194039   Mean   :406277111   Mean   :40195346  
+# 3rd Qu.:28042   3rd Qu.:44485982   3rd Qu.:447873515   3rd Qu.:44475952  
+# Max.   :28925   Max.   :45546931   Max.   :449956202   Max.   :45535983  
+#                                                                          
+#   UTMY_ETRS              LATITUD            LONGITUD      ANGULO_ROTULACION
+# Min.   :  4464414   Length   :214291   Length   :214291   Min.   :  0.00   
+# 1st Qu.:447037552   N.unique : 57330   N.unique : 71536   1st Qu.: 45.27   
+# Median :447402921   N.blank  :     0   N.blank  :     0   Median :156.87   
+# Mean   :405814976   Min.nchar:    11   Min.nchar:    10   Mean   :180.98   
+# 3rd Qu.:447851363   Max.nchar:    15   Max.nchar:    14   3rd Qu.:317.76   
+# Max.   :449935458                                         Max.   :360.00   
+#                                                                            
+#          geometry     
+# POINT        :214291  
+# epsg:4326    :     0  
+# +proj=long...:     0  
 ```
 
 ```{r}
@@ -287,6 +372,15 @@ table(direcciones_vigentes$VIA_CLASE, useNA = 'ifany')
 #      299         21          6        655       4289          5       3624 
 # PLAZUELA     PUENTE      RONDA   TRAVESÍA 
 #       17          1       1263       1041 
+
+#   ACCESO  AUTOPISTA    AUTOVÍA    AVENIDA    BULEVAR      CALLE   CALLEJÓN 
+#       13          7        505      14953        206     184167        167 
+#   CAMINO    CARRERA  CARRETERA COSTANILLA     CUESTA ESCALINATA    GALERÍA 
+#     1828         53        919        107        107          2          9 
+# GLORIETA PARTICULAR   PASADIZO     PASAJE      PASEO      PISTA      PLAZA 
+#      301         21          6        655       4302          5       3626 
+# PLAZUELA     PUENTE      RONDA   TRAVESÍA 
+#       17          1       1269       1045 
 ```
 
 ```{r}
@@ -313,6 +407,29 @@ table(direcciones_vigentes$DISTRITO, direcciones_vigentes$BARRIO, useNA = 'ifany
 # 19 4725  764  483 2140    0    0    0    0    0
 # 20 2241  316  491 1217 1573 2601 2531 1676    0
 # 21 1122  674 1218 1561 1504    0    0    0    0
+
+#       1    2    3    4    5    6    7    8    9
+# 1  1859 2425 1151 1409 2226 1107    0    0    0
+# 2   792 1057  565  882  959  936  190    0    0
+# 3   841  701  568  543  510  598    0    0    0
+# 4  1005 1070 1430 2268  661  816    0    0    0
+# 5  2118 1457 1590 1801 1725  834    0    0    0
+# 6  1880 1590  929 1984 2771 2024    0    0    0
+# 7   801  783 1151 1023  932  780    0    0    0
+# 8   776  392 3580  881  622 5401 3563 1472    0
+# 9  1031 1024 2147 1882 1552 1479 5970    0    0
+# 10 1439 3299 1746 2003 1189  365 2044    0    0
+# 11 1038 2046 3304 2430 2146 2971 1136    0    0
+# 12 1613  778 1349 1390 1675  907 1413    0    0
+# 13 4411 3796 2532 1245 1696 3179    0    0    0
+# 14  321  311  688  645  855  505    0    0    0
+# 15 2310 2862 1693 1532  854  699  579  156  760
+# 16 1256 2638 3403 3081 1273 5514    0    0    0
+# 17 4560  617  993 1946 1224    0    0    0    0
+# 18 4322  502 3350    0    0    0    0    0    0
+# 19 4982  768  486 2433    0    0    0    0    0
+# 20 2245  315  491 1217 1588 2597 2274 1682    0
+# 21 1133  678 1219 1574 1506    0    0    0    0
 ```
 
 
@@ -407,6 +524,38 @@ summary(viales_vigentes)
 # Length:9429           
 # Class :character      
 # Mode  :character          
+
+#    COD_VIA            VIA_CLASE         VIA_PAR         VIA_NOMBRE  
+# Min.   :     127   CALLE   :7530   Length   :9433   Length   :9433  
+# 1st Qu.:  122800   PLAZA   : 573   N.unique :   7   N.unique :8940  
+# Median :  435425   AVENIDA : 264   N.blank  :   0   N.blank  :   0  
+# Mean   : 4372536   CAMINO  : 251   Min.nchar:   2   Min.nchar:   1  
+# 3rd Qu.:  706800   GLORIETA: 170   Max.nchar:   6   Max.nchar:  50  
+# Max.   :31006409   TRAVESÍA: 149   NAs      : 336                   
+#                    (Other) : 496                                    
+# VIA_NOMBRE_ACENTOS COD_VIA_COMIENZA     CLASE_COMIENZA PARTICULA_COMIENZA
+# Length   :9433     Min.   :     127   Length   :9433   Length   :9433    
+# N.unique :8944     1st Qu.:  140500   N.unique :  36   N.unique :   6    
+# N.blank  :   0     Median :  423500   N.blank  :   0   N.blank  :   0    
+# Min.nchar:   1     Mean   : 3746893   Min.nchar:   3   Min.nchar:   2    
+# Max.nchar:  50     3rd Qu.:  677500   Max.nchar:  23   Max.nchar:   6    
+#                    Max.   :99000003                    NAs      : 502    
+#                                                                          
+#  NOMBRE_COMIENZA NOMBRE_ACENTOS_COMIENZA COD_VIA_TERMINA      CLASE_TERMINA 
+# Length   :9433   Length   :9433          Min.   :     127   Length   :9433  
+# N.unique :3370   N.unique :3371          1st Qu.:  143400   N.unique :  48  
+# N.blank  :   0   N.blank  :   0          Median :  441310   N.blank  :   0  
+# Min.nchar:   1   Min.nchar:   1          Mean   : 8203861   Min.nchar:   3  
+# Max.nchar:  49   Max.nchar:  49          3rd Qu.:  722500   Max.nchar:  23  
+#                                          Max.   :99000003                   
+#                                                                             
+# PARTICULA_TERMINA   NOMBRE_TERMINA NOMBRE_ACENTOS_TERMINA
+# Length   :9433    Length   :9433   Length   :9433        
+# N.unique :   7    N.unique :3709   N.unique :3711        
+# N.blank  :   0    N.blank  :   0   N.blank  :   0        
+# Min.nchar:   2    Min.nchar:   2   Min.nchar:   2        
+# Max.nchar:   6    Max.nchar:  46   Max.nchar:  46        
+# NAs      : 864 
 ```
 
 
@@ -476,6 +625,31 @@ summary(viales_vigentes_distritos_barrios)
 # 3rd Qu.:   35.00   3rd Qu.:    2.0   3rd Qu.:   38.0  
 # Max.   :48195.00   Max.   :60000.0   Max.   :61000.0  
 # NA's   :2622       NA's   :2468      NA's   :2468    
+
+#    COD_VIA            VIA_CLASE         VIA_PAR          VIA_NOMBRE   
+# Min.   :     127   CALLE   :8394   Length   :11108   Length   :11108  
+# 1st Qu.:  123675   PLAZA   : 657   N.unique :    7   N.unique : 8940  
+# Median :  437850   AVENIDA : 531   N.blank  :    0   N.blank  :    0  
+# Mean   : 4556131   CAMINO  : 318   Min.nchar:    2   Min.nchar:    1  
+# 3rd Qu.:  711819   GLORIETA: 230   Max.nchar:    6   Max.nchar:   50  
+# Max.   :31006409   PASEO   : 184   NAs      :  540                    
+#                    (Other) : 794                                      
+# VIA_NOMBRE_ACENTOS    DISTRITO         BARRIO        IMPAR_MIN       
+# Length   :11108    Min.   : 1.00   Min.   :0.000   Min.   :    1.00  
+# N.unique : 8944    1st Qu.: 7.00   1st Qu.:2.000   1st Qu.:    1.00  
+# N.blank  :    0    Median :11.00   Median :3.000   Median :    1.00  
+# Min.nchar:    1    Mean   :11.19   Mean   :3.605   Mean   :   11.59  
+# Max.nchar:   50    3rd Qu.:16.00   3rd Qu.:5.000   3rd Qu.:    1.00  
+#                    Max.   :21.00   Max.   :9.000   Max.   :48195.00  
+#                    NAs    :30      NAs    :30      NAs    :2636      
+#   IMPAR_MAX        PAR_MIN           PAR_MAX       
+# Min.   :    1   Min.   :    0.0   Min.   :    2.0  
+# 1st Qu.:    7   1st Qu.:    2.0   1st Qu.:    8.0  
+# Median :   17   Median :    2.0   Median :   18.0  
+# Mean   :   36   Mean   :  211.4   Mean   :  262.9  
+# 3rd Qu.:   35   3rd Qu.:    2.0   3rd Qu.:   38.0  
+# Max.   :48195   Max.   :60000.0   Max.   :61000.0  
+# NAs    :2636    NAs    :2491      NAs    :2491  
 ```
 
 
@@ -534,6 +708,31 @@ summary(viales_vigentes_distritos)
 # 3rd Qu.:    2.0   3rd Qu.:   42.0  
 # Max.   :49000.0   Max.   :61000.0  
 # NA's   :1779      NA's   :1779  
+
+#    COD_VIA            VIA_CLASE         VIA_PAR          VIA_NOMBRE   
+# Min.   :     127   CALLE   :8394   Length   :11108   Length   :11108  
+# 1st Qu.:  123675   PLAZA   : 657   N.unique :    7   N.unique : 8940  
+# Median :  437850   AVENIDA : 531   N.blank  :    0   N.blank  :    0  
+# Mean   : 4556131   CAMINO  : 318   Min.nchar:    2   Min.nchar:    1  
+# 3rd Qu.:  711819   GLORIETA: 230   Max.nchar:    6   Max.nchar:   50  
+# Max.   :31006409   PASEO   : 184   NAs      :  540                    
+#                    (Other) : 794                                      
+# VIA_NOMBRE_ACENTOS    DISTRITO       IMPAR_MIN          IMPAR_MAX       
+# Length   :11108    Min.   : 1.00   Min.   :    1.00   Min.   :    1.00  
+# N.unique : 8944    1st Qu.: 7.00   1st Qu.:    1.00   1st Qu.:    7.00  
+# N.blank  :    0    Median :11.00   Median :    1.00   Median :   17.00  
+# Min.nchar:    1    Mean   :11.19   Mean   :   25.27   Mean   :   55.99  
+# Max.nchar:   50    3rd Qu.:16.00   3rd Qu.:    1.00   3rd Qu.:   39.00  
+#                    Max.   :21.00   Max.   :48195.00   Max.   :48195.00  
+#                    NAs    :30      NAs    :1991       NAs    :1991      
+#    PAR_MIN           PAR_MAX       
+# Min.   :    0.0   Min.   :    2.0  
+# 1st Qu.:    2.0   1st Qu.:    8.0  
+# Median :    2.0   Median :   18.0  
+# Mean   :  200.1   Mean   :  331.6  
+# 3rd Qu.:    2.0   3rd Qu.:   42.0  
+# Max.   :49000.0   Max.   :61000.0  
+# NAs    :1809      NAs    :1809  
 ```
 
 
@@ -598,11 +797,32 @@ summary(viales_historico)
 # 3rd Qu.:1992-09-30             
 # Max.   :2025-07-30             
 # NA's   :9393    
+
+#    COD_VIA            VIA_SQC         VIA_CLASE          VIA_PAR     
+# Min.   :     125   Min.   : 1.00   CALLE   :12973   Length   :16737  
+# 1st Qu.:  177101   1st Qu.: 1.00   PLAZA   :  914   N.unique :    9  
+# Median :  480850   Median : 1.00   CAMINO  :  578   N.blank  :    0  
+# Mean   : 4610682   Mean   : 1.32   AVENIDA :  432   Min.nchar:    2  
+# 3rd Qu.:  746100   3rd Qu.: 1.00   TRAVESÍA:  371   Max.nchar:    6  
+# Max.   :99000000   Max.   :13.00   ACCESO  :  212   NAs      : 1823  
+#                                    (Other) : 1257                    
+#     VIA_NOMBRE    VIA_NOMBRE_ACENTOS FECHA_DE_ALTA        FECHA_DE_BAJA       
+# Length   :16737   Length   :16737    Min.   :1626-01-01   Min.   :1812-08-15  
+# N.unique :13402   N.unique :13442    1st Qu.:1949-07-22   1st Qu.:1952-05-28  
+# N.blank  :    0   N.blank  :    0    Median :1966-06-29   Median :1985-04-26  
+# Min.nchar:    1   Min.nchar:    1    Mean   :1960-01-06   Mean   :1969-08-25  
+# Max.nchar:   50   Max.nchar:   50    3rd Qu.:1986-01-01   3rd Qu.:1998-01-01  
+# NAs      :    1   NAs      :    1    Max.   :2026-10-22   Max.   :2026-10-22  
+#                                                           NAs    :9426        
+# VIA_ESTADO
+# H: 3608   
+# V:13129   
 ```
 
 ```{r}
 max(viales_historico$FECHA_DE_ALTA)
 # [1] "2025-08-19"
+# [1] "2026-10-22"
 ```
 
 
@@ -666,6 +886,7 @@ direcciones_historico$FECHA_DE_BAJA <- as.Date(direcciones_historico$FECHA_DE_BA
 ```{r}
 max(direcciones_historico$FECHA_DE_ALTA)
 # [1] "2025-09-02"
+# [1] "2026-10-30"
 ```
 
 ```{r}
@@ -714,6 +935,53 @@ summary(direcciones_historico)
 # Length:375443      Length:375443      Length:375443     
 # Class :character   Class :character   Class :character  
 # Mode  :character   Mode  :character   Mode  :character  
+
+#    COD_VIA         VIA_SQC            VIA_CLASE           VIA_PAR      
+# Min.   :     127   Mode:logical   CALLE    :317196   Length   :379620  
+# 1st Qu.:  141550   NAs :379620    AVENIDA  : 24377   N.unique :     7  
+# Median :  398700                  PASEO    :  8802   N.blank  :     0  
+# Mean   : 2821678                  PLAZA    :  6409   Min.nchar:     2  
+# 3rd Qu.:  639800                  CAMINO   :  4041   Max.nchar:     6  
+# Max.   :31006368                  CARRETERA:  3765   NAs      : 20491  
+#                                   (Other)  : 15030                     
+#     VIA_NOMBRE     VIA_NOMBRE_ACENTOS    COD_NDP             CLASE_NDP     
+# Length   :379620   Length   :379620   Min.   :11000001   NUMERO   :368987  
+# N.unique : 10388   N.unique : 10406   1st Qu.:11054446   BLOQUE   :  9027  
+# N.blank  :     0   N.blank  :     0   Median :11128230   KILÓMETRO:  1256  
+# Min.nchar:     1   Min.nchar:     1   Mean   :17808278   PARCELA  :    98  
+# Max.nchar:    50   Max.nchar:    50   3rd Qu.:20178844   CHABOLA  :    85  
+#                                       Max.   :31077403   SANQUI   :    81  
+#                                                          (Other)  :    86  
+#     NÚMERO          CALIFICADOR     FECHA_DE_ALTA        FECHA_DE_BAJA       
+# Min.   :    1.00   B      : 12046   Min.   :1870-01-01   Min.   :197-01-01   
+# 1st Qu.:    9.00   A      :  8161   1st Qu.:1950-12-22   1st Qu.:1949-09-19  
+# Median :   21.00   C      :  4277   Median :1973-04-28   Median :1974-02-27  
+# Mean   :   82.76   D      :  2945   Mean   :1971-07-08   Mean   :1973-06-14  
+# 3rd Qu.:   48.00   E      :  1870   3rd Qu.:1992-05-04   3rd Qu.:1997-09-29  
+# Max.   :61000.00   (Other): 22112   Max.   :2026-10-30   Max.   :2026-10-30  
+#                    NAs    :328209                        NAs    :215678      
+#           TIPO_NDP         UTMX_ED            UTMY_ED         
+# PORTAL        :270302   Min.   :      -1   Min.   :       -1  
+# FRENTE FACHADA: 39295   1st Qu.:43760978   1st Qu.:446983854  
+# PARCELA       : 31189   Median :44082128   Median :447379052  
+# GARAJE        : 16293   Mean   :37399216   Mean   :378419012  
+# JARDÍN/PARQUE :  3933   3rd Qu.:44395566   3rd Qu.:447828337  
+# (Other)       :  2376   Max.   :45546931   Max.   :449956202  
+# NAs           : 16232                                         
+#   UTMX_ETRS          UTMY_ETRS              LATITUD            LONGITUD     
+# Min.   :       0   Min.   :        0   Length   :379620   Length   :379620  
+# 1st Qu.:43752014   1st Qu.:446960458   N.unique : 58462   N.unique : 74162  
+# Median :44071831   Median :447356159   N.blank  :     0   N.blank  :     0  
+# Mean   :37426706   Mean   :378050676   Min.nchar:     9   Min.nchar:    10  
+# 3rd Qu.:44385539   3rd Qu.:447806177   Max.nchar:    15   Max.nchar:    14  
+# Max.   :45558493   Max.   :449935458                                        
+#                                                                             
+# ANGULO_ROTULACION 
+# Length   :379620  
+# N.unique : 22378  
+# N.blank  :     0  
+# Min.nchar:     1  
+ # Max.nchar:     6  
 ```
 
 ```{r}
@@ -789,6 +1057,53 @@ summary(direcciones_historico_sf)
 # POINT        :349188  
 # epsg:4326    :     0  
 # +proj=long...:     0  
+
+#    COD_VIA         VIA_SQC            VIA_CLASE           VIA_PAR      
+# Min.   :     127   Mode:logical   CALLE    :296758   Length   :353365  
+# 1st Qu.:  145600   NAs :353365    AVENIDA  : 22626   N.unique :     7  
+# Median :  403800                  PASEO    :  7753   N.blank  :     0  
+# Mean   : 2997456                  PLAZA    :  5854   Min.nchar:     2  
+# 3rd Qu.:  645000                  CAMINO   :  3527   Max.nchar:     6  
+# Max.   :31006368                  CARRETERA:  3099   NAs      : 18951  
+#                                   (Other)  : 13748                     
+#     VIA_NOMBRE     VIA_NOMBRE_ACENTOS    COD_NDP             CLASE_NDP     
+# Length   :353365   Length   :353365   Min.   :11000001   NUMERO   :343390  
+# N.unique : 10030   N.unique : 10046   1st Qu.:11051197   BLOQUE   :  8578  
+# N.blank  :     0   N.blank  :     0   Median :11120319   KILÓMETRO:  1165  
+# Min.nchar:     1   Min.nchar:     1   Mean   :17496790   PARCELA  :    98  
+# Max.nchar:    50   Max.nchar:    50   3rd Qu.:20170191   TORRE    :    41  
+#                                       Max.   :31077403   CHABOLA  :    37  
+#                                                          (Other)  :    56  
+#     NÚMERO          CALIFICADOR     FECHA_DE_ALTA        FECHA_DE_BAJA       
+# Min.   :    1.00   B      : 11587   Min.   :1870-01-01   Min.   :197-01-01   
+# 1st Qu.:    9.00   A      :  7890   1st Qu.:1950-07-14   1st Qu.:1949-01-14  
+# Median :   21.00   C      :  4132   Median :1973-11-21   Median :1970-01-29  
+# Mean   :   84.52   D      :  2868   Mean   :1971-09-29   Mean   :1971-08-03  
+# 3rd Qu.:   47.00   E      :  1831   3rd Qu.:1993-04-16   3rd Qu.:1998-01-01  
+# Max.   :61000.00   (Other): 21091   Max.   :2026-10-30   Max.   :2026-10-30  
+#                    NAs    :303966                        NAs    :215678      
+#           TIPO_NDP         UTMX_ED            UTMY_ED         
+# PORTAL        :264788   Min.   :      -1   Min.   :       -1  
+# FRENTE FACHADA: 38855   1st Qu.:43869636   1st Qu.:447059114  
+# PARCELA       : 25658   Median :44111041   Median :447470546  
+# GARAJE        : 16270   Mean   :40177976   Mean   :406535524  
+# JARDÍN/PARQUE :  3896   3rd Qu.:44432744   3rd Qu.:447857275  
+# (Other)       :  1093   Max.   :45546931   Max.   :449956202  
+# NAs           :  2805                                         
+#   UTMX_ETRS          UTMY_ETRS              LATITUD            LONGITUD     
+# Min.   :  429110   Min.   :  4464414   Length   :353365   Length   :353365  
+# 1st Qu.:43861104   1st Qu.:447037045   N.unique : 58461   N.unique : 74161  
+# Median :44101179   Median :447445521   N.blank  :     0   N.blank  :     0  
+# Mean   :40207508   Mean   :406139820   Min.nchar:    11   Min.nchar:    10  
+# 3rd Qu.:44422972   3rd Qu.:447834967   Max.nchar:    15   Max.nchar:    14  
+# Max.   :45558493   Max.   :449935458                                        
+#                                                                             
+# ANGULO_ROTULACION           geometry     
+# Length   :353365   POINT        :353365  
+# N.unique : 22378   epsg:4326    :     0  
+# N.blank  :     0   +proj=long...:     0  
+# Min.nchar:     1                         
+# Max.nchar:     6    
 ```
 
 ```{r}
@@ -823,6 +1138,39 @@ table(direcciones_historico$VIA_CLASE, useNA = 'ifany')
 #          422                     3                  1614 
 #  TRANSVERSAL              TRAVESÍA      TRAVESÍA PRIMERA 
 #           41                  2293                     5 
+# URBANIZACIÓN                   VÍA 
+#         1378                     2 
+
+#       ACCESO                ARROYO             AUTOPISTA 
+#           39                     4                     7 
+#      AUTOVÍA               AVENIDA                BARRIO 
+#          668                 24377                    44 
+#      BULEVAR                 CALLE              CALLEJÓN 
+#          218                317196                   385 
+#       CAMINO           CAMINO ALTO           CAMINO BAJO 
+#         4041                     3                     5 
+# CAMINO VIEJO              CAMPILLO                CAÑADA 
+#          237                    21                   658 
+#      CARRERA             CARRETERA                 CERRO 
+#          214                  3765                    11 
+#      COLONIA            COSTANILLA                CUESTA 
+#         2788                   180                   210 
+#     EDIFICIO            ESCALINATA ESTACIÓN DE CERCANÍAS 
+#            3                     6                     2 
+#      GALERÍA              GLORIETA    GRUPO DE VIVIENDAS 
+#           14                   501                     1 
+#        LUGAR                PARQUE            PARTICULAR 
+#         1098                    32                   159 
+#     PASADIZO                PASAJE                 PASEO 
+#           74                  1324                  8802 
+#        PISTA                 PLAZA              PLAZUELA 
+#            5                  6409                   142 
+#      POBLADO  POBLADO DE ABSORCIÓN      POBLADO DIRIGIDO 
+#           51                    28                   120 
+#     POLÍGONO                PUENTE                 RONDA 
+#          422                     3                  1627 
+#  TRANSVERSAL              TRAVESÍA      TRAVESÍA PRIMERA 
+#           41                  2300                     5 
 # URBANIZACIÓN                   VÍA 
 #         1378                     2 
 ```

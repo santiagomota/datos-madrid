@@ -180,6 +180,7 @@ Obtenemos las fechas válidas.
 ```{r}
 range(spod_get_valid_dates(ver = 2))
 # [1] "2022-01-01" "2025-06-08"
+# [1] "2022-01-01" "2025-12-08"
 ```
 
 Y los datos disponibles.
@@ -356,6 +357,7 @@ Cuantos municipios hay en `flujos_municipios`:
 
 ```{r}
 sum(flujos_municipios$numero_municipios, na.rm = TRUE)
+# [1] 8181
 ```
 
 Hay algunos que no están en `municipios2026`.
@@ -366,6 +368,7 @@ listado_municipios <- unique(trimws(unlist(strsplit(agrupaciones_municipios, ";"
 
 ```{r}
 length(listado_municipios)
+# [1] 8132
 ```
 
 ¿Hay duplicados?
@@ -394,8 +397,31 @@ Y por otro, el municipio "03903", Los Montesions de Alicante, que tiene una lín
 
 ```{r}
 summary(flujos_municipios)
+#         id              name        population       census_sections   census_districts
+# Length   :2618   Length   :2618   Min.   :   1504   Length   : 2618   Length   :2618   
+# N.unique :2618   N.unique :2617   1st Qu.:   4582   N.unique : 2570   N.unique :2570   
+# N.blank  :   0   N.blank  :   0   Median :   5980   N.blank  :    0   N.blank  :   0   
+# Min.nchar:   5   Min.nchar:   3   Mean   :  18445   Min.nchar:    2   Min.nchar:   2   
+# Max.nchar:  11   Max.nchar:  80   3rd Qu.:  12199   Max.nchar:29314   Max.nchar: 430   
+#                                   Max.   :3305408                                      
+#                                   NAs    :49                                           
+#   municipalities  districts_mitma     luas_mitma   municipality_ids_in_v1
+# Length   :2618   Length   :2618   Length   :2618   Length   :2618        
+# N.unique :2570   N.unique :2618   N.unique :2086   N.unique :2203        
+# N.blank  :   0   N.blank  :   0   N.blank  :   0   N.blank  :   0        
+# Min.nchar:   2   Min.nchar:   5   Min.nchar:   5   Min.nchar:   5        
+# Max.nchar: 334   Max.nchar: 187   Max.nchar:  38   Max.nchar:   8        
+#                                                    NAs      :  49        
+#                                                                          
+#          geometry         codigo_provincia  agregado       numero_municipios
+# MULTIPOLYGON :2617   08::BARCELONA: 191    Mode :logical   Min.   : 1.000   
+# POLYGON      :   1   46::VALENCIA : 145    FALSE:1645      1st Qu.: 1.000   
+# epsg:3042    :   0   28::MADRID   : 119    TRUE :973       Median : 1.000   
+# +proj=utm ...:   0   45::TOLEDO   :  93                    Mean   : 3.125   
+#                      41::SEVILLA  :  91                    3rd Qu.: 2.000   
+#                      03::ALICANTE :  81                    Max.   :48.000   
+#                      (Other)      :1898    
 ```
-
 
 
 ## Matrices de origen destino
@@ -454,6 +480,14 @@ centroides_distritos <- spod_get_zones("distritos", ver = 2) |>
 
 ```{r}
 summary(centroides_distritos)
+#         id         sex_ratio      sex_ratio_category            geom     
+# Length   :3792   Min.   :0.0000   Length   :3792     POINT        :3792  
+# N.unique :3792   1st Qu.:0.8123   N.unique :   2     epsg:4326    :   0  
+# N.blank  :   0   Median :0.9770   N.blank  :   0     +proj=long...:   0  
+# Min.nchar:   5   Mean   :   Inf   Min.nchar:  15                         
+# Max.nchar:  11   3rd Qu.:1.2401   Max.nchar:  17                         
+#                  Max.   :   Inf   NAs      :  90                         
+#                  NAs    :90       
 ```
 
 
@@ -641,10 +675,26 @@ carreteras_afectadas_nov_02_nombres <- unique(carreteras_afectadas_nov_02_tabla$
 
 ```{r}
 summary(carreteras_afectadas_nov_02_tabla)
+#     COMUNIDAD      PROVINCIA      CARRETERA      PK INI           PK FIN           SENTIDO  
+# Length   :13   Length   :13   Length   :13   Min.   : 0.000   Min.   : 0.00   Length   :13  
+# N.unique : 4   N.unique : 5   N.unique :12   1st Qu.: 4.000   1st Qu.: 3.44   N.unique : 1  
+# N.blank  : 0   N.blank  : 0   N.blank  : 0   Median : 7.900   Median : 8.50   N.blank  : 0  
+# Min.nchar: 9   Min.nchar: 5   Min.nchar: 5   Mean   : 7.817   Mean   :10.22   Min.nchar:14  
+# Max.nchar:20   Max.nchar:17   Max.nchar: 7   3rd Qu.: 9.280   3rd Qu.:12.50   Max.nchar:14  
+#                                              Max.   :17.000   Max.   :28.00   NAs      : 4  
+#    LOCALIZACIÓN       HACIA    NIVEL DE SERVICIO
+# Length   :13    Length   :13   Length   :13     
+# N.unique :11    N.unique : 2   N.unique : 2     
+# N.blank  : 0    N.blank  : 0   N.blank  : 0     
+# Min.nchar: 5    Min.nchar: 8   Min.nchar: 4     
+# Max.nchar:25    Max.nchar: 8   Max.nchar: 5     
+# NAs      : 2    NAs      :11    
 ```
 
 ```{r}
 carreteras_afectadas_nov_02_nombres
+#  [1] "CA-4102" "GR-4104" "CV-36"   "CV-391"  "CV-395"  "CV-417"  "CV-422"  "CV-426"  "CV-429" 
+# [10] "CV-472"  "CM-2031" NA  
 ```
 
 
@@ -669,10 +719,38 @@ carreteras_afectadas_oct_31_nombres <- unique(carreteras_afectadas_oct_31_tabla$
 
 ```{r}
 summary(carreteras_afectadas_oct_31_tabla)
+#     COMUNIDAD       PROVINCIA       CARRETERA       PK INI           PK FIN      
+# Length   :121   Length   :121   Length   :121   Min.   :  0.00   Min.   :  0.00  
+# N.unique :  4   N.unique :  9   N.unique :110   1st Qu.:  0.00   1st Qu.:  3.70  
+# N.blank  :  0   N.blank  :  0   N.blank  :  0   Median :  3.00   Median :  6.80  
+# Min.nchar:  6   Min.nchar:  5   Min.nchar:  3   Mean   : 41.37   Mean   : 44.73  
+# Max.nchar: 20   Max.nchar: 18   Max.nchar: 23   3rd Qu.: 11.80   3rd Qu.: 19.00  
+#                                                 Max.   :544.00   Max.   :544.00  
+#      SENTIDO       LOCALIZACIÓN       HACIA     NIVEL DE SERVICIO
+# Length   :121   Length   :121   Length   :121   Length   :121    
+# N.unique :  4   N.unique :112   N.unique : 11   N.unique :  2    
+# N.blank  :  0   N.blank  :  0   N.blank  :  0   N.blank  :  0    
+# Min.nchar: 14   Min.nchar:  5   Min.nchar:  3   Min.nchar:  4    
+# Max.nchar: 31   Max.nchar: 51   Max.nchar: 25   Max.nchar:  5    
+#                                 NAs      :100    
 ```
 
 ```{r}
 carreteras_afectadas_oct_31_nombres
+#   [1] "A-314"   "A-372"   "A-384"   "A-393"   "A-408"   "AP-4"    "CA-3101" "CA-3102"
+#   [9] "CA-3108" "CA-3113" "CA-3205" "CA-4107" "CA-5101" "CA-5200" "CA-6101" "CA-6105"
+#  [17] "CA-6200" "CA-9101" "A-4200"  "GR-4104" "SE-3102" "SE-3105" "SE-3201" "SE-4104"
+#  [25] "SE-4108" "SE-6300" "TE-28"   "A-1105"  "A-1501"  "Z-453"   "A-3"     "CM-215" 
+#  [33] "GU-952"  "GU-958"  "CV-10"   "CV-130"  "CV-134"  "CV-137"  "CV-148"  "CV-1486"
+#  [41] "CV-200"  "A-7"     "AP-7"    "CV-33"   "CV-336"  "CV-345"  "CV-354"  "CV-36"  
+#  [49] "CV-370"  "CV-372"  "CV-374"  "CV-377"  "CV-378"  "CV-379"  "CV-380"  "CV-383" 
+#  [57] "CV-390"  "CV-395"  "CV-396"  "CV-400"  "CV-401"  "CV-403"  "CV-413"  "CV-415" 
+#  [65] "CV-416"  "CV-417"  "CV-42"   "CV-421"  "CV-422"  "CV-424"  "CV-426"  "CV-427" 
+#  [73] "CV-429"  "CV-43"   "CV-431"  "CV-435"  "CV-448"  "CV-470"  "CV-472"  "CV-473" 
+#  [81] "CV-50"   "CV-505"  "CV-506"  "CV-507"  "CV-508"  "CV-509"  "CV-511"  "CV-512" 
+#  [89] "CV-513"  "CV-515"  "CV-520"  "CV-522"  "CV-523"  "CV-525"  "CV-543"  "CV-544" 
+#  [97] "CV-545"  "CV-557"  "CV-573"  "CV-575"  "CV-576"  "CV-577"  "CV-603"  "CV-612" 
+# [105] "N-3"     "N-322"   "N-330"   "N-332"   "V-30"    "V-31"   
 ```
 
 
@@ -857,7 +935,7 @@ resmush_fichero("./figs/02-lines.png", overwrite = TRUE)
 ## get the data from IGN
 
 no time to automate this
-https://centrodedescargas.cnig.es/CentroDescargas/buscar.do?filtro.codFamilia=REDTR#
+[https://centrodedescargas.cnig.es/CentroDescargas/buscar.do?filtro.codFamilia=REDTR#](https://centrodedescargas.cnig.es/CentroDescargas/buscar.do?filtro.codFamilia=REDTR#)
 extract all archives and link them to cache/spain/
 
 
@@ -2022,6 +2100,30 @@ seccion_censal <- get_tract_geom(year = 2022) |> filter(province == "Madrid")
 
 ```{r}
 summary(seccion_censal_ingresos)
+#      mun_code           mun_name          prov_code          prov_name     
+# Length   :372290   Length   :372290   Length   :372290   Length   :372290  
+# N.unique :  8134   N.unique :  8117   N.unique :    52   N.unique :    52  
+# N.blank  :     0   N.blank  :     0   N.blank  :     0   N.blank  :     0  
+# Min.nchar:     5   Min.nchar:     2   Min.nchar:     2   Min.nchar:     4  
+# Max.nchar:     5   Max.nchar:    47   Max.nchar:     2   Max.nchar:    22  
+#                                                                            
+#                                                                            
+#   district_code        tract_code          year      net_income_pc   net_income_hh   
+# Length   :372290   Length   :372290   Min.   :2015   Min.   : 3268   Min.   : 11388  
+# N.unique : 10517   N.unique : 37229   1st Qu.:2017   1st Qu.:10008   1st Qu.: 25187  
+# N.blank  :     0   N.blank  :     0   Median :2020   Median :12137   Median : 30177  
+# Min.nchar:     7   Min.nchar:    10   Mean   :2020   Mean   :12936   Mean   : 32679  
+# Max.nchar:     7   Max.nchar:    10   3rd Qu.:2022   3rd Qu.:14889   3rd Qu.: 36997  
+#                                       Max.   :2024   Max.   :40089   Max.   :112163  
+#                                                      NAs    :19793   NAs    :19793   
+# net_income_equiv median_income_equiv gross_income_pc gross_income_hh 
+# Min.   : 5239    Min.   : 3850       Min.   : 3452   Min.   : 12153  
+# 1st Qu.:14804    1st Qu.:13650       1st Qu.:11469   1st Qu.: 28872  
+# Median :17805    Median :16450       Median :14274   Median : 35470  
+# Mean   :19172    Mean   :17193       Mean   :15595   Mean   : 39439  
+# 3rd Qu.:21835    3rd Qu.:19950       3rd Qu.:18048   3rd Qu.: 44906  
+# Max.   :63712    Max.   :47250       Max.   :59888   Max.   :167076  
+# NAs    :28046    NAs    :28046       NAs    :21162   NAs    :21162   
 ```
 
 ```{r}
@@ -2030,6 +2132,13 @@ summary(seccion_censal_ingresos)
 
 ```{r}
 summary(seccion_censal)
+#      year          tract_code      municipality       province               geom     
+# Min.   :2022   Length   :4432   Length   :4432   Length   :4432   MULTIPOLYGON :4432  
+# 1st Qu.:2022   N.unique :4432   N.unique : 179   N.unique :   1   epsg:25830   :   0  
+# Median :2022   N.blank  :   0   N.blank  :   0   N.blank  :   0   +proj=utm ...:   0  
+# Mean   :2022   Min.nchar:  10   Min.nchar:   4   Min.nchar:   6                       
+# 3rd Qu.:2022   Max.nchar:  10   Max.nchar:  44   Max.nchar:   6                       
+# Max.   :2022   
 ```
 
 ```{r}
@@ -2045,6 +2154,20 @@ seccion_censal_ingresos$mun_code <- substr(seccion_censal_ingresos$tract_code, 1
 
 ```{r}
 summary(seccion_censal_ingresos)
+#      year          tract_code      municipality       province    net_income_pc  
+# Min.   :2022   Length   :4432   Length   :4432   Length   :4432   Min.   : 4996  
+# 1st Qu.:2022   N.unique :4432   N.unique : 179   N.unique :   1   1st Qu.:12275  
+# Median :2022   N.blank  :   0   N.blank  :   0   N.blank  :   0   Median :15083  
+# Mean   :2022   Min.nchar:  10   Min.nchar:   4   Min.nchar:   6   Mean   :16893  
+# 3rd Qu.:2022   Max.nchar:  10   Max.nchar:  44   Max.nchar:   6   3rd Qu.:20174  
+# Max.   :2022                                                      Max.   :34765  
+#                                                                   NAs    :33     
+#            geom           mun_code   
+# MULTIPOLYGON :4432   Length   :4432  
+# epsg:25830   :   0   N.unique : 179  
+# +proj=utm ...:   0   N.blank  :   0  
+#                      Min.nchar:   5  
+#                      Max.nchar:   5  
 ```
 
 Nos quedamos con la ciudad de Madrid.
