@@ -87,7 +87,7 @@ library(ggplot2)
 ```
 
 
-## Seccionaes censales ayuntamiento Madrid
+## Secciones censales ayuntamiento Madrid
 
 ```{r}
 # URL del archivo KML
@@ -96,6 +96,62 @@ url_kml <- "https://datos.madrid.es/egob/catalogo/300724-12600124-Seccionado-cen
 # Leer directamente desde la URL
 secciones_municipio <- st_read(url_kml)
 ```
+
+```{r}
+url_kml <- "https://datos.madrid.es/egob/catalogo/300724-12600124-Seccionado-censal-mapas.kml"
+destino_tmp <- tempfile(fileext = ".zip")
+
+# Descargar archivo
+download.file(url_kml, destfile = destino_tmp, mode = "wb")
+
+# Crear carpeta de extracción
+dir_extrac <- tempfile()
+dir.create(dir_extrac)
+
+# Descomprimir si es un archivo ZIP
+unzip(destino_tmp, exdir = dir_extrac)
+
+# Buscar el archivo KML o SHP extraído
+archivos <- list.files(dir_extrac, pattern = "\\.(kml|shp)$", full.names = TRUE, ignore.case = TRUE)
+
+# Leer la capa cartográfica
+secciones_municipio <- st_read(archivos[1])
+```
+
+```{r}
+summary(secciones_municipio)
+#        Name         description     timestamp        begin           end      
+# Length   :2462   Length   :2462   Min.   :NA     Min.   :NA     Min.   :NA    
+# N.unique :  21   N.unique :2462   1st Qu.:NA     1st Qu.:NA     1st Qu.:NA    
+# N.blank  :   0   N.blank  :   0   Median :NA     Median :NA     Median :NA    
+# Min.nchar:   2   Min.nchar:1741   Mean   :NaN    Mean   :NaN    Mean   :NaN   
+# Max.nchar:   2   Max.nchar:1790   3rd Qu.:NA     3rd Qu.:NA     3rd Qu.:NA    
+#                                   Max.   :NA     Max.   :NA     Max.   :NA    
+#                                   NAs    :2462   NAs    :2462   NAs    :2462  
+#    altitudeMode    tessellate    extrude    visibility   drawOrder   
+# Length   :2462   Min.   :1    Min.   :0   Min.   :-1   Min.   : NA   
+# N.unique :   1   1st Qu.:1    1st Qu.:0   1st Qu.:-1   1st Qu.: NA   
+# N.blank  :   0   Median :1    Median :0   Median :-1   Median : NA   
+# Min.nchar:  13   Mean   :1    Mean   :0   Mean   :-1   Mean   :NaN   
+# Max.nchar:  13   3rd Qu.:1    3rd Qu.:0   3rd Qu.:-1   3rd Qu.: NA   
+#                  Max.   :1    Max.   :0   Max.   :-1   Max.   : NA   
+#                                                        NAs    :2462  
+#        icon           snippet                  geometry   
+# Length   :2462   Length   :2462   MULTILINESTRING Z:2462  
+# N.unique :   0   N.unique :   1   epsg:4326        :   0  
+# N.blank  :   0   N.blank  :2462   +proj=long...    :   0  
+# Min.nchar:  NA   Min.nchar:   0                           
+# Max.nchar:  NA   Max.nchar:   0                           
+# NAs      :2462   
+```
+
+```{r}
+names(secciones_municipio)
+#  [1] "Name"         "description"  "timestamp"    "begin"        "end"         
+#  [6] "altitudeMode" "tessellate"   "extrude"      "visibility"   "drawOrder"   
+# [11] "icon"         "snippet"      "geometry"    
+```
+
 
 ```{r}
 columnas_activas <- c("Name", # "description", "timestamp", "begin", "end", 
@@ -364,7 +420,7 @@ Las secciones censales del INE.
 
 ```{r}
 secciones_censales_shp <- sf::read_sf(paste0(directorio_externo, 
-                                             'ine/seccionado_2025/España_Seccionado2025_ETRS89H30/SECC_CE_20250101.shp'),
+                                             'ine/seccionado_2026/España_Seccionado2026_ETRS89H30/SECC_CE_20260101.shp'),
                                       stringsAsFactors = TRUE)
 ```
 
